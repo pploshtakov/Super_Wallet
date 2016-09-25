@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "893385485123",
+    "project_id": "super-wallet"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893385485123:android:6f05aae4fc9cfc46",
+        "android_client_info": {
+          "package_name": "com.example.pesho.superwallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893385485123-ijgpqhsmael8lt2fif4fgvl2carg3fbf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pesho.superwallet",
+            "certificate_hash": "B215E546597347065293930415D058F71DE96CA8"
+          }
+        },
+        {
+          "client_id": "893385485123-phcbj0ipf9le3u24h54bdfdc40ou54r0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdbTp4JYeTgIQ5KN6YFWANhwfKC099oXQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
