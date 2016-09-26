@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.pesho.superwallet.model.users.User;
+import com.example.pesho.superwallet.model.users.UsersManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -71,6 +73,13 @@ public class LoginActivity extends AppCompatActivity {
             Log.e("login", acct.getDisplayName());
             Log.e("login", acct.getGrantedScopes().toString());
             Log.e("login", acct.getPhotoUrl().toString());
+            if (!UsersManager.isUserExist(acct.getId())) {
+                User u = new User(acct.getDisplayName(),acct.getEmail(),acct.getId(),acct.getPhotoUrl());
+            }
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.putExtra("loggedUserID", acct.getId());
+            startActivity(intent);
+            finish();
 //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
 //            updateUI(true);
         } else {
