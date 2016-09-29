@@ -46,6 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lines="1"
+        android:inputType="textPassword"
         android:maxLength="@integer/max_symbols"
         android:hint="@string/repeat_password"
         android:id="@+id/rp_pass2_ET"
