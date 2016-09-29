@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context="com.example.pesho.superwallet.RegisterActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:lines="1"
+        android:maxLength="@integer/max_symbols"
+        android:inputType="textPersonName"
+        android:layout_height="wrap_content"
+        android:hint="@string/name"
+        android:id="@+id/rp_name_ET"
+        android:gravity="end|bottom"
+        android:layout_alignParentTop="true"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:maxLength="@integer/max_symbols"
+        android:inputType="textPersonName"
+        android:id="@+id/rp_username_ET"
+        android:hint="@string/username"
+        android:gravity="end|bottom"
+        android:layout_below="@+id/rp_name_ET"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:maxLength="@integer/max_symbols"
+        android:inputType="textPassword"
+        android:hint="@string/password"
+        android:id="@+id/rp_pass1_ET"
+        android:gravity="end|bottom"
+        android:layout_below="@+id/rp_username_ET"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:maxLength="@integer/max_symbols"
+        android:hint="@string/repeat_password"
+        android:id="@+id/rp_pass2_ET"
+        android:gravity="end|bottom"
+        android:layout_below="@+id/rp_pass1_ET"
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:inputType="textPersonName"
+        android:hint="@string/email"
+        android:id="@+id/rp_email_ET"
+        android:gravity="end|bottom"
+        android:layout_below="@+id/rp_pass2_ET"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/rp_email_ET"
+        >
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/register"
+            android:id="@+id/rp_register_button"
+            />
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/cancel"
+            android:id="@+id/rp_cancel_button"
+            />
+    </LinearLayout>
+
+</RelativeLayout>

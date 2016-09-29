@@ -1,4 +1,4 @@
-package com.example.pesho.superwallet.model.users;
+package com.example.pesho.superwallet.model;
 
 /**
  * Created by Pesho on 9/25/2016.

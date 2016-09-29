@@ -12,12 +12,53 @@
     tools:context="com.example.pesho.superwallet.LoginActivity">
 
 
-
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:lines="1"
+        android:inputType="text"
+        android:maxLength="@integer/max_symbols"
+        android:hint="@string/username"
+        android:id="@+id/lp_username_ET"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        android:lines="1"
+        android:maxLength="@integer/max_symbols"
+        android:inputType="textPassword"
+        android:id="@+id/lp_password_ET"
+        android:layout_below="@+id/lp_username_ET"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lp_password_ET"
+        android:id="@+id/lp_login_reg_buttons"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/login"
+            android:id="@+id/lp_login_button"
+            />
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/register"
+            android:id="@+id/lp_register_button"
+            />
+    </LinearLayout>
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/lp_login_reg_buttons"
         app:buttonSize="wide"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+         />
 </RelativeLayout>
