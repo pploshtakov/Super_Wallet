@@ -12,6 +12,7 @@ public class UsersManager {
     private static UsersManager ourInstance;
     private static HashMap<String, User> users;
     private static Context context;
+    public static User loggedUser;
 
     public static UsersManager getInstance(Context context) {
         if (ourInstance == null) {
@@ -38,6 +39,8 @@ public class UsersManager {
         }
         return false;
     }
+
+
     public static boolean isUserExistByFacebookID(String facebookID) {
         for (User u: users.values()) {
             if (u.getFacebookID() != null && u.getFacebookID().equals(facebookID)) {
@@ -62,5 +65,9 @@ public class UsersManager {
             return u.getPassword().equals(password);
         }
         return false;
+    }
+
+    public static void setLoggedUser(String username) {
+        loggedUser = users.get(username);
     }
 }

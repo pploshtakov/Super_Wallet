@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent login = new Intent(LoginActivity.this, MainActivity.class);
                 if (UsersManager.checkPass(usernameET.getText().toString(), passwordET.getText().toString())) {
-                    login.putExtra("loggedUser", usernameET.getText().toString());
+                    UsersManager.setLoggedUser(usernameET.getText().toString());
                     startActivity(login);
                     finish();
                 } else {
@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                 UsersManager.addUser(u);
             }
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.putExtra("loggedUserID", acct.getId());
+            UsersManager.setLoggedUser(acct.getDisplayName());
             startActivity(intent);
             finish();
 //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
