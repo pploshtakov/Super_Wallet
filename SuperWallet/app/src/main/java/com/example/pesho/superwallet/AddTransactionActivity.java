@@ -48,7 +48,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             }
         });
 
-        
+
     }
 
 

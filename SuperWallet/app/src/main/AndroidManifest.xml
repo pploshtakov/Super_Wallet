@@ -17,7 +17,11 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".AddTransactionActivity"></activity>
+        <activity android:name=".AddTransactionActivity" />
+        <activity android:name=".AccountsActivity"
+            android:label="@string/accounts"
+            >
+        </activity>
     </application>
 
 </manifest>

@@ -19,4 +19,8 @@
     <string name="amount">Amount</string>
     <string name="info">Info</string>
     <string name="save">Save</string>
+    <string name="assets">Assets</string>
+    <string name="liabilities">Liabilities</string>
+    <string name="edit">Edit</string>
+    <string name="accounts">Accounts</string>
 </resources>
