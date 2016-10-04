@@ -1,20 +1,19 @@
 package com.example.pesho.superwallet.model;
 
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by Pesho on 9/29/2016.
  */
 public class Transaction {
-    public enum TransactionTypes {Income, Expense,Transfer};
-    private Date date;
+    public enum TRANSACTIONS_TYPE {Income, Expense,Transfer};
+    private String date;
     private String description;
-    private TransactionTypes transactionType;
+    private TRANSACTIONS_TYPE transactionType;
     private Category category;
     private double amount;
 
-    public Transaction(Date date, String description, TransactionTypes transactionType, double amount, Category category) {
+    public Transaction(String date, String description, TRANSACTIONS_TYPE transactionType, double amount, Category category) {
         this.date = date;
         this.description = description;
         this.transactionType = transactionType;
@@ -22,7 +21,7 @@ public class Transaction {
         this.category = category;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -30,7 +29,7 @@ public class Transaction {
         return description;
     }
 
-    public TransactionTypes getTransactionType() {
+    public TRANSACTIONS_TYPE getTransactionType() {
         return transactionType;
     }
 

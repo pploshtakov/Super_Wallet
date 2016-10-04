@@ -70,4 +70,6 @@ public class UsersManager {
     public static void setLoggedUser(String username) {
         loggedUser = users.get(username);
     }
+
+
 }

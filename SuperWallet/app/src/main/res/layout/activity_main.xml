@@ -11,7 +11,7 @@
     android:layout_height="wrap_content"
     app:tabGravity="center"
     android:layout_alignParentTop="true"
-    android:id="@+id/reports_tab"
+    android:id="@+id/ma_reports_tab"
     android:background="@color/colorPrimary"
     >
     <android.support.design.widget.TabItem
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@+id/reports_tab"
+        android:layout_below="@+id/ma_reports_tab"
         >
         <LinearLayout
             android:layout_width="0dp"

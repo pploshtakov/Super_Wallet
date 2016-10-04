@@ -21,6 +21,7 @@ public class User {
     private String facebookID;
     private ArrayList<Transaction> myTransactions;
     private ArrayList<Account> myAccounts;
+    private ArrayList<Category> myCategories;
 
     //constructor for users registered directly from app
     public User(String name, String userName, String password, String email) {
@@ -41,6 +42,7 @@ public class User {
         this.googleID = googleID;
         myTransactions = new ArrayList<>();
         myAccounts = new ArrayList<>();
+        myCategories = new ArrayList<>();
     }
     //constructor for facebook user
     public User(String name, String email, String facebookID) {
@@ -51,10 +53,12 @@ public class User {
         this.facebookID = facebookID;
         myTransactions = new ArrayList<>();
         myAccounts = new ArrayList<>();
+        myCategories = new ArrayList<>();
     }
 
     //constructor from DB
-    public User(int localID, String googleID, String facebookID, String name, String userName, String password, String email) {
+    public User(int localID, String googleID, String facebookID, String name, String userName, String password,
+                String email, ArrayList<Transaction> transactions, ArrayList<Account> accounts, ArrayList<Category> categories) {
         this.localID = localID;
         this.name = name;
         this.userName = userName;
@@ -62,8 +66,9 @@ public class User {
         this.email = email;
         this.facebookID = facebookID;
         this.googleID = googleID;
-        myTransactions = new ArrayList<>();
-        myAccounts = new ArrayList<>();
+        myTransactions = transactions;
+        myAccounts = accounts;
+        myCategories = categories;
     }
 
     public String getName() {
@@ -92,5 +97,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public Category getCategory(String categoryName) {
+        for (int i = 0; i < myCategories.size(); i++) {
+            if (myCategories.get(i).getCategoryName().equals(categoryName)) {
+                return myCategories.get(i);
+            }
+        }
+        return null;
     }
 }
