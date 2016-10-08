@@ -172,9 +172,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_accounts:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
-                Intent accounts = new Intent(this, AccountsActivity.class);
-                startActivity(accounts);
-                return true;
+//                Intent accounts = new Intent(this, AccountsActivity.class);
+//                startActivity(accounts);
+//                return true;
+				Intent category2 = new Intent(this, CategoryListActivity.class);
+				category2.putExtra("pickingCategory", true);
+				startActivity(category2);
+				return true;
             case R.id.action_settings:
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...

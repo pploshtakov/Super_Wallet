@@ -2,6 +2,7 @@ package com.example.pesho.superwallet;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
@@ -25,11 +26,18 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.pesho.superwallet.model.Category;
+import com.example.pesho.superwallet.model.DBManager;
+
 public class CategoryListActivity
 	extends AppCompatActivity
 	implements OnDragListener, OnItemLongClickListener, OnItemClickListener {
 
-	ArrayList<Integer> drawables;
+	private static final int MODIFY_CATEGORY_REQUEST = 1;
+
+	ArrayList<Category> categories;
+
+	boolean pickingCategory = false;
 
 	private BaseAdapter adapter;
 	private int draggedIndex = -1;
@@ -42,33 +50,12 @@ public class CategoryListActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_category_list);
 
-		addCategoryButton = (Button) findViewById(R.id.add_category_button);
-		addCategoryButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
-				startActivity(intent);
-			}
-		});
-
-		drawables = new ArrayList<>();
-		drawables.add(R.drawable.taxi);
-		drawables.add(R.drawable.phone);
-		drawables.add(R.drawable.house);
-		drawables.add(R.drawable.health);
-		drawables.add(R.drawable.ball);
-		drawables.add(R.drawable.bill);
-		drawables.add(R.drawable.bus);
-		drawables.add(R.drawable.car);
-		drawables.add(R.drawable.coffee);
-		drawables.add(R.drawable.fitness);
-		drawables.add(R.drawable.fork_spoon);
-		drawables.add(R.drawable.fridge);
-		drawables.add(R.drawable.taxi);
-
+		// Create the categories array and get the gridView
+		categories = new ArrayList<>();
 		gridView = (GridView) findViewById(R.id.category_grid_view);
-		gridView.setOnItemLongClickListener(CategoryListActivity.this);
-		gridView.setAdapter(adapter = new BaseAdapter() {
+		addCategoryButton = (Button) findViewById(R.id.add_category_button);
+
+		adapter = new BaseAdapter() {
 
 			@Override
 			// Get a View that displays the data at the specified position in
@@ -82,7 +69,7 @@ public class CategoryListActivity
 				if (view == null) {
 					view = new ImageView(CategoryListActivity.this);
 				}
-				view.setImageResource(drawables.get(position));
+				view.setImageResource(categories.get(position).getCategoryIcon());
 				view.setTag(String.valueOf(position));
 				return view;
 			}
@@ -98,15 +85,49 @@ public class CategoryListActivity
 			// Get the data item associated with the specified position in the
 			// data set.
 			public Object getItem(int position) {
-				return drawables.get(position);
+				return categories.get(position);
 			}
 
 			@Override
 			// How many items are in the data set represented by this Adapter.
 			public int getCount() {
-				return drawables.size();
+				return categories.size();
 			}
-		});
+		};
+
+		gridView.setAdapter(adapter);
+		// Set on Item Click (boolean pickingCategory determines the behavior)
+		gridView.setOnItemClickListener(CategoryListActivity.this);
+
+		// Check the intent if we're just picking a category
+		Intent intent = getIntent();
+		if (intent != null) {
+			pickingCategory = intent.getBooleanExtra("pickingCategory", false);
+		}
+
+		// If we are, add the default categories to the list
+		// TODO hide other buttons and trash can, disable dragging
+		if (pickingCategory) {
+			ArrayList<Category> defaultCategories = DBManager.getInstance(this).loadDefaultCategories();
+			categories.addAll(defaultCategories);
+
+			addCategoryButton.setVisibility(View.GONE);
+		}
+		// If we're not picking a category, add dragging and trash can and dont add the default categories
+		// to the list.
+		else {
+			addCategoryButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
+					startActivity(intent);
+				}
+			});
+
+			gridView.setOnItemLongClickListener(CategoryListActivity.this);
+
+			addCategoryButton.setVisibility(View.VISIBLE);
+		}
 
 	}
 
@@ -154,7 +175,7 @@ public class CategoryListActivity
 				// If called for trash can then delete the item and reload the grid
 				// view
 				if (view.getId() == R.id.trash_can) {
-					drawables.remove(draggedIndex);
+					categories.remove(draggedIndex);
 					draggedIndex = -1;
 				}
 				adapter.notifyDataSetChanged();
@@ -199,9 +220,19 @@ public class CategoryListActivity
 
 	@Override
 	public void onItemClick(AdapterView parent, View view, int position, long id) {
-		Intent intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
-		intent.putExtra("categoryIndex", position);
-		//startActivityForResult(intent, intent);
+		Intent intent;
+
+		if (!pickingCategory) {
+			intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
+			intent.putExtra("categoryId", categories.get(position).getCategoryId());
+			startActivityForResult(intent, MODIFY_CATEGORY_REQUEST);
+		}
+		else {
+			intent = new Intent();
+			intent.putExtra("categoryId", categories.get(position).getCategoryId());
+			setResult(Activity.RESULT_OK, intent);
+			finish();
+		}
 	}
 
 	@Override
