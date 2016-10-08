@@ -26,14 +26,16 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.6.0@aar') {
         transitive = true
     }
+    //google play service
+    //boommenu
+    //floating actionbutton
+    //spring indicator
     compile 'com.android.support:appcompat-v7:23.4.0'
     compile 'com.android.support:design:23.4.0'
-    //google play service
     compile 'com.google.android.gms:play-services-auth:9.6.1'
-    //boommenu
     compile 'com.nightonke:boommenu:1.0.9'
     compile 'com.android.support:support-v4:23.4.0'
-    testCompile 'junit:junit:4.12'
-    //floating actionbutton
     compile 'com.github.clans:fab:1.6.4'
+    compile 'com.github.chenupt.android:springindicator:1.0.2@aar'
+    testCompile 'junit:junit:4.12'
 }

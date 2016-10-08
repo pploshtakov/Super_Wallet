@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         addIncomeFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
+                final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
                 intent.putExtra("Transaction", "Income");
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         addExpenseFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
+                final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
                 intent.putExtra("Transaction", "Expense");
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         addTransferFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
+                final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
                 intent.putExtra("Transaction", "Transfer");
                 startActivityForResult(intent, ADD_TRANSACTION);
             }

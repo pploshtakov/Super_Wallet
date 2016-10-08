@@ -19,41 +19,13 @@ public class AddTransactionActivity extends AppCompatActivity {
     Calendar myCalendar;
     DatePickerDialog.OnDateSetListener date;
     TextView dateTV;
-    TabLayout addTransactionTab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
-        //add transaction tab
-        addTransactionTab = (TabLayout) findViewById(R.id.add_transaction_tab);
-        addTransactionTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getText().toString()) {
-                    case "Income":
 
-                        break;
-                    case "Expense":
-
-                        break;
-                    case "Transfer":
-
-                        break;
-
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-        dateTV = (TextView) findViewById(R.id.at_date_tv);
+        //dateTV = (TextView) findViewById(R.id.at_date_tv);
         myCalendar = Calendar.getInstance();
         String ct = DateFormat.getDateInstance().format(new Date());
         dateTV.setText(ct);
