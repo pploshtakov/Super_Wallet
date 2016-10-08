@@ -31,4 +31,5 @@
     <string name="settings">Settings</string>
     <string name="add_new_category_string">Add New Category</string>
     <string name="delete_string">Delete</string>
+    <string name="home">Home</string>
 </resources>
