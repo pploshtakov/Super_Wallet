@@ -35,4 +35,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="description">Description</string>
+    <string name="place">Place</string>
+    <string name="place_text">Pick place to know you spend the most...</string>
+    <string name="attachments">Attachments</string>
+    <string name="attachments_text">Take a picture of a receipt orr add a file from your divice</string>
 </resources>
