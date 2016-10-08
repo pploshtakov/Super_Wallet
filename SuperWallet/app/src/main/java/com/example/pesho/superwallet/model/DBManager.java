@@ -304,6 +304,17 @@ public class DBManager extends SQLiteOpenHelper {
         return categories;
     }
 
+	public int getNextUserCategoryIndex() {
+		int categoryId = 0;
+		Cursor cursor = getWritableDatabase().rawQuery("SELECT MAX("
+				+ KEY_CATEGORIES_ID + ") FROM " + TABLE_CATEGORIES, null);
+		if (cursor.moveToFirst()) {
+			categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID)) + 1;
+		}
+		cursor.close();
+		return categoryId;
+	}
+
     //add transaction in table transactions
     public void addTransaction(String date, String description, Transaction.TRANSACTIONS_TYPE transactionType,
                                double amount, Category category) {

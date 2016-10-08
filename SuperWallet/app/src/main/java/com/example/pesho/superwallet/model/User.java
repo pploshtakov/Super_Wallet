@@ -107,4 +107,13 @@ public class User {
         }
         return null;
     }
+
+	public Category getCategory(int categoryId) {
+		for (int i = 0; i < myCategories.size(); i++) {
+			if (myCategories.get(i).getCategoryId() == categoryId) {
+				return myCategories.get(i);
+			}
+		}
+		return null;
+	}
 }

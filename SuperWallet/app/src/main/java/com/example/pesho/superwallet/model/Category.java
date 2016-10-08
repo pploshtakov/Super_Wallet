@@ -8,6 +8,7 @@ public class Category {
     private Transaction.TRANSACTIONS_TYPE transactionType;
     private String categoryName;
     private int categoryIcon;
+	private String categoryDescription;
 
     public Category(int categoryId, Transaction.TRANSACTIONS_TYPE transactionType, String categoryName, int categoryIcon) {
         this.categoryId = categoryId;
@@ -23,4 +24,13 @@ public class Category {
 	public int getCategoryId() { return categoryId; }
 
 	public int getCategoryIcon() { return categoryIcon; }
+
+	public String getCategoryDescription() { return categoryDescription;	}
+
+	public Transaction.TRANSACTIONS_TYPE getTransactionType() { return transactionType; }
+
+	public void setCategoryDescription(String description) { categoryDescription = description; }
+	public void setCategoryName(String name) { categoryName = name; }
+	public void setCategoryIcon(int icon) { categoryIcon = icon; }
+	public void setCategoryType(Transaction.TRANSACTIONS_TYPE type) { transactionType = type;	}
 }

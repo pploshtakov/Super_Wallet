@@ -33,7 +33,8 @@ public class CategoryListActivity
 	extends AppCompatActivity
 	implements OnDragListener, OnItemLongClickListener, OnItemClickListener {
 
-	private static final int MODIFY_CATEGORY_REQUEST = 1;
+	private static final int ADD_CATEGORY_REQUEST = 1;
+	private static final int MODIFY_CATEGORY_REQUEST = 2;
 
 	ArrayList<Category> categories;
 
@@ -120,7 +121,7 @@ public class CategoryListActivity
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
-					startActivity(intent);
+					startActivityForResult(intent, ADD_CATEGORY_REQUEST);
 				}
 			});
 

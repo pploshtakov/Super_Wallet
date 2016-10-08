@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_category_modifier"
@@ -9,6 +9,106 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.pesho.superwallet.CategoryModifierActivity">
+    tools:context="com.example.pesho.superwallet.CategoryModifierActivity"
+    android:orientation="vertical">
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/name_text"
+            />
+
+        <EditText
+            android:id="@+id/category_name_ET"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description_text"
+            />
+
+    <EditText
+        android:id="@+id/category_description_ET"
+        android:layout_width="match_parent"
+        android:lines="5"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
+        >
+
+        <RadioGroup
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+
+            <RadioButton
+                android:id="@+id/categoryAdd_radio_income"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/categoryAdd_income_text"
+                android:onClick="onRadioButtonClicked"
+                />
+
+            <RadioButton
+                android:id="@+id/categoryAdd_radio_expense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/categoryAdd_expense_text"
+                android:onClick="onRadioButtonClicked"
+                />
+
+        </RadioGroup>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:src="@drawable/empty_icon"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/categoryAdd_cancel_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/categoryAdd_cancel_button_text"
+            />
+
+        <Button
+            android:id="@+id/categoryAdd_add_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/categoryAdd_add_button_text"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
