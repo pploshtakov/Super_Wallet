@@ -3,6 +3,8 @@ package com.example.pesho.superwallet;
 import android.content.ClipData;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.MenuView;
@@ -33,8 +35,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TransactionsFragment fragment = new TransactionsFragment();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();
         //create nav drawer
-
         AccountHeader header = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.colorAccent)
@@ -58,10 +64,6 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item3);
         drawer.addItem(item4);
         drawer.addItem(item5);
-
-
-
-
 
         addTransactionButton = (FloatingActionButton) findViewById(R.id.main_fab);
         //sorting reports tab

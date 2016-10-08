@@ -27,7 +27,9 @@ public class AccountsActivity extends AppCompatActivity {
                 return true;
             case R.id.action_home:
                 Intent home = new Intent(this, MainActivity.class);
+                startActivity(home);
                 finish();
+                return true;
             case R.id.action_category:
                 // User chose the "Settings" item, show the app settings UI...
                 Intent category = new Intent(this, CategoryListActivity.class);

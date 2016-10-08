@@ -32,4 +32,7 @@
     <string name="add_new_category_string">Add New Category</string>
     <string name="delete_string">Delete</string>
     <string name="home">Home</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
