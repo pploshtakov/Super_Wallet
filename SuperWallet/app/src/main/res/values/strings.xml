@@ -23,4 +23,10 @@
     <string name="liabilities">Liabilities</string>
     <string name="edit">Edit</string>
     <string name="accounts">Accounts</string>
+    <string name="drawer_item_day">Day</string>
+    <string name="drawer_item_week">Week</string>
+    <string name="drawer_item_month">Month</string>
+    <string name="drawer_item_year">Year</string>
+    <string name="drawer_item_choose_date">Choose date</string>
+    <string name="settings">Settings</string>
 </resources>

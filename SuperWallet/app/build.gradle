@@ -26,4 +26,8 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     apply plugin: 'com.google.gms.google-services'
     compile 'com.google.android.gms:play-services-auth:8.3.0'
+    compile('com.mikepenz:materialdrawer:5.6.0@aar') {
+        transitive = true
+    }
+    compile 'com.nightonke:boommenu:1.0.9'
 }

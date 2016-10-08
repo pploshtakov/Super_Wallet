@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:pesho="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_edit_add"
+        android:icon="@drawable/stats"
+        android:title=""
+        pesho:showAsAction="always">
+    </item>
+    <item android:id="@+id/action_category"
+        android:title="@string/category"
+        pesho:showAsAction="never">
+    </item>
+
+    <item android:id="@+id/action_accounts"
+        android:title="@string/accounts"
+        pesho:showAsAction="never">
+    </item>
+
+    <item android:id="@+id/action_settings"
+        android:title="@string/settings"
+        pesho:showAsAction="never">
+    </item>
+
+
+
+
+
+</menu>
