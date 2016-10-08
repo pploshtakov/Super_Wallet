@@ -1,21 +1,19 @@
 package com.example.pesho.superwallet;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.MenuView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.UsersManager;
+import com.github.clans.fab.FloatingActionMenu;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -25,7 +23,11 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ADD_TRANSACTION = 20;
-    FloatingActionButton addTransactionButton;
+    FloatingActionMenu addTransactionButton;
+    com.github.clans.fab.FloatingActionButton addIncomeFB;
+    com.github.clans.fab.FloatingActionButton addExpenseFB;
+    com.github.clans.fab.FloatingActionButton addTransferFB;
+
     AccountHeader header;
 
 
@@ -35,13 +37,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TransactionsFragment fragment = new TransactionsFragment();
+        TransactionsListFragment fragment = new TransactionsListFragment();
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
         //create nav drawer
-        AccountHeader header = new AccountHeaderBuilder()
+        header = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.color.colorAccent)
                 .addProfiles(
@@ -65,7 +67,11 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item4);
         drawer.addItem(item5);
 
-        addTransactionButton = (FloatingActionButton) findViewById(R.id.main_fab);
+        addTransactionButton = (FloatingActionMenu) findViewById(R.id.main_fab);
+        addIncomeFB = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_income);
+        addExpenseFB = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_expense);
+        addTransferFB = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_transfer);
+
         //sorting reports tab
 //        reportsTab = (TabLayout) findViewById(R.id.ma_reports_tab);
 //        reportsTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -120,13 +126,34 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         //floating action button - add transaction
-        addTransactionButton.setOnClickListener(new View.OnClickListener() {
+        //add income
+        addIncomeFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
+                intent.putExtra("Transaction", "Income");
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
         });
+        //add expense
+        addExpenseFB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
+                intent.putExtra("Transaction", "Expense");
+                startActivityForResult(intent, ADD_TRANSACTION);
+            }
+        });//add transfer
+        addTransferFB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
+                intent.putExtra("Transaction", "Transfer");
+                startActivityForResult(intent, ADD_TRANSACTION);
+            }
+        });
+
+
 
 
     }
