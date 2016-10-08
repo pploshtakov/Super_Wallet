@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.pesho.superwallet.R;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String TABLE_USERS = "users";
     private static final String TABLE_ACCOUNTS = "accounts";
     private static final String TABLE_CATEGORIES = "categories";
+    private static final String TABLE_DEFAULT_CATEGORIES = "categoriesDefault";
     private static final String TABLE_TRANSACTIONS = "transactions";
     //users column names
     private static final String KEY_LOCAL_ID = "localID";
@@ -38,8 +41,10 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String KEY_ACCOUNT_TYPE = "accountType";
     private static final String KEY_ACCOUNT_USER_ID = "userID";
     //categories column names
+    private static final String KEY_CATEGORIES_ID = "categoryId";
     private static final String KEY_CATEGORIES_NAME = "categoryName";
     private static final String KEY_CATEGORIES_TYPE = "categoryType";
+    private static final String KEY_CATEGORIES_ICON = "categoryIcon";
     private static final String KEY_CATEGORIES_USER_ID = "userID";
     //transactions column names
     private static final String KEY_TRANSACTION_DATE = "date";
@@ -60,9 +65,13 @@ public class DBManager extends SQLiteOpenHelper {
             + "(" + KEY_ACCOUNT_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
     //table category create statement
     private static final String CREATE_TABLE_CATEGORIES = "CREATE TABLE "
-            + TABLE_CATEGORIES + "(" + KEY_CATEGORIES_NAME + " TEXT PRIMARY KEY," + KEY_CATEGORIES_TYPE + " TEXT,"
-            + KEY_CATEGORIES_USER_ID + " INTEGER," + " FOREIGN KEY"
+            + TABLE_CATEGORIES + "(" + KEY_CATEGORIES_ID + " INTEGER PRIMARY KEY," + KEY_CATEGORIES_NAME + " TEXT," + KEY_CATEGORIES_TYPE + " TEXT,"
+            + KEY_CATEGORIES_ICON + " INTEGER," + KEY_CATEGORIES_USER_ID + " INTEGER," + " FOREIGN KEY"
             + "(" + KEY_CATEGORIES_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
+    //table default category create statement
+    private static final String CREATE_TABLE_DEFAULT_CATEGORIES = "CREATE TABLE "
+            + TABLE_DEFAULT_CATEGORIES + "(" + KEY_CATEGORIES_ID + " INTEGER PRIMARY KEY," + KEY_CATEGORIES_NAME + " TEXT," + KEY_CATEGORIES_TYPE + " TEXT,"
+            + KEY_CATEGORIES_ICON + " INTEGER)";
     //table transactions create statement
     private static final String CREATE_TABLE_TRANSACTIONS = "CREATE TABLE "
             + TABLE_TRANSACTIONS + "(" + KEY_TRANSACTION_DATE + " TEXT," + KEY_TRANSACTION_DESCRIPTION + " TEXT," + KEY_TRANSACTION_TYPE
@@ -89,7 +98,82 @@ public class DBManager extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_USERS);
         db.execSQL(CREATE_TABLE_ACCOUNTS);
         db.execSQL(CREATE_TABLE_CATEGORIES);
+        db.execSQL(CREATE_TABLE_DEFAULT_CATEGORIES);
         db.execSQL(CREATE_TABLE_TRANSACTIONS);
+
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_CATEGORIES_ID, -1);
+        values.put(KEY_CATEGORIES_NAME, "Home");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.house);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -2);
+        values.put(KEY_CATEGORIES_NAME, "Sports");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.ball);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -3);
+        values.put(KEY_CATEGORIES_NAME, "Bills");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.bill);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -4);
+        values.put(KEY_CATEGORIES_NAME, "Public Transport");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.bus);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -5);
+        values.put(KEY_CATEGORIES_NAME, "Car");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.car);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -6);
+        values.put(KEY_CATEGORIES_NAME, "Restaurant");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.fork_spoon);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -7);
+        values.put(KEY_CATEGORIES_NAME, "Coffee");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.coffee);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -8);
+        values.put(KEY_CATEGORIES_NAME, "Fitness");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.fitness);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -9);
+        values.put(KEY_CATEGORIES_NAME, "Fridge");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.fridge);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -10);
+        values.put(KEY_CATEGORIES_NAME, "Healthcare");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.health);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -11);
+        values.put(KEY_CATEGORIES_NAME, "Phone");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.phone);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+        values.put(KEY_CATEGORIES_ID, -12);
+        values.put(KEY_CATEGORIES_NAME, "Taxi");
+        values.put(KEY_CATEGORIES_ICON, R.drawable.taxi);
+        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
     }
 
     @Override
@@ -176,10 +260,12 @@ public class DBManager extends SQLiteOpenHelper {
     public ArrayList<Category> loadCategoriesForUser(int localID) {
         ArrayList<Category> categories = new ArrayList<>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT "
-                + KEY_CATEGORIES_NAME + ", " + KEY_CATEGORIES_TYPE + " FROM " + TABLE_CATEGORIES + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
+                + KEY_CATEGORIES_ID + ", " + KEY_CATEGORIES_NAME + ", " + KEY_CATEGORIES_TYPE + "," + KEY_CATEGORIES_ICON + " FROM " + TABLE_CATEGORIES + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
         while (cursor.moveToNext()) {
+            int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
             String categoryName = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_NAME));
             String categoryType = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_TYPE));
+            int categoryIcon = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ICON));
             Transaction.TRANSACTIONS_TYPE type;
             if (categoryType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
                 type = Transaction.TRANSACTIONS_TYPE.Income;
@@ -188,12 +274,36 @@ public class DBManager extends SQLiteOpenHelper {
             } else {
                 type = Transaction.TRANSACTIONS_TYPE.Transfer;
             }
-            categories.add(new Category(type,categoryName));
+            categories.add(new Category(categoryId, type, categoryName, categoryIcon));
         }
         cursor.close();
         return categories;
-        //TODO add and load default category for all users!
     }
+
+    //load categories for user x from categories
+    public ArrayList<Category> loadDefaultCategories() {
+        ArrayList<Category> categories = new ArrayList<>();
+        Cursor cursor = getWritableDatabase().rawQuery("SELECT "
+                + KEY_CATEGORIES_ID + ", " + KEY_CATEGORIES_NAME + ", " + KEY_CATEGORIES_TYPE + "," + KEY_CATEGORIES_ICON + " FROM " + TABLE_DEFAULT_CATEGORIES, null);
+        while (cursor.moveToNext()) {
+            int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
+            String categoryName = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_NAME));
+            String categoryType = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_TYPE));
+            int categoryIcon = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ICON));
+            Transaction.TRANSACTIONS_TYPE type;
+            if (categoryType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
+                type = Transaction.TRANSACTIONS_TYPE.Income;
+            } else if (categoryType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
+                type = Transaction.TRANSACTIONS_TYPE.Expense;
+            } else {
+                type = Transaction.TRANSACTIONS_TYPE.Transfer;
+            }
+            categories.add(new Category(categoryId, type, categoryName, categoryIcon));
+        }
+        cursor.close();
+        return categories;
+    }
+
     //add transaction in table transactions
     public void addTransaction(String date, String description, Transaction.TRANSACTIONS_TYPE transactionType,
                                double amount, Category category) {
