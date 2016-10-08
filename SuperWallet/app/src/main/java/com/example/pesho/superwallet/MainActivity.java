@@ -2,16 +2,11 @@ package com.example.pesho.superwallet;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.pesho.superwallet.model.UsersManager;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -20,8 +15,6 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.nightonke.boommenu.BoomMenuButton;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ADD_TRANSACTION = 20;
