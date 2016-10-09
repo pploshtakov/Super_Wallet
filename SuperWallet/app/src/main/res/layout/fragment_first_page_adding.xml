@@ -52,7 +52,7 @@
             android:layout_height="0dp"
             android:layout_weight="3"
             android:orientation="horizontal">
-            <TextView
+            <com.example.pesho.superwallet.myViews.AutoResizeTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="4"
@@ -61,6 +61,9 @@
                 android:gravity="bottom|end"
                 android:textColor="@color/white"
                 android:id="@+id/addt_amount_tv"
+                android:ellipsize="none"
+                android:maxLines="1"
+
                 />
             <TextView
                 android:layout_width="0dp"
@@ -271,6 +274,17 @@
                 android:textSize="@dimen/addt_currency_text_size"
                 android:id="@+id/button_plus"
                 ></Button>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:background="@color/transparent"
+                android:textColor="@android:color/black"
+                android:text="="
+                android:textSize="@dimen/addt_currency_text_size"
+                android:id="@+id/button_result"
+                ></Button>
+
         </LinearLayout>
     </LinearLayout>
 
