@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,18 +18,24 @@ import com.example.pesho.superwallet.model.UsersManager;
 
 public class CategoryModifierActivity extends AppCompatActivity {
 
+	private static final int CHOOSE_ICON = 1;
+
 	private Button cancelButton;
 	private Button addButton;
 
-	EditText categoryNameET;
-	EditText categoryDescriptionET;
-	ImageView categoryIconIV;
-	RadioButton incomeButton;
-	RadioButton expenseButton;
+	private EditText categoryNameET;
+	private EditText categoryDescriptionET;
+	private ImageView categoryIconIV;
+	private RadioButton incomeButton;
+	private RadioButton expenseButton;
 
-	boolean isIncome = false;
+	private boolean isIncome = false;
 
-	Category category;
+	private int categoryId;
+	private String categoryName;
+	private String categoryDescription;
+	private int categoryIcon;
+	private Transaction.TRANSACTIONS_TYPE transactionType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +44,13 @@ public class CategoryModifierActivity extends AppCompatActivity {
 
 		cancelButton = (Button) findViewById(R.id.categoryAdd_cancel_button);
 		addButton = (Button) findViewById(R.id.categoryAdd_add_button);
+
 		incomeButton = (RadioButton) findViewById(R.id.categoryAdd_radio_income);
 		expenseButton = (RadioButton) findViewById(R.id.categoryAdd_radio_expense);
+
+		categoryNameET = (EditText) findViewById(R.id.categoryAdd_category_name_ET);
+		categoryDescriptionET = (EditText) findViewById(R.id.categoryAdd_category_description_ET);
+		categoryIconIV = (ImageView) findViewById(R.id.categoryAdd_category_icon_IV);
 
 		cancelButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -49,29 +61,57 @@ public class CategoryModifierActivity extends AppCompatActivity {
 		});
 
 		Intent intent = getIntent();
-		int categoryId = -999;
+		categoryId = -999;
 		if (intent != null) {
 			categoryId = intent.getIntExtra("categoryId", -999);
+			categoryName = intent.getStringExtra("categoryName");
+			categoryDescription = intent.getStringExtra("categoryDescription");
+			categoryIcon = intent.getIntExtra("categoryIcon", R.drawable.empty_icon);
+			String transactionTypeText = intent.getStringExtra("categoryType");
+			if (transactionTypeText != null) {
+				if (transactionTypeText.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString()) || transactionTypeText.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
+					transactionType = Transaction.TRANSACTIONS_TYPE.valueOf(transactionTypeText);
+				}
+				else {
+					transactionType = Transaction.TRANSACTIONS_TYPE.Expense;
+				}
+			}
+			else {
+				transactionType = Transaction.TRANSACTIONS_TYPE.Expense;
+			}
 		}
 
 		// We dont have a category passed in, get first empty index
 		if (categoryId == -999) {
 			categoryId = DBManager.getInstance(this).getNextUserCategoryIndex();
-			category = new Category(categoryId, Transaction.TRANSACTIONS_TYPE.Expense, "", R.drawable.empty_icon);
+			Log.e("SuperWallet DB Manager ", "Last category index is: " + categoryId);
 		}
-		else {
-			category = UsersManager.loggedUser.getCategory(categoryId);
-			if (category == null) {
-				category = new Category(categoryId, Transaction.TRANSACTIONS_TYPE.Expense, "", R.drawable.empty_icon);
+
+		if (categoryName == null) {
+			categoryName = "";
+		}
+		if (categoryDescription == null) {
+			categoryDescription = "";
+		}
+		if (transactionType == null) {
+			transactionType = Transaction.TRANSACTIONS_TYPE.Expense;
+		}
+
+		categoryNameET.setText(categoryName);
+		categoryDescriptionET.setText(categoryDescription);
+
+		categoryIconIV.setImageResource(categoryIcon);
+		categoryIconIV.setTag(categoryIcon);
+
+		categoryIconIV.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(CategoryModifierActivity.this, CategoryIconChooserActivity.class);
+				startActivityForResult(intent, CHOOSE_ICON);
 			}
-		}
-		categoryNameET.setText(category.getCategoryName());
-		categoryDescriptionET.setText(category.getCategoryDescription());
+		});
 
-		categoryIconIV.setImageResource(category.getCategoryIcon());
-		categoryIconIV.setTag(category.getCategoryIcon());
-
-		switch (category.getTransactionType()) {
+		switch (transactionType) {
 			case Income:
 				incomeButton.setChecked(true);
 				break;
@@ -83,18 +123,30 @@ public class CategoryModifierActivity extends AppCompatActivity {
 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				category.setCategoryDescription(categoryDescriptionET.getText().toString());
-				category.setCategoryName(categoryNameET.getText().toString());
-				category.setCategoryIcon((Integer)categoryIconIV.getTag());
+				categoryName = categoryNameET.getText().toString();
+
+				categoryDescription = categoryDescriptionET.getText().toString();
+
+				if (categoryIconIV.getTag() != null) {
+					categoryIcon = (Integer) categoryIconIV.getTag();
+				} else {
+					categoryIcon = R.drawable.empty_icon;
+				}
+
+				Intent resultIntent = new Intent();
+				resultIntent.putExtra("categoryId",categoryId);
+				resultIntent.putExtra("categoryDescription",categoryDescription);
+				resultIntent.putExtra("categoryName",categoryName);
+				resultIntent.putExtra("categoryIcon",categoryIcon);
 
 				if (expenseButton.isChecked()) {
-					category.setCategoryType(Transaction.TRANSACTIONS_TYPE.Expense);
+					resultIntent.putExtra("categoryType",Transaction.TRANSACTIONS_TYPE.Expense.toString());
 				}
 				else {
-					category.setCategoryType(Transaction.TRANSACTIONS_TYPE.Income);
+					resultIntent.putExtra("categoryType",Transaction.TRANSACTIONS_TYPE.Income.toString());
 				}
 
-				setResult(Activity.RESULT_OK);
+				setResult(Activity.RESULT_OK, resultIntent);
 				finish();
 			}
 		});
@@ -116,6 +168,22 @@ public class CategoryModifierActivity extends AppCompatActivity {
 					isIncome = false;
 				}
 				break;
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (requestCode == CHOOSE_ICON) {
+			if (resultCode == Activity.RESULT_OK) {
+				if (data != null) {
+					int iconResource = data.getIntExtra("iconResource", R.drawable.empty_icon);
+					categoryIconIV.setImageResource(iconResource);
+					categoryIconIV.setTag(iconResource);
+					categoryIcon = iconResource;
+				}
+			}
 		}
 	}
 }

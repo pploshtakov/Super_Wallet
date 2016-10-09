@@ -46,4 +46,5 @@
     <string name="categoryAdd_cancel_button_text">Cancel</string>
     <string name="categoryAdd_income_text">Income</string>
     <string name="categoryAdd_expense_text">Expense</string>
+    <string name="choose_icon_cancel_button">Cancel</string>
 </resources>

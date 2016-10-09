@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class DBManager extends SQLiteOpenHelper {
     private static DBManager ourInstance;
     //DB version
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     //DB name
     private static final String DB_NAME = "mySQLite";
     //table names
@@ -65,12 +65,12 @@ public class DBManager extends SQLiteOpenHelper {
             + "(" + KEY_ACCOUNT_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
     //table category create statement
     private static final String CREATE_TABLE_CATEGORIES = "CREATE TABLE "
-            + TABLE_CATEGORIES + "(" + KEY_CATEGORIES_ID + " INTEGER PRIMARY KEY," + KEY_CATEGORIES_NAME + " TEXT," + KEY_CATEGORIES_TYPE + " TEXT,"
+            + TABLE_CATEGORIES + " (" + KEY_CATEGORIES_ID + " INTEGER PRIMARY KEY," + KEY_CATEGORIES_NAME + " TEXT," + KEY_CATEGORIES_TYPE + " TEXT,"
             + KEY_CATEGORIES_ICON + " INTEGER," + KEY_CATEGORIES_USER_ID + " INTEGER," + " FOREIGN KEY"
             + "(" + KEY_CATEGORIES_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
     //table default category create statement
     private static final String CREATE_TABLE_DEFAULT_CATEGORIES = "CREATE TABLE "
-            + TABLE_DEFAULT_CATEGORIES + "(" + KEY_CATEGORIES_ID + " INTEGER PRIMARY KEY," + KEY_CATEGORIES_NAME + " TEXT," + KEY_CATEGORIES_TYPE + " TEXT,"
+            + TABLE_DEFAULT_CATEGORIES + " (" + KEY_CATEGORIES_ID + " INTEGER PRIMARY KEY," + KEY_CATEGORIES_NAME + " TEXT," + KEY_CATEGORIES_TYPE + " TEXT,"
             + KEY_CATEGORIES_ICON + " INTEGER)";
     //table transactions create statement
     private static final String CREATE_TABLE_TRANSACTIONS = "CREATE TABLE "
@@ -79,6 +79,12 @@ public class DBManager extends SQLiteOpenHelper {
             + KEY_TRANSACTION_USER_ID + " INTEGER," + " FOREIGN KEY"
             + "(" + KEY_TRANSACTION_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
 
+
+	private static final String DROP_TABLE_CATEGORIES = "DROP TABLE IF EXISTS " + TABLE_CATEGORIES;
+	private static final String DROP_TABLE_DEFAULT_CATEGORIES = "DROP TABLE IF EXISTS " + TABLE_CATEGORIES;
+	private static final String DROP_TABLE_USERS = "DROP TABLE IF EXISTS " + TABLE_USERS;
+	private static final String DROP_TABLE_ACCOUNTS = "DROP TABLE IF EXISTS " + TABLE_ACCOUNTS;
+	private static final String DROP_TABLE_TRANSACTIONS = "DROP TABLE IF EXISTS " + TABLE_TRANSACTIONS;
 
 
 
@@ -178,7 +184,13 @@ public class DBManager extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL(DROP_TABLE_USERS);
+		db.execSQL(DROP_TABLE_ACCOUNTS);
+		db.execSQL(DROP_TABLE_TRANSACTIONS);
+		db.execSQL(DROP_TABLE_CATEGORIES);
+		db.execSQL(DROP_TABLE_DEFAULT_CATEGORIES);
 
+		this.onCreate(db);
     }
     //add user in table users
     public void addUser (int localID, String googleID, String facebookID, String name, String username, String password, String email ) {
@@ -305,14 +317,47 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
 	public int getNextUserCategoryIndex() {
-		int categoryId = 0;
-		Cursor cursor = getWritableDatabase().rawQuery("SELECT MAX("
-				+ KEY_CATEGORIES_ID + ") FROM " + TABLE_CATEGORIES, null);
-		if (cursor.moveToFirst()) {
-			categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID)) + 1;
+//		int categoryId = 0;
+//		Cursor cursor = getWritableDatabase().rawQuery("SELECT MAX("
+//				+ KEY_CATEGORIES_ID + ") FROM " + TABLE_CATEGORIES, null);
+//		if (cursor == null) { return categoryId; }
+//		try {
+//			if (cursor.getCount() != 0 && cursor.moveToFirst()) {
+//				categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
+//				categoryId++;
+//			}
+//		}
+//		finally {
+//			cursor.close();
+//		}
+//		return categoryId;
+
+		ArrayList<Integer> categoryIds = new ArrayList<>();
+		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
+				+ KEY_CATEGORIES_ID + " FROM " + TABLE_CATEGORIES, null);
+
+		try {
+			while (cursor.moveToNext()) {
+				int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
+				categoryIds.add(categoryId);
+			}
 		}
-		cursor.close();
-		return categoryId;
+		finally {
+			cursor.close();
+		}
+
+		if (categoryIds.size() == 0) {
+			return 0;
+		}
+		else {
+			int maxCatId = 0;
+			for (Integer i: categoryIds) {
+				if (i >= maxCatId) {
+					maxCatId = i + 1;
+				}
+			}
+			return maxCatId;
+		}
 	}
 
     //add transaction in table transactions

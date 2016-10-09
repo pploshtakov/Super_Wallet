@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pesho.superwallet">
+          package="com.example.pesho.superwallet">
 
     <application
         android:allowBackup="true"
@@ -10,25 +10,27 @@
         android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/home" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".AddTransactionActivity" />
+            android:label="@string/home"/>
+        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".AddTransactionActivity"/>
         <activity
             android:name=".AccountsActivity"
-            android:label="@string/accounts"></activity>
+            android:label="@string/accounts"/>
         <activity
             android:name=".CategoryListActivity"
-            android:label="@string/category"></activity>
-        <activity android:name=".CategoryModifierActivity"></activity>
-        <activity android:name=".AddTrActivity"></activity>
+            android:label="@string/category"/>
+        <activity android:name=".CategoryModifierActivity"/>
+        <activity android:name=".AddTrActivity"/>
+        <activity android:name=".CategoryIconChooserActivity">
+        </activity>
     </application>
 
 </manifest>

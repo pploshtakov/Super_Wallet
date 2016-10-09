@@ -25,7 +25,7 @@
             />
 
         <EditText
-            android:id="@+id/category_name_ET"
+            android:id="@+id/categoryAdd_category_name_ET"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content" />
@@ -39,7 +39,7 @@
             />
 
     <EditText
-        android:id="@+id/category_description_ET"
+        android:id="@+id/categoryAdd_category_description_ET"
         android:layout_width="match_parent"
         android:lines="5"
         android:layout_height="wrap_content"
@@ -80,6 +80,7 @@
         </RadioGroup>
 
         <ImageView
+            android:id="@+id/categoryAdd_category_icon_IV"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -99,6 +100,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/categoryAdd_cancel_button_text"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:layout_margin="5dp"
             />
 
         <Button
@@ -107,6 +111,9 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/categoryAdd_add_button_text"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:layout_margin="5dp"
             />
 
     </LinearLayout>

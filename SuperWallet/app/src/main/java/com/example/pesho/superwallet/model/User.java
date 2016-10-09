@@ -116,4 +116,12 @@ public class User {
 		}
 		return null;
 	}
+
+	public void addCategory(Category category) {
+		myCategories.add(category);
+	}
+
+	public ArrayList<Category> getCategories() {
+		return new ArrayList<>(myCategories);
+	}
 }

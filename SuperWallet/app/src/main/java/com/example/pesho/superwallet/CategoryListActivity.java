@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 import com.example.pesho.superwallet.model.Category;
 import com.example.pesho.superwallet.model.DBManager;
+import com.example.pesho.superwallet.model.Transaction;
+import com.example.pesho.superwallet.model.UsersManager;
 
 public class CategoryListActivity
 	extends AppCompatActivity
@@ -129,6 +131,7 @@ public class CategoryListActivity
 
 			addCategoryButton.setVisibility(View.VISIBLE);
 		}
+		categories.addAll(UsersManager.loggedUser.getCategories());
 
 	}
 
@@ -226,6 +229,11 @@ public class CategoryListActivity
 		if (!pickingCategory) {
 			intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
 			intent.putExtra("categoryId", categories.get(position).getCategoryId());
+			intent.putExtra("categoryName", categories.get(position).getCategoryName());
+			intent.putExtra("categoryDescription", categories.get(position).getCategoryDescription());
+			intent.putExtra("categoryIcon", categories.get(position).getCategoryIcon());
+			intent.putExtra("categoryType", categories.get(position).getTransactionType().toString());
+
 			startActivityForResult(intent, MODIFY_CATEGORY_REQUEST);
 		}
 		else {
@@ -273,5 +281,53 @@ public class CategoryListActivity
 		MenuItem itemView = menu.findItem(R.id.action_category);
 		itemView.setVisible(false);
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == Activity.RESULT_OK) {
+			if (data != null) {
+				if (requestCode == ADD_CATEGORY_REQUEST) {
+					Log.e("SuperWallet ", "Request code: ADD CATEGORY");
+					int categoryId = data.getIntExtra("categoryId", -999);
+					String categoryName = data.getStringExtra("categoryName");
+					String categoryDescription = data.getStringExtra("categoryDescription");
+					int categoryIcon = data.getIntExtra("categoryIcon", R.drawable.empty_icon);
+					Transaction.TRANSACTIONS_TYPE categoryType = Transaction.TRANSACTIONS_TYPE.valueOf(data.getStringExtra("categoryType"));
+					Category category = new Category(categoryId, categoryType, categoryName, categoryIcon);
+					category.setCategoryDescription(categoryDescription);
+
+					categories.add(category);
+					UsersManager.loggedUser.addCategory(category);
+					adapter.notifyDataSetChanged();
+
+					Log.e("SuperWallet ", "Category ID " + data.getIntExtra("categoryId", -999) );
+					Log.e("SuperWallet ", "Category Name " + data.getStringExtra("categoryName") );
+					Log.e("SuperWallet ", "Category Description " + data.getStringExtra("categoryDescription") );
+					Log.e("SuperWallet ", "Category Icon " + data.getIntExtra("categoryIcon", R.drawable.empty_icon) );
+				}
+
+				if (requestCode == MODIFY_CATEGORY_REQUEST) {
+					Log.e("SuperWallet ", "Request code: MODIFY CATEGORY");
+					int categoryId = data.getIntExtra("categoryId", -999);
+					Category category = UsersManager.loggedUser.getCategory(categoryId);
+					if (category != null) {
+						category.setCategoryName(data.getStringExtra("categoryName"));
+						category.setCategoryDescription(data.getStringExtra("categoryDescription"));
+						category.setCategoryIcon(data.getIntExtra("categoryIcon", R.drawable.empty_icon));
+						category.setCategoryType(Transaction.TRANSACTIONS_TYPE.valueOf(data.getStringExtra("categoryType")));
+						adapter.notifyDataSetChanged();
+
+						Log.e("SuperWallet ", "Category ID " + data.getIntExtra("categoryId", -999) );
+						Log.e("SuperWallet ", "Category Name " + data.getStringExtra("categoryName") );
+						Log.e("SuperWallet ", "Category Description " + data.getStringExtra("categoryDescription") );
+						Log.e("SuperWallet ", "Category Icon " + data.getIntExtra("categoryIcon", R.drawable.empty_icon) );
+						Log.e("SuperWallet ", "CategoryIconResource " + data.getIntExtra("categoryIcon", -1));
+					}
+				}
+			}
+		}
 	}
 }
