@@ -85,7 +85,17 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:id="@+id/addt_select_category_button"
+                android:background="@color/transparent"
+                />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

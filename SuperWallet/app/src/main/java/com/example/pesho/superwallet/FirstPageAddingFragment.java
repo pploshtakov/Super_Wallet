@@ -1,9 +1,13 @@
 package com.example.pesho.superwallet;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +16,23 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
+import com.example.pesho.superwallet.model.Category;
+import com.example.pesho.superwallet.model.DBManager;
+import com.example.pesho.superwallet.model.UsersManager;
 import com.example.pesho.superwallet.myViews.AutoResizeTextView;
+
+import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class FirstPageAddingFragment extends Fragment {
+    public static final int PICK_CATEGORY = 1;
+
     enum ARITHMETIC_SIGN {PLUS, MINUS, DIVIDE, MUL};
+    Category category;
+    ArrayList<Category> defaultCategories;
     AddTransactionsCommunicator myActivity;
     //subScore from operations
     String subScore;
@@ -45,6 +58,7 @@ public class FirstPageAddingFragment extends Fragment {
     Button comma;
     AutoResizeTextView amountTV;
     TextView transactionTypeTV;
+    Button selectCategoryButton;
     public FirstPageAddingFragment() {
         // Required empty public constructor
     }
@@ -58,6 +72,22 @@ public class FirstPageAddingFragment extends Fragment {
         //set transaction type TV
         transactionTypeTV = (TextView) root.findViewById(R.id.addt_transaction_type_TV);
         transactionTypeTV.setText(myActivity.getTransactionType());
+        //select category button
+        selectCategoryButton = (Button) root.findViewById(R.id.addt_select_category_button);
+        //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
+        defaultCategories = DBManager.getInstance((Context) myActivity).loadDefaultCategories();
+        category = defaultCategories.get(0);
+        selectCategoryButton.setText(category.getCategoryName());
+        Drawable img = getContext().getResources().getDrawable( category.getCategoryIcon() );
+        selectCategoryButton.setCompoundDrawables(img,null,null,null);
+        selectCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent category2 = new Intent((Context) myActivity, CategoryListActivity.class);
+                category2.putExtra("pickingCategory", true);
+                startActivityForResult(category2, PICK_CATEGORY);
+            }
+        });
         //add calculator buttons
         amountTV = (AutoResizeTextView) root.findViewById(R.id.addt_amount_tv);
         zero = (Button) root.findViewById(R.id.button_zero);
@@ -242,5 +272,22 @@ public class FirstPageAddingFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         myActivity = (AddTransactionsCommunicator) context;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_CATEGORY) {
+
+            if (data.hasExtra("categoryId")) {
+                for (int i = 0; i < defaultCategories.size(); i++) {
+                    if (defaultCategories.get(i).getCategoryId() == data.getIntExtra("categoryId", 0)) {
+                        category = defaultCategories.get(i);
+                        break;
+                    }
+                }
+                selectCategoryButton.setText(category.getCategoryName());
+            }
+        }
     }
 }

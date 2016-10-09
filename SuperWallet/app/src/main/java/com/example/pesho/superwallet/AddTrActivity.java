@@ -92,5 +92,7 @@ public class AddTrActivity extends FragmentActivity implements AddTransactionsCo
         public int getCount() {
             return NUM_PAGES;
         }
+
     }
+
 }
