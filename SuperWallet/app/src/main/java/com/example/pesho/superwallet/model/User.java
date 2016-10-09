@@ -124,4 +124,11 @@ public class User {
 	public ArrayList<Category> getCategories() {
 		return new ArrayList<>(myCategories);
 	}
+
+    public ArrayList<Account> getAccounts() {
+        return new ArrayList<>(myAccounts);
+    }
+    public void addAccount (Account acct) {
+        myAccounts.add(acct);
+    }
 }

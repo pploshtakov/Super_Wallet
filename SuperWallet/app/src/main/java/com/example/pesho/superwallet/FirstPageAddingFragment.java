@@ -1,27 +1,31 @@
 package com.example.pesho.superwallet;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
+import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Category;
 import com.example.pesho.superwallet.model.DBManager;
+import com.example.pesho.superwallet.model.Transaction;
 import com.example.pesho.superwallet.model.UsersManager;
 import com.example.pesho.superwallet.myViews.AutoResizeTextView;
 
 import java.util.ArrayList;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -59,6 +63,8 @@ public class FirstPageAddingFragment extends Fragment {
     AutoResizeTextView amountTV;
     TextView transactionTypeTV;
     Button selectCategoryButton;
+    Spinner accountsSpinner;
+    Spinner accountsSpinner1;
     public FirstPageAddingFragment() {
         // Required empty public constructor
     }
@@ -72,22 +78,44 @@ public class FirstPageAddingFragment extends Fragment {
         //set transaction type TV
         transactionTypeTV = (TextView) root.findViewById(R.id.addt_transaction_type_TV);
         transactionTypeTV.setText(myActivity.getTransactionType());
+        //accounts spinner
+        //TODO delete hardcoded accounts
+        UsersManager.loggedUser.addAccount(new Account("mama ti 1", 1000, Account.ACCOUNT_TYPE.CASH));
+        UsersManager.loggedUser.addAccount(new Account("mama ti 2", 1000, Account.ACCOUNT_TYPE.CASH));
+        UsersManager.loggedUser.addAccount(new Account("mama ti 3", 1000, Account.ACCOUNT_TYPE.CASH));
+
+        accountsSpinner = (Spinner) root.findViewById(R.id.addt_account_spinner);
+        ArrayAdapter<Account> adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, UsersManager.loggedUser.getAccounts());
+        accountsSpinner.setAdapter(adapter);
         //select category button
         selectCategoryButton = (Button) root.findViewById(R.id.addt_select_category_button);
-        //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
-        defaultCategories = DBManager.getInstance((Context) myActivity).loadDefaultCategories();
-        category = defaultCategories.get(0);
-        selectCategoryButton.setText(category.getCategoryName());
-        Drawable img = getContext().getResources().getDrawable( category.getCategoryIcon() );
-        selectCategoryButton.setCompoundDrawables(img,null,null,null);
-        selectCategoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent category2 = new Intent((Context) myActivity, CategoryListActivity.class);
-                category2.putExtra("pickingCategory", true);
-                startActivityForResult(category2, PICK_CATEGORY);
-            }
-        });
+
+        if(myActivity.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Expense.toString()) ||
+                myActivity.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
+
+            //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
+            defaultCategories = DBManager.getInstance((Context) myActivity).loadDefaultCategories();
+            category = defaultCategories.get(0);
+            selectCategoryButton.setText(category.getCategoryName());
+            Drawable img = getContext().getResources().getDrawable( category.getCategoryIcon() );
+            selectCategoryButton.setCompoundDrawables(img,null,null,null);
+            selectCategoryButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent category2 = new Intent((Context) myActivity, CategoryListActivity.class);
+                    category2.putExtra("pickingCategory", true);
+                    startActivityForResult(category2, PICK_CATEGORY);
+                }
+            });
+
+        } else {
+            selectCategoryButton.setVisibility(View.GONE);
+            accountsSpinner1 = (Spinner) root.findViewById(R.id.addt_account1_spinner);
+            accountsSpinner1.setVisibility(View.VISIBLE);
+            //accounts spinner 1
+            accountsSpinner1.setAdapter(adapter);
+        }
+
         //add calculator buttons
         amountTV = (AutoResizeTextView) root.findViewById(R.id.addt_amount_tv);
         zero = (Button) root.findViewById(R.id.button_zero);
@@ -277,7 +305,7 @@ public class FirstPageAddingFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_CATEGORY) {
+        if (requestCode == PICK_CATEGORY && resultCode == RESULT_OK) {
 
             if (data.hasExtra("categoryId")) {
                 for (int i = 0; i < defaultCategories.size(); i++) {

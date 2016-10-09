@@ -86,6 +86,21 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="horizontal">
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/addt_account_spinner"
+                android:background="@color/transparent"
+                ></Spinner>
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:id="@+id/addt_account1_spinner"
+                android:background="@color/transparent"
+                ></Spinner>
             <Button
                 android:layout_width="0dp"
                 android:layout_weight="1"

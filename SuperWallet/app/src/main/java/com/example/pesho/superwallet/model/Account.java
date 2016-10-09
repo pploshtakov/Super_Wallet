@@ -14,4 +14,9 @@ public class Account {
         this.balance = balance;
         this.accountType = accountType;
     }
+
+    @Override
+    public String toString() {
+        return accountName + "/" + String.valueOf(balance) ;
+    }
 }
