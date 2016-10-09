@@ -1,6 +1,7 @@
 package com.example.pesho.superwallet;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
+import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.myViews.AutoResizeTextView;
 
 
@@ -16,8 +19,11 @@ import com.example.pesho.superwallet.myViews.AutoResizeTextView;
  * A simple {@link Fragment} subclass.
  */
 public class FirstPageAddingFragment extends Fragment {
-    enum ARITHMETIC_SIGN {PLUS, MINUS, DIVIDE, MUL, RESULT};
-    String mResult;
+    enum ARITHMETIC_SIGN {PLUS, MINUS, DIVIDE, MUL};
+    AddTransactionsCommunicator myActivity;
+    //subScore from operations
+    String subScore;
+    //last typed value
     String lastValue;
     ARITHMETIC_SIGN lastAction;
     Button zero;
@@ -38,6 +44,7 @@ public class FirstPageAddingFragment extends Fragment {
     Button result;
     Button comma;
     AutoResizeTextView amountTV;
+    TextView transactionTypeTV;
     public FirstPageAddingFragment() {
         // Required empty public constructor
     }
@@ -48,6 +55,10 @@ public class FirstPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_first_page_adding, container, false);
+        //set transaction type TV
+        transactionTypeTV = (TextView) root.findViewById(R.id.addt_transaction_type_TV);
+        transactionTypeTV.setText(myActivity.getTransactionType());
+        //add calculator buttons
         amountTV = (AutoResizeTextView) root.findViewById(R.id.addt_amount_tv);
         zero = (Button) root.findViewById(R.id.button_zero);
         one = (Button) root.findViewById(R.id.button_one);
@@ -66,13 +77,14 @@ public class FirstPageAddingFragment extends Fragment {
         mul = (Button) root.findViewById(R.id.button_mul);
         result = (Button) root.findViewById(R.id.button_result);
         comma = (Button) root.findViewById(R.id.button_comma);
+        //listener for arithmetic operation buttons
         View.OnClickListener aritmListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mResult == null) {
-                    mResult = amountTV.getText().toString();
-                    if (mResult.isEmpty()) {
-                        mResult = "0";
+                if (subScore == null) {
+                    subScore = amountTV.getText().toString();
+                    if (subScore.isEmpty()) {
+                        subScore = "0";
                     }
                     int buttonClicked = v.getId();
                     switch (buttonClicked) {
@@ -91,7 +103,7 @@ public class FirstPageAddingFragment extends Fragment {
                     }
                 } else {
 
-                    mResult = arithmeticOperation(Double.valueOf(amountTV.getText().toString()), lastAction);
+                    subScore = arithmeticOperation(Double.valueOf(amountTV.getText().toString()), lastAction);
 
                     int buttonClicked = v.getId();
                     switch (buttonClicked) {
@@ -108,16 +120,17 @@ public class FirstPageAddingFragment extends Fragment {
                             lastAction = ARITHMETIC_SIGN.MUL;
                             break;
                         case R.id.button_result:
-                            amountTV.setText(mResult);
-                            mResult = null;
+                            amountTV.setText(subScore);
+                            subScore = null;
                             lastAction = null;
                             return;
                     }
-                    amountTV.setText(mResult);
+                    amountTV.setText(subScore);
                 }
                 lastValue = "";
             }
         };
+        //digit, ',' and backspace listener
         View.OnClickListener digitListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,6 +189,7 @@ public class FirstPageAddingFragment extends Fragment {
                 }
             }
         };
+        //set click listeners
         zero.setOnClickListener(digitListener);
         one.setOnClickListener(digitListener);
         two.setOnClickListener(digitListener);
@@ -205,24 +219,28 @@ public class FirstPageAddingFragment extends Fragment {
 
 
     }
-
+    //arithmetic operations
     private String arithmeticOperation(Double value, ARITHMETIC_SIGN sign) {
         if (sign == null) {
             return String.valueOf(value);
         }
                 switch (sign) {
                     case PLUS:
-                        return String.valueOf(Double.valueOf(mResult) + value);
+                        return String.valueOf(Double.valueOf(subScore) + value);
                     case MINUS:
-                        return String.valueOf(Double.valueOf(mResult) - value);
+                        return String.valueOf(Double.valueOf(subScore) - value);
                     case DIVIDE:
-                        return String.valueOf(Double.valueOf(mResult) / value);
+                        return String.valueOf(Double.valueOf(subScore) / value);
                     case MUL:
-                        return String.valueOf(Double.valueOf(mResult) * value);
+                        return String.valueOf(Double.valueOf(subScore) * value);
 
                 }
-        return mResult;
+        return subScore;
     }
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        myActivity = (AddTransactionsCommunicator) context;
+    }
 }

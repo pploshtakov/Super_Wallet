@@ -1,5 +1,6 @@
 package com.example.pesho.superwallet;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -9,9 +10,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
+import com.example.pesho.superwallet.model.Transaction;
+
 import github.chenupt.springindicator.SpringIndicator;
 
-public class AddTrActivity extends FragmentActivity {
+public class AddTrActivity extends FragmentActivity implements AddTransactionsCommunicator {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -23,6 +27,7 @@ public class AddTrActivity extends FragmentActivity {
      */
     private ViewPager mPager;
     SpringIndicator springIndicator;
+    String transactionsType;
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -32,6 +37,11 @@ public class AddTrActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_tr);
+        //get transaction's type
+        Intent intent = getIntent();
+        if (intent.hasExtra("Transaction")) {
+            transactionsType = intent.getStringExtra("Transaction");
+        }
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
@@ -51,6 +61,11 @@ public class AddTrActivity extends FragmentActivity {
             // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
+    }
+
+    @Override
+    public String getTransactionType() {
+        return transactionsType;
     }
 
     /**

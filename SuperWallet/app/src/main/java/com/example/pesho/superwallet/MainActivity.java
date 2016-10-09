@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.pesho.superwallet.model.Transaction;
 import com.example.pesho.superwallet.model.UsersManager;
 import com.github.clans.fab.FloatingActionMenu;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
-                intent.putExtra("Transaction", "Income");
+                intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Income.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
         });
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
-                intent.putExtra("Transaction", "Expense");
+                intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Expense.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
         });//add transfer
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
-                intent.putExtra("Transaction", "Transfer");
+                intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Transfer.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
         });
