@@ -1,6 +1,7 @@
 package com.example.pesho.superwallet.model;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,49 +22,54 @@ public class User {
     private String facebookID;
     private ArrayList<Transaction> myTransactions;
     private ArrayList<Account> myAccounts;
+	private Account defaultAccount;
     private ArrayList<Category> myCategories;
+
+	public User(String name, String email) {
+		this.name = name;
+		this.email = email;
+
+		myTransactions = new ArrayList<>();
+		myAccounts = new ArrayList<>();
+		myCategories = new ArrayList<>();
+
+		defaultAccount = new Account(-2, "Cash", 0.0, Account.ACCOUNT_TYPE.CASH);
+		Log.e("SuperWallet ", "DefaultAccount: " + defaultAccount.getAccountName());
+	}
 
     //constructor for users registered directly from app
     public User(String name, String userName, String password, String email) {
+		this(name, email);
+
         this.localID = UsersManager.generateLocalID();
-        this.name = name;
         this.userName = userName;
         this.password = password;
-        this.email = email;
-        myTransactions = new ArrayList<>();
-        myAccounts = new ArrayList<>();
     }
     //constructor for google user
     public User(String name, String email, String googleID, Uri photoURL) {
+		this(name, email);
+
         this.localID = UsersManager.generateLocalID();
-        this.name = name;
         this.userName = name;
-        this.email = email;
         this.googleID = googleID;
-        myTransactions = new ArrayList<>();
-        myAccounts = new ArrayList<>();
-        myCategories = new ArrayList<>();
     }
     //constructor for facebook user
     public User(String name, String email, String facebookID) {
+		this(name, email);
+
         this.localID = UsersManager.generateLocalID();
-        this.name = name;
         this.userName = name;
-        this.email = email;
         this.facebookID = facebookID;
-        myTransactions = new ArrayList<>();
-        myAccounts = new ArrayList<>();
-        myCategories = new ArrayList<>();
     }
 
     //constructor from DB
     public User(int localID, String googleID, String facebookID, String name, String userName, String password,
                 String email, ArrayList<Transaction> transactions, ArrayList<Account> accounts, ArrayList<Category> categories) {
+		this(name, email);
+
         this.localID = localID;
-        this.name = name;
         this.userName = userName;
         this.password = password;
-        this.email = email;
         this.facebookID = facebookID;
         this.googleID = googleID;
         myTransactions = transactions;
@@ -125,6 +131,7 @@ public class User {
 		return new ArrayList<>(myCategories);
 	}
 
+	public Account getDefaultAccount() { return defaultAccount; }
     public ArrayList<Account> getAccounts() {
         return new ArrayList<>(myAccounts);
     }

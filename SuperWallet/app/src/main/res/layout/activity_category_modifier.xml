@@ -28,7 +28,8 @@
             android:id="@+id/categoryAdd_category_name_ET"
             android:layout_width="0dp"
             android:layout_weight="3"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_category_name"/>
 
     </LinearLayout>
 
@@ -44,6 +45,7 @@
         android:lines="5"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
+        android:hint="@string/enter_category_description_here"
         />
 
     <LinearLayout
@@ -85,6 +87,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:src="@drawable/empty_icon"
+            android:contentDescription="icon image"
             />
 
     </LinearLayout>
@@ -92,7 +95,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        style="?android:attr/buttonBarStyle"
+        >
 
         <Button
             android:id="@+id/categoryAdd_cancel_button"
@@ -103,6 +108,7 @@
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:layout_margin="5dp"
+            style="?android:attr/buttonBarButtonStyle"
             />
 
         <Button
@@ -114,6 +120,7 @@
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:layout_margin="5dp"
+            style="?android:attr/buttonBarButtonStyle"
             />
 
     </LinearLayout>

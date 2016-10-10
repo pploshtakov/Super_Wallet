@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.pesho.superwallet.R;
 
@@ -12,13 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-/**
- * Created by Pesho on 9/29/2016.
- */
 public class DBManager extends SQLiteOpenHelper {
     private static DBManager ourInstance;
     //DB version
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     //DB name
     private static final String DB_NAME = "mySQLite";
     //table names
@@ -36,6 +34,7 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_EMAIL = "email";
     //accounts column names
+	private static final String KEY_ACCOUNT_ID = "accountId";
     private static final String KEY_ACCOUNT_NAME = "accountName";
     private static final String KEY_ACCOUNT_BALANCE = "balance";
     private static final String KEY_ACCOUNT_TYPE = "accountType";
@@ -45,13 +44,14 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String KEY_CATEGORIES_NAME = "categoryName";
     private static final String KEY_CATEGORIES_TYPE = "categoryType";
     private static final String KEY_CATEGORIES_ICON = "categoryIcon";
+	private static final String KEY_CATEGORIES_DESCRIPTION = "categoryDescription";
     private static final String KEY_CATEGORIES_USER_ID = "userID";
     //transactions column names
     private static final String KEY_TRANSACTION_DATE = "date";
     private static final String KEY_TRANSACTION_DESCRIPTION = "description";
     private static final String KEY_TRANSACTION_TYPE = "transactionType";
     private static final String KEY_TRANSACTION_AMOUNT = "amount";
-    private static final String KEY_TRANSACTION_CATEGORY = "category";
+    private static final String KEY_TRANSACTION_CATEGORY_ID = "categoryId";
     private static final String KEY_TRANSACTION_USER_ID = "userID";
     //table users create statement
     private static final String CREATE_TABLE_USERS = "CREATE TABLE "
@@ -60,13 +60,13 @@ public class DBManager extends SQLiteOpenHelper {
             + " TEXT" + ")";
     //table accounts create statement
     private static final String CREATE_TABLE_ACCOUNTS = "CREATE TABLE "
-            + TABLE_ACCOUNTS + "(" + KEY_ACCOUNT_NAME + " TEXT PRIMARY KEY," + KEY_ACCOUNT_BALANCE + " REAL," + KEY_ACCOUNT_TYPE
+            + TABLE_ACCOUNTS + "(" + KEY_ACCOUNT_ID + " INTEGER PRIMARY KEY, " + KEY_ACCOUNT_NAME + " TEXT," + KEY_ACCOUNT_BALANCE + " REAL," + KEY_ACCOUNT_TYPE
             + " TEXT," + KEY_ACCOUNT_USER_ID + " INTEGER," + " FOREIGN KEY"
             + "(" + KEY_ACCOUNT_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
     //table category create statement
     private static final String CREATE_TABLE_CATEGORIES = "CREATE TABLE "
             + TABLE_CATEGORIES + " (" + KEY_CATEGORIES_ID + " INTEGER PRIMARY KEY," + KEY_CATEGORIES_NAME + " TEXT," + KEY_CATEGORIES_TYPE + " TEXT,"
-            + KEY_CATEGORIES_ICON + " INTEGER," + KEY_CATEGORIES_USER_ID + " INTEGER," + " FOREIGN KEY"
+            + KEY_CATEGORIES_ICON + " INTEGER," + KEY_CATEGORIES_DESCRIPTION + " TEXT," + KEY_CATEGORIES_USER_ID + " INTEGER," + " FOREIGN KEY"
             + "(" + KEY_CATEGORIES_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
     //table default category create statement
     private static final String CREATE_TABLE_DEFAULT_CATEGORIES = "CREATE TABLE "
@@ -75,7 +75,7 @@ public class DBManager extends SQLiteOpenHelper {
     //table transactions create statement
     private static final String CREATE_TABLE_TRANSACTIONS = "CREATE TABLE "
             + TABLE_TRANSACTIONS + "(" + KEY_TRANSACTION_DATE + " TEXT," + KEY_TRANSACTION_DESCRIPTION + " TEXT," + KEY_TRANSACTION_TYPE
-            + " TEXT," + KEY_TRANSACTION_AMOUNT + " REAL," + KEY_TRANSACTION_CATEGORY + " TEXT,"
+            + " TEXT," + KEY_TRANSACTION_AMOUNT + " REAL," + KEY_TRANSACTION_CATEGORY_ID + " INTEGER,"
             + KEY_TRANSACTION_USER_ID + " INTEGER," + " FOREIGN KEY"
             + "(" + KEY_TRANSACTION_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
 
@@ -229,21 +229,21 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
     //add account in table accounts
-    public void addAccount (String accountName, double balance, Account.ACCOUNT_TYPE accountType ) {
+    public void addAccount (Account account) {
         ContentValues values = new ContentValues();
-        values.put(KEY_ACCOUNT_NAME, accountName);
-        values.put(KEY_ACCOUNT_BALANCE, balance);
-        values.put(KEY_ACCOUNT_TYPE, accountType.toString());
+		values.put(KEY_ACCOUNT_ID, account.getAccountId());
+        values.put(KEY_ACCOUNT_NAME, account.getAccountName());
+        values.put(KEY_ACCOUNT_BALANCE, account.getAccountBalance());
+        values.put(KEY_ACCOUNT_TYPE, account.getAccountType().toString());
         values.put(KEY_ACCOUNT_USER_ID, UsersManager.loggedUser.getLocalID());
         getWritableDatabase().insert(TABLE_ACCOUNTS, null, values);
     }
     //load accounts for user x from accounts
     public ArrayList<Account> loadAccountsForUser (int localID) {
         ArrayList<Account> accounts = new ArrayList<>();
-        Cursor cursor = getWritableDatabase().rawQuery("SELECT "
-                + KEY_ACCOUNT_NAME + ", " + KEY_ACCOUNT_BALANCE + ", " + KEY_ACCOUNT_TYPE
-                + " FROM " + TABLE_ACCOUNTS + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
+        Cursor cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_ACCOUNTS + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
         while (cursor.moveToNext()) {
+			int accountId = cursor.getInt(cursor.getColumnIndex(KEY_ACCOUNT_ID));
             String accountName = cursor.getString(cursor.getColumnIndex(KEY_ACCOUNT_NAME));
             double balance = cursor.getDouble(cursor.getColumnIndex(KEY_ACCOUNT_BALANCE));
             String accountType = cursor.getString(cursor.getColumnIndex(KEY_ACCOUNT_TYPE));
@@ -255,29 +255,45 @@ public class DBManager extends SQLiteOpenHelper {
             } else {
                 type = Account.ACCOUNT_TYPE.CASH;
             }
-            accounts.add(new Account(accountName, balance, type));
+            accounts.add(new Account(accountId, accountName, balance, type));
         }
         cursor.close();
         return accounts;
     }
-    //add category in table categories
-    public void addCategory(Transaction.TRANSACTIONS_TYPE transactionType, String categoryName) {
-        ContentValues values = new ContentValues();
-        values.put(KEY_CATEGORIES_NAME, categoryName);
-        values.put(KEY_CATEGORIES_TYPE, transactionType.toString());
-        values.put(KEY_CATEGORIES_USER_ID, UsersManager.loggedUser.getLocalID());
-        getWritableDatabase().insert(TABLE_CATEGORIES, null, values);
-    }
+	//add category in table categories
+	public void addCategory(Category category) {
+		ContentValues values = new ContentValues();
+		values.put(KEY_CATEGORIES_ID, category.getCategoryId());
+		values.put(KEY_CATEGORIES_NAME, category.getCategoryName());
+		values.put(KEY_CATEGORIES_TYPE, category.getTransactionType().toString());
+		values.put(KEY_CATEGORIES_ICON, category.getCategoryIcon());
+		values.put(KEY_CATEGORIES_DESCRIPTION, category.getCategoryDescription());
+		values.put(KEY_CATEGORIES_USER_ID, UsersManager.loggedUser.getLocalID());
+		long result = getWritableDatabase().insert(TABLE_CATEGORIES, null, values);
+		Log.e("SuperWallet DB Manager ", "CategoryIcon inserted on " + result + " row for categoryId " + category.getCategoryId() + ".");
+	}
+
+	//update category in table categories
+	public void updateCategory(Category category) {
+		ContentValues values = new ContentValues();
+		values.put(KEY_CATEGORIES_NAME, category.getCategoryName());
+		values.put(KEY_CATEGORIES_TYPE, category.getTransactionType().toString());
+		values.put(KEY_CATEGORIES_ICON, category.getCategoryIcon());
+		values.put(KEY_CATEGORIES_DESCRIPTION, category.getCategoryDescription());
+		int result = getWritableDatabase().update(TABLE_CATEGORIES, values, KEY_CATEGORIES_ID + "=" + category.getCategoryId(), null);
+		Log.e("SuperWallet DB Manager ", "CategoryIcon updated on " + result + " row for categoryId " + category.getCategoryId() + ".");
+	}
+
     //load categories for user x from categories
     public ArrayList<Category> loadCategoriesForUser(int localID) {
         ArrayList<Category> categories = new ArrayList<>();
-        Cursor cursor = getWritableDatabase().rawQuery("SELECT "
-                + KEY_CATEGORIES_ID + ", " + KEY_CATEGORIES_NAME + ", " + KEY_CATEGORIES_TYPE + "," + KEY_CATEGORIES_ICON + " FROM " + TABLE_CATEGORIES + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
+        Cursor cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_CATEGORIES + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
         while (cursor.moveToNext()) {
             int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
             String categoryName = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_NAME));
             String categoryType = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_TYPE));
             int categoryIcon = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ICON));
+			String categoryDescription = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_DESCRIPTION));
             Transaction.TRANSACTIONS_TYPE type;
             if (categoryType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
                 type = Transaction.TRANSACTIONS_TYPE.Income;
@@ -286,7 +302,10 @@ public class DBManager extends SQLiteOpenHelper {
             } else {
                 type = Transaction.TRANSACTIONS_TYPE.Transfer;
             }
-            categories.add(new Category(categoryId, type, categoryName, categoryIcon));
+			Category cat = new Category(categoryId, type, categoryName, categoryIcon);
+			cat.setCategoryDescription(categoryDescription);
+            categories.add(cat);
+			Log.e("SuperWallet DB Manager ", "CategoryIcon " + categoryIcon + " loaded for categoryId " + categoryId + ".");
         }
         cursor.close();
         return categories;
@@ -335,7 +354,6 @@ public class DBManager extends SQLiteOpenHelper {
 		ArrayList<Integer> categoryIds = new ArrayList<>();
 		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
 				+ KEY_CATEGORIES_ID + " FROM " + TABLE_CATEGORIES, null);
-
 		try {
 			while (cursor.moveToNext()) {
 				int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
@@ -345,7 +363,6 @@ public class DBManager extends SQLiteOpenHelper {
 		finally {
 			cursor.close();
 		}
-
 		if (categoryIds.size() == 0) {
 			return 0;
 		}
@@ -368,7 +385,7 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_TRANSACTION_DESCRIPTION, description);
         values.put(KEY_TRANSACTION_TYPE, transactionType.toString());
         values.put(KEY_TRANSACTION_AMOUNT, amount);
-        values.put(KEY_TRANSACTION_CATEGORY, category.getCategoryName());
+        values.put(KEY_TRANSACTION_CATEGORY_ID, category.getCategoryId());
         values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
         getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
     }
@@ -377,16 +394,19 @@ public class DBManager extends SQLiteOpenHelper {
         ArrayList<Transaction> transactions = new ArrayList<>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT "
                 + KEY_TRANSACTION_DATE + ", " + KEY_TRANSACTION_DESCRIPTION + ", " + KEY_TRANSACTION_TYPE
-                +  ", " + KEY_TRANSACTION_AMOUNT +  ", " + KEY_TRANSACTION_CATEGORY  + " FROM " + TABLE_TRANSACTIONS
+                +  ", " + KEY_TRANSACTION_AMOUNT +  ", " + KEY_TRANSACTION_CATEGORY_ID  + " FROM " + TABLE_TRANSACTIONS
                 + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
         while (cursor.moveToNext()) {
             String date = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_DATE));
             String description = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_DESCRIPTION));
             String transactionType = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_TYPE));
             double amount = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_AMOUNT));
-            String categoryName = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY));
+            int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY_ID));
             Transaction.TRANSACTIONS_TYPE type;
-            Category category = UsersManager.loggedUser.getCategory(categoryName);
+
+			Category category = UsersManager.loggedUser.getCategory(categoryId);
+			if (category == null) { continue; }
+
             if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
                 type = Transaction.TRANSACTIONS_TYPE.Income;
             } else if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
@@ -399,4 +419,5 @@ public class DBManager extends SQLiteOpenHelper {
         cursor.close();
         return transactions;
     }
+
 }

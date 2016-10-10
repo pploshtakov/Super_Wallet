@@ -34,7 +34,7 @@ import static android.app.Activity.RESULT_OK;
 public class FirstPageAddingFragment extends Fragment {
     public static final int PICK_CATEGORY = 1;
 
-    enum ARITHMETIC_SIGN {PLUS, MINUS, DIVIDE, MUL};
+    enum ARITHMETIC_SIGN {PLUS, MINUS, DIVIDE, MUL}
     Category category;
     ArrayList<Category> defaultCategories;
     AddTransactionsCommunicator myActivity;
@@ -80,12 +80,12 @@ public class FirstPageAddingFragment extends Fragment {
         transactionTypeTV.setText(myActivity.getTransactionType());
         //accounts spinner
         //TODO delete hardcoded accounts
-        UsersManager.loggedUser.addAccount(new Account("mama ti 1", 1000, Account.ACCOUNT_TYPE.CASH));
-        UsersManager.loggedUser.addAccount(new Account("mama ti 2", 1000, Account.ACCOUNT_TYPE.CASH));
-        UsersManager.loggedUser.addAccount(new Account("mama ti 3", 1000, Account.ACCOUNT_TYPE.CASH));
+//        UsersManager.loggedUser.addAccount(new Account("mama ti 1", 1000, Account.ACCOUNT_TYPE.CASH));
+//        UsersManager.loggedUser.addAccount(new Account("mama ti 2", 1000, Account.ACCOUNT_TYPE.CASH));
+//        UsersManager.loggedUser.addAccount(new Account("mama ti 3", 1000, Account.ACCOUNT_TYPE.CASH));
 
         accountsSpinner = (Spinner) root.findViewById(R.id.addt_account_spinner);
-        ArrayAdapter<Account> adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, UsersManager.loggedUser.getAccounts());
+        ArrayAdapter adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, UsersManager.loggedUser.getAccounts());
         accountsSpinner.setAdapter(adapter);
         //select category button
         selectCategoryButton = (Button) root.findViewById(R.id.addt_select_category_button);

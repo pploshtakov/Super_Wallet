@@ -303,6 +303,8 @@ public class CategoryListActivity
 					UsersManager.loggedUser.addCategory(category);
 					adapter.notifyDataSetChanged();
 
+					DBManager.getInstance(this).addCategory(category);
+
 					Log.e("SuperWallet ", "Category ID " + data.getIntExtra("categoryId", -999) );
 					Log.e("SuperWallet ", "Category Name " + data.getStringExtra("categoryName") );
 					Log.e("SuperWallet ", "Category Description " + data.getStringExtra("categoryDescription") );
@@ -319,6 +321,8 @@ public class CategoryListActivity
 						category.setCategoryIcon(data.getIntExtra("categoryIcon", R.drawable.empty_icon));
 						category.setCategoryType(Transaction.TRANSACTIONS_TYPE.valueOf(data.getStringExtra("categoryType")));
 						adapter.notifyDataSetChanged();
+
+						DBManager.getInstance(this).updateCategory(category);
 
 						Log.e("SuperWallet ", "Category ID " + data.getIntExtra("categoryId", -999) );
 						Log.e("SuperWallet ", "Category Name " + data.getStringExtra("categoryName") );

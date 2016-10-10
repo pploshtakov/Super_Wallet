@@ -37,6 +37,8 @@ public class CategoryModifierActivity extends AppCompatActivity {
 	private int categoryIcon;
 	private Transaction.TRANSACTIONS_TYPE transactionType;
 
+	// TODO create validation for fields
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,7 +86,10 @@ public class CategoryModifierActivity extends AppCompatActivity {
 		// We dont have a category passed in, get first empty index
 		if (categoryId == -999) {
 			categoryId = DBManager.getInstance(this).getNextUserCategoryIndex();
-			Log.e("SuperWallet DB Manager ", "Last category index is: " + categoryId);
+			addButton.setText("Add");
+		}
+		else {
+			addButton.setText("Apply");
 		}
 
 		if (categoryName == null) {
