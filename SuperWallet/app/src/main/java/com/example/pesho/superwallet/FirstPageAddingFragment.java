@@ -179,11 +179,13 @@ public class FirstPageAddingFragment extends Fragment {
                             break;
                         case R.id.button_result:
                             amountTV.setText(subScore);
+                            myActivity.setAmount(subScore);
                             subScore = null;
                             lastAction = null;
                             return;
                     }
                     amountTV.setText(subScore);
+                    myActivity.setAmount(subScore);
                 }
                 lastValue = "";
             }
@@ -234,6 +236,7 @@ public class FirstPageAddingFragment extends Fragment {
                     case R.id.button_backspace:
                         if (amountTV.getText().toString().length() > 0) {
                             amountTV.setText(amountTV.getText().toString().substring(0, amountTV.getText().toString().length() - 1));
+                            myActivity.setAmount(amountTV.getText().toString());
                         }
                         return;
                 }
@@ -245,6 +248,7 @@ public class FirstPageAddingFragment extends Fragment {
                         lastValue += symbol;
                     }
                 }
+                myActivity.setAmount(amountTV.getText().toString());
             }
         };
         //set click listeners
@@ -269,6 +273,7 @@ public class FirstPageAddingFragment extends Fragment {
             @Override
             public boolean onLongClick(View v) {
                 amountTV.setText("0");
+                myActivity.setAmount(amountTV.getText().toString());
                 return false;
             }
         });

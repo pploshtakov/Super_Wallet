@@ -9,9 +9,14 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
+import com.example.pesho.superwallet.model.Account;
+import com.example.pesho.superwallet.model.Category;
 import com.example.pesho.superwallet.model.Transaction;
+
+import java.util.ArrayList;
 
 import github.chenupt.springindicator.SpringIndicator;
 
@@ -33,6 +38,13 @@ public class AddTrActivity extends FragmentActivity implements AddTransactionsCo
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private PagerAdapter mPagerAdapter;
+    ArrayList<Fragment> fragments;
+    private Category category;
+    private Account accountFrom;
+    private Account accountTo;
+    private double amount;
+    private String description;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +75,59 @@ public class AddTrActivity extends FragmentActivity implements AddTransactionsCo
         }
     }
 
+
+
     @Override
     public String getTransactionType() {
         return transactionsType;
+    }
+
+    @Override
+    public void registerFragment(Fragment fragment) {
+        fragments = new ArrayList<>();
+        fragments.add(fragment);
+    }
+
+
+
+    @Override
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @Override
+    public void setAccountFrom(Account account) {
+        this.accountFrom = account;
+    }
+
+    @Override
+    public void setAccountTo(Account account) {
+        this.accountTo = account;
+    }
+
+    @Override
+    public void setAmount(String amount) {
+        if (!amount.isEmpty()) {
+            this.amount = Double.valueOf(amount);
+        } else {
+            this.amount = 0;
+        }
+        for (Fragment f: fragments) {
+            if (f instanceof SecondPageAddingFragment) {
+                ((SecondPageAddingFragment) f).notifyAmountChanged(this.amount);
+            }
+        }
+    }
+
+    @Override
+    public double getAmount() {
+        Log.e("Amount get", String.valueOf(amount));
+        return amount;
+    }
+
+    @Override
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
