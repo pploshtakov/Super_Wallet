@@ -123,6 +123,15 @@ public class User {
 		return null;
 	}
 
+	public Account getAccount(int accountId) {
+		for (int i = 0; i < myAccounts.size(); i++) {
+			if (myAccounts.get(i).getAccountId() == accountId) {
+				return myAccounts.get(i);
+			}
+		}
+		return null;
+	}
+
 	public void addCategory(Category category) {
 		myCategories.add(category);
 	}

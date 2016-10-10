@@ -241,7 +241,7 @@ public class FirstPageAddingFragment extends Fragment {
                         return;
                 }
                 if (lastValue.equals("0")) {
-                    amountTV.setText(symbol + "");
+                    amountTV.setText(Character.toString(symbol));
                 } else {
                     amountTV.setText(lastValue + symbol);
                     if(lastValue.isEmpty()) {

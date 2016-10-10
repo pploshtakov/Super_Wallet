@@ -2,14 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_category_modifier"
+    android:id="@+id/activity_account_modifier"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.pesho.superwallet.CategoryModifierActivity"
+    tools:context="com.example.pesho.superwallet.AccountModifierActivity"
     android:orientation="vertical">
 
     <LinearLayout
@@ -25,11 +25,11 @@
             />
 
         <EditText
-            android:id="@+id/categoryAdd_category_name_ET"
+            android:id="@+id/accountAdd_account_name_ET"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:hint="@string/enter_category_name"/>
+            android:hint="@string/enter_account_name_hint"/>
 
     </LinearLayout>
 
@@ -39,66 +39,54 @@
         android:orientation="horizontal">
 
         <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/description_text"
-                />
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/description_text"
+            />
 
         <EditText
-            android:id="@+id/categoryAdd_category_description_ET"
+            android:id="@+id/accountAdd_account_description_ET"
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
             android:scrollbars="vertical"
-            android:hint="@string/enter_category_description_here"
+            android:hint="@string/enter_account_description_hint"
             />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <RadioGroup
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
         >
 
-        <RadioGroup
-            android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            >
-
-            <RadioButton
-                android:id="@+id/categoryAdd_radio_income"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/categoryAdd_income_text"
-                android:onClick="onRadioButtonClicked"
-                />
-
-            <RadioButton
-                android:id="@+id/categoryAdd_radio_expense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/categoryAdd_expense_text"
-                android:onClick="onRadioButtonClicked"
-                />
-
-        </RadioGroup>
-
-        <ImageView
-            android:id="@+id/categoryAdd_category_icon_IV"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+        <RadioButton
+            android:id="@+id/accountAdd_radio_cash"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/empty_icon"
-            android:contentDescription="icon image"
+            android:text="@string/accountAdd_radio_text_cash"
+            android:onClick="onRadioButtonClicked"
             />
 
-    </LinearLayout>
+        <RadioButton
+            android:id="@+id/accountAdd_radio_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/accountAdd_radio_text_account"
+            android:onClick="onRadioButtonClicked"
+            />
+
+        <RadioButton
+            android:id="@+id/accountAdd_radio_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/accountAdd_radio_text_card"
+            android:onClick="onRadioButtonClicked"
+            />
+
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -108,11 +96,11 @@
         >
 
         <Button
-            android:id="@+id/categoryAdd_cancel_button"
+            android:id="@+id/accountAdd_cancel_button"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/categoryAdd_cancel_button_text"
+            android:text="@string/accountAdd_cancel_button_text"
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:layout_margin="5dp"
@@ -120,11 +108,11 @@
             />
 
         <Button
-            android:id="@+id/categoryAdd_add_button"
+            android:id="@+id/accountAdd_add_button"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="@string/categoryAdd_add_button_text"
+            android:text="@string/accountAdd_add_button_text"
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:layout_margin="5dp"

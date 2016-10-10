@@ -32,6 +32,8 @@
         <activity android:name=".AddTrActivity"/>
         <activity android:name=".CategoryIconChooserActivity">
         </activity>
+        <activity android:name=".AccountModifierActivity">
+        </activity>
     </application>
 
 </manifest>

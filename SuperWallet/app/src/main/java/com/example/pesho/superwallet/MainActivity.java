@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 Intent accounts = new Intent(this, AccountsActivity.class);
-				accounts.putExtra("pickingAccount", true);
+				accounts.putExtra("pickingAccount", false);
                 startActivity(accounts);
                 return true;
             case R.id.action_settings:

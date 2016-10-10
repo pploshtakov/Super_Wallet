@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,10 +17,12 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pesho.superwallet.model.Account;
+import com.example.pesho.superwallet.model.DBManager;
 import com.example.pesho.superwallet.model.UsersManager;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class AccountsActivity
 
 	private BaseAdapter adapter;
 	private int draggedIndex = -1;
-	private GridView gridView;
+	private ListView listView;
 
 	private Button addAccountButton;
 
@@ -49,7 +50,7 @@ public class AccountsActivity
 		setContentView(R.layout.activity_accounts);
 
 		accounts = new ArrayList<>();
-		gridView = (GridView) findViewById(R.id.accounts_grid_view);
+		listView = (ListView) findViewById(R.id.accounts_list_view);
 		addAccountButton = (Button) findViewById(R.id.add_account_button);
 
 		adapter = new BaseAdapter() {
@@ -66,10 +67,7 @@ public class AccountsActivity
 				if (view == null) {
 					view = new TextView(AccountsActivity.this);
 				}
-				Log.e("SuperWallet ", "Accounts size: " + accounts.size());
-				Account acc = accounts.get(position);
-				String accName = acc.getAccountName();
-				view.setText(accName);
+				view.setText(accounts.get(position).getAccountName());
 				view.setTag(accounts.get(position).getAccountId());
 				return view;
 			}
@@ -95,37 +93,35 @@ public class AccountsActivity
 			}
 		};
 
-		gridView.setAdapter(adapter);
-		// Set on Item Click (boolean pickingCategory determines the behavior)
-		gridView.setOnItemClickListener(AccountsActivity.this);
+		listView.setAdapter(adapter);
+		// Set on Item Click (boolean pickingAccount determines the behavior)
+		listView.setOnItemClickListener(AccountsActivity.this);
 
-		// Check the intent if we're just picking a category
+		// Check the intent if we're just picking an accont
 		Intent intent = getIntent();
 		if (intent != null) {
 			pickingAccount = intent.getBooleanExtra("pickingAccount", false);
 		}
 
-		// If we are, add the default categories to the list
+		// If we are, add the default account to the list
 		// TODO hide other buttons and trash can, disable dragging
 		if (pickingAccount) {
-			Account acc = UsersManager.loggedUser.getDefaultAccount();
-			Log.e("SuperWallet ", "Account name: " + acc);
-			accounts.add(acc);
+			accounts.add(UsersManager.loggedUser.getDefaultAccount());
 
 			addAccountButton.setVisibility(View.GONE);
 		}
-		// If we're not picking a category, add dragging and trash can and dont add the default categories
+		// If we're not picking a account, add dragging and trash can and dont add the default account
 		// to the list.
 		else {
 			addAccountButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(AccountsActivity.this, CategoryModifierActivity.class);
+					Intent intent = new Intent(AccountsActivity.this, AccountModifierActivity.class);
 					startActivityForResult(intent, ADD_ACCOUNT_REQUEST);
 				}
 			});
 
-			gridView.setOnItemLongClickListener(AccountsActivity.this);
+			listView.setOnItemLongClickListener(AccountsActivity.this);
 
 			addAccountButton.setVisibility(View.VISIBLE);
 		}
@@ -139,7 +135,7 @@ public class AccountsActivity
 			case DragEvent.ACTION_DRAG_STARTED:
 				// Drag has started
 				// If called for trash resize the view and return true
-				if (view.getId() == R.id.trash_can) {
+				if (view.getId() == R.id.accounts_trash_can) {
 					view.animate().scaleX(1.0f);
 					view.animate().scaleY(1.0f);
 					return true;
@@ -155,7 +151,7 @@ public class AccountsActivity
 			case DragEvent.ACTION_DRAG_ENTERED:
 				// Drag has entered view bounds
 				// If called for trash can then scale it.
-				if (view.getId() == R.id.trash_can) {
+				if (view.getId() == R.id.accounts_trash_can) {
 					view.animate().scaleX(1.5f);
 					view.animate().scaleY(1.5f);
 				}
@@ -163,7 +159,7 @@ public class AccountsActivity
 			case DragEvent.ACTION_DRAG_EXITED:
 				// Drag exited view bounds
 				// If called for trash can then reset it.
-				if (view.getId() == R.id.trash_can) {
+				if (view.getId() == R.id.accounts_trash_can) {
 					view.animate().scaleX(1.0f);
 					view.animate().scaleY(1.0f);
 				}
@@ -176,7 +172,7 @@ public class AccountsActivity
 				// Dropped inside view bounds
 				// If called for trash can then delete the item and reload the grid
 				// view
-				if (view.getId() == R.id.trash_can) {
+				if (view.getId() == R.id.accounts_trash_can) {
 					accounts.remove(draggedIndex);
 					draggedIndex = -1;
 				}
@@ -187,10 +183,10 @@ public class AccountsActivity
 
 					@Override
 					public void run() {
-						findViewById(R.id.trash_can).setVisibility(View.GONE);
+						findViewById(R.id.accounts_trash_can).setVisibility(View.GONE);
 					}
 				}, 1000L);
-				if (view.getId() == R.id.trash_can) {
+				if (view.getId() == R.id.accounts_trash_can) {
 					view.animate().scaleX(1.0f);
 					view.animate().scaleY(1.0f);
 				} else {
@@ -207,11 +203,11 @@ public class AccountsActivity
 	@Override
 	public boolean onItemLongClick(AdapterView gridView, View view,
 								   int position, long row) {
-		ClipData.Item item = new ClipData.Item((String) view.getTag());
-		ClipData clipData = new ClipData((CharSequence) view.getTag(),
+		ClipData.Item item = new ClipData.Item(view.getTag().toString());
+		ClipData clipData = new ClipData( view.getTag().toString(),
 				new String[] { ClipDescription.MIMETYPE_TEXT_PLAIN }, item);
 		view.startDrag(clipData, new View.DragShadowBuilder(view), null, 0);
-		View trashCan = findViewById(R.id.trash_can);
+		View trashCan = findViewById(R.id.accounts_trash_can);
 		trashCan.setVisibility(View.VISIBLE);
 		trashCan.setOnDragListener(AccountsActivity.this);
 
@@ -225,13 +221,16 @@ public class AccountsActivity
 		Intent intent;
 
 		if (!pickingAccount) {
-			intent = new Intent(AccountsActivity.this, CategoryModifierActivity.class);
+			intent = new Intent(AccountsActivity.this, AccountModifierActivity.class);
 //			intent.putExtra("categoryId", accounts.get(position).getCategoryId());
 //			intent.putExtra("categoryName", categories.get(position).getCategoryName());
 //			intent.putExtra("categoryDescription", categories.get(position).getCategoryDescription());
 //			intent.putExtra("categoryIcon", categories.get(position).getCategoryIcon());
 //			intent.putExtra("categoryType", categories.get(position).getTransactionType().toString());
-
+			intent.putExtra("accountId", accounts.get(position).getAccountId());
+			intent.putExtra("accountName", accounts.get(position).getAccountName());
+			intent.putExtra("accountDescription", accounts.get(position).getAccountDescription());
+			intent.putExtra("accountType", accounts.get(position).getAccountType().toString());
 			startActivityForResult(intent, MODIFY_ACCOUNT_REQUEST);
 		}
 		else {
@@ -282,5 +281,43 @@ public class AccountsActivity
         itemView.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (resultCode == Activity.RESULT_OK) {
+			if (data != null) {
+				if (requestCode == ADD_ACCOUNT_REQUEST) {
+					int accountId = data.getIntExtra("accountId", -999);
+					String accountName = data.getStringExtra("accountName");
+					String accountDescription = data.getStringExtra("accountDescription");
+					Account.ACCOUNT_TYPE accountType = Account.ACCOUNT_TYPE.valueOf(data.getStringExtra("accountType"));
+					Account account = new Account(accountId, accountName, 0.0, accountType);
+					account.setAccountDescription(accountDescription);
+
+					accounts.add(account);
+					UsersManager.loggedUser.addAccount(account);
+					adapter.notifyDataSetChanged();
+
+					DBManager.getInstance(this).addAccount(account);
+				}
+
+				if (requestCode == MODIFY_ACCOUNT_REQUEST) {
+					int accountId = data.getIntExtra("accountId", -999);
+					Account account = UsersManager.loggedUser.getAccount(accountId);
+					if (account != null) {
+						account.setAccountName(data.getStringExtra("accountName"));
+						account.setAccountDescription(data.getStringExtra("accountDescription"));
+						account.setAccountType(Account.ACCOUNT_TYPE.valueOf(data.getStringExtra("accountType")));
+						adapter.notifyDataSetChanged();
+
+						DBManager.getInstance(this).updateAccount(account);
+					}
+				}
+			}
+		}
+	}
 
 }

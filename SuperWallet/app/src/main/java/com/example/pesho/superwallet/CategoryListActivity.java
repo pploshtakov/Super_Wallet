@@ -323,12 +323,6 @@ public class CategoryListActivity
 						adapter.notifyDataSetChanged();
 
 						DBManager.getInstance(this).updateCategory(category);
-
-						Log.e("SuperWallet ", "Category ID " + data.getIntExtra("categoryId", -999) );
-						Log.e("SuperWallet ", "Category Name " + data.getStringExtra("categoryName") );
-						Log.e("SuperWallet ", "Category Description " + data.getStringExtra("categoryDescription") );
-						Log.e("SuperWallet ", "Category Icon " + data.getIntExtra("categoryIcon", R.drawable.empty_icon) );
-						Log.e("SuperWallet ", "CategoryIconResource " + data.getIntExtra("categoryIcon", -1));
 					}
 				}
 			}
