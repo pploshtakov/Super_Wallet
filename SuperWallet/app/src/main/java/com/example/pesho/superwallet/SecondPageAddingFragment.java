@@ -41,6 +41,7 @@ public class SecondPageAddingFragment extends Fragment {
     Spinner accountFromSpinner;
     Spinner accountToSpinner;
     ImageButton backButton;
+    ImageButton saveButton;
 
     public SecondPageAddingFragment() {
         // Required empty public constructor
@@ -52,6 +53,14 @@ public class SecondPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_second_page_adding, container, false);
+        //save transaction
+        saveButton = (ImageButton) root.findViewById(R.id.second_page_save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myActivity.saveTransaction();
+            }
+        });
         //back button click listener
         backButton = (ImageButton) root.findViewById(R.id.second_page_back_button);
         backButton.setOnClickListener(new View.OnClickListener() {

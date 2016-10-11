@@ -9,22 +9,21 @@ import java.util.Date;
  */
 public class Transaction {
     public enum TRANSACTIONS_TYPE {Income, Expense,Transfer};
-    private Date date;
+    private String date;
     private String description;
     private TRANSACTIONS_TYPE transactionType;
     private Category category;
     private double amount;
 
-    public Transaction(Date date, String description, TRANSACTIONS_TYPE transactionType, double amount, Category category) {
+    public Transaction(String date, String description, TRANSACTIONS_TYPE transactionType, double amount, Category category) {
         this.date = date;
         this.description = description;
         this.transactionType = transactionType;
         this.amount = amount;
         this.category = category;
-        //DBManager.getInstance(new Activity()).addTransaction(date.toString(), description, transactionType, amount, category);
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 

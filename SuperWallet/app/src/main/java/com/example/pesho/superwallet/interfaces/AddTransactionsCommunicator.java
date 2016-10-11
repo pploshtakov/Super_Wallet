@@ -24,4 +24,5 @@ public interface AddTransactionsCommunicator {
     double getAmount();
     void setDescription(String description);
     void saveTransaction();
+    void cancelTransaction();
 }

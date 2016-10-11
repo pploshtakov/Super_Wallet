@@ -414,7 +414,7 @@ public class DBManager extends SQLiteOpenHelper {
     //add transaction in table transactions
     public  void addTransaction(String date, String description, Transaction.TRANSACTIONS_TYPE transactionType,
                                double amount, Category category) {
-        Log.e("Real", "mama ti");
+
         ContentValues values = new ContentValues();
         values.put(KEY_TRANSACTION_DATE, date);
         values.put(KEY_TRANSACTION_DESCRIPTION, description);
@@ -439,11 +439,9 @@ public class DBManager extends SQLiteOpenHelper {
             double amount = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_AMOUNT));
             int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY_ID));
             Transaction.TRANSACTIONS_TYPE type;
+//            Category category = UsersManager.loggedUser.getCategory(categoryId);
+//			if (category == null) { continue; }
             Category category = null;
-            if (UsersManager.loggedUser != null)
-			category = UsersManager.loggedUser.getCategory(categoryId);
-			if (category == null) { continue; }
-
             if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
                 type = Transaction.TRANSACTIONS_TYPE.Income;
             } else if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
@@ -451,17 +449,8 @@ public class DBManager extends SQLiteOpenHelper {
             } else {
                 type = Transaction.TRANSACTIONS_TYPE.Transfer;
             }
-            //************************************
-            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-            Date realDate = null;
-            try {
-                realDate = format.parse(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            Log.e("RealDate", realDate.toString());
-            //********************************************
-            transactions.add(new Transaction(realDate, description, type, amount, category));
+
+            transactions.add(new Transaction(date, description, type, amount, category));
         }
         cursor.close();
         return transactions;

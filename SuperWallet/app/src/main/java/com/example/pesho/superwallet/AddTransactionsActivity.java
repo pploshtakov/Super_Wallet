@@ -9,10 +9,12 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Category;
+import com.example.pesho.superwallet.model.DBManager;
 import com.example.pesho.superwallet.model.Transaction;
 import com.example.pesho.superwallet.model.UsersManager;
 
@@ -166,8 +168,15 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         } else {
             tp = Transaction.TRANSACTIONS_TYPE.Expense;
         }
-        Transaction transaction = new Transaction(transactionDate, description, tp, amount, category );
+        Transaction transaction = new Transaction(transactionDate.toString(), description, tp, amount, category );
+        DBManager.getInstance(this).addTransaction(transactionDate.toString(), description, tp, amount, category );
         setResult(RESULT_OK);
+        finish();
+    }
+
+    @Override
+    public void cancelTransaction() {
+        setResult(RESULT_CANCELED);
         finish();
     }
 

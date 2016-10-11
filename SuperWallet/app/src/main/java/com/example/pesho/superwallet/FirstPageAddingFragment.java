@@ -67,6 +67,7 @@ public class FirstPageAddingFragment extends Fragment {
     Spinner accountsSpinner;
     Spinner accountsSpinner1;
     ImageButton saveButton;
+    ImageButton cancelButton;
     public FirstPageAddingFragment() {
         // Required empty public constructor
     }
@@ -83,6 +84,14 @@ public class FirstPageAddingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 myActivity.saveTransaction();
+            }
+        });
+        //cancel transaction
+        cancelButton = (ImageButton) root.findViewById(R.id.addt_cancel_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myActivity.cancelTransaction();
             }
         });
         //set transaction type TV
