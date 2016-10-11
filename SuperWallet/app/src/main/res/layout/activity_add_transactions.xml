@@ -4,7 +4,7 @@
     android:id="@+id/activity_add_tr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.pesho.superwallet.AddTrActivity">
+    tools:context="com.example.pesho.superwallet.AddTransactionsActivity">
     <github.chenupt.springindicator.SpringIndicator
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:siTextSize="18sp"

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import github.chenupt.springindicator.SpringIndicator;
 
-public class AddTrActivity extends FragmentActivity implements AddTransactionsCommunicator {
+public class AddTransactionsActivity extends FragmentActivity implements AddTransactionsCommunicator {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -107,7 +107,7 @@ public class AddTrActivity extends FragmentActivity implements AddTransactionsCo
 
     @Override
     public void setAmount(String amount) {
-        if (!amount.isEmpty()) {
+        if (!amount.isEmpty() && !amount.contains(".")) {
             this.amount = Double.valueOf(amount);
         } else {
             this.amount = 0;
