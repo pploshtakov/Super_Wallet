@@ -274,11 +274,15 @@ public class FirstPageAddingFragment extends Fragment {
                         return;
                 }
                 if (lastValue.equals("0")) {
+
                     if (symbol == '.') {
                         amountTV.setText("0.");
                     } else {
                         amountTV.setText(symbol + "");
                     }
+
+                    amountTV.setText(Character.toString(symbol));
+
                 } else {
                     if(!lastValue.isEmpty()) {
                         amountTV.setText(lastValue + symbol);

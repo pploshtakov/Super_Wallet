@@ -48,6 +48,13 @@
     <string name="categoryAdd_expense_text">Expense</string>
     <string name="choose_icon_cancel_button">Cancel</string>
     <string name="enter_category_name">Enter category name.</string>
-    <string name="enter_category_description_here">Enter category description here.</string>
+    <string name="enter_category_description_here">Enter description here.</string>
     <string name="add_new_account">Add new account</string>
+    <string name="enter_account_name_hint">Enter account name.</string>
+    <string name="enter_account_description_hint">Enter description here...</string>
+    <string name="accountAdd_cancel_button_text">Cancel</string>
+    <string name="accountAdd_add_button_text">Add</string>
+    <string name="accountAdd_radio_text_cash">Cash</string>
+    <string name="accountAdd_radio_text_account">Bank Account</string>
+    <string name="accountAdd_radio_text_card">Card</string>
 </resources>

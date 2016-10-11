@@ -9,12 +9,14 @@ public class Account {
     private String accountName;
     private double balance;
     public ACCOUNT_TYPE accountType;
+	private String accountDescription;
 
     public Account(int accountId, String accountName, double balance, ACCOUNT_TYPE accountType) {
 		this.accountId = accountId;
         this.accountName = accountName;
         this.balance = balance;
         this.accountType = accountType;
+		accountDescription = "";
     }
 
 	public String getAccountName() {
@@ -31,6 +33,22 @@ public class Account {
 
 	public ACCOUNT_TYPE getAccountType() {
 		return accountType;
+	}
+
+	public void setAccountDescription(String accountDescription) {
+		this.accountDescription = accountDescription;
+	}
+
+	public String getAccountDescription() {
+		return accountDescription;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public void setAccountType(ACCOUNT_TYPE accountType) {
+		this.accountType = accountType;
 	}
 
 	@Override

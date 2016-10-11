@@ -242,6 +242,20 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_ACCOUNT_USER_ID, UsersManager.loggedUser.getLocalID());
         getWritableDatabase().insert(TABLE_ACCOUNTS, null, values);
     }
+
+	//update category in table categories
+	public void updateAccount(Account account) {
+		ContentValues values = new ContentValues();
+		values.put(KEY_ACCOUNT_NAME, account.getAccountName());
+		values.put(KEY_ACCOUNT_BALANCE, account.getAccountBalance());
+		values.put(KEY_ACCOUNT_TYPE, account.getAccountType().toString());
+		getWritableDatabase().update(TABLE_ACCOUNTS, values, KEY_ACCOUNT_ID + "=" + account.getAccountId(), null);
+	}
+
+	public void deleteAccount(Account account) {
+		getWritableDatabase().delete(TABLE_ACCOUNTS, KEY_ACCOUNT_ID + "=?", new String[] { String.valueOf(account.getAccountId()) });
+	}
+
     //load accounts for user x from accounts
     public ArrayList<Account> loadAccountsForUser (int localID) {
         ArrayList<Account> accounts = new ArrayList<>();
@@ -273,8 +287,7 @@ public class DBManager extends SQLiteOpenHelper {
 		values.put(KEY_CATEGORIES_ICON, category.getCategoryIcon());
 		values.put(KEY_CATEGORIES_DESCRIPTION, category.getCategoryDescription());
 		values.put(KEY_CATEGORIES_USER_ID, UsersManager.loggedUser.getLocalID());
-		long result = getWritableDatabase().insert(TABLE_CATEGORIES, null, values);
-		Log.e("SuperWallet DB Manager ", "CategoryIcon inserted on " + result + " row for categoryId " + category.getCategoryId() + ".");
+		getWritableDatabase().insert(TABLE_CATEGORIES, null, values);
 	}
 
 	//update category in table categories
@@ -284,8 +297,11 @@ public class DBManager extends SQLiteOpenHelper {
 		values.put(KEY_CATEGORIES_TYPE, category.getTransactionType().toString());
 		values.put(KEY_CATEGORIES_ICON, category.getCategoryIcon());
 		values.put(KEY_CATEGORIES_DESCRIPTION, category.getCategoryDescription());
-		int result = getWritableDatabase().update(TABLE_CATEGORIES, values, KEY_CATEGORIES_ID + "=" + category.getCategoryId(), null);
-		Log.e("SuperWallet DB Manager ", "CategoryIcon updated on " + result + " row for categoryId " + category.getCategoryId() + ".");
+		getWritableDatabase().update(TABLE_CATEGORIES, values, KEY_CATEGORIES_ID + "=" + category.getCategoryId(), null);
+	}
+
+	public void deleteCategory(Category category) {
+		getWritableDatabase().delete(TABLE_CATEGORIES, KEY_CATEGORIES_ID + "=?", new String[] { String.valueOf(category.getCategoryId()) });
 	}
 
     //load categories for user x from categories
