@@ -232,6 +232,34 @@ public class DBManager extends SQLiteOpenHelper {
         return users;
     }
 
+	public int getNextAccountIndex() {
+
+		ArrayList<Integer> accountIds = new ArrayList<>();
+		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
+				+ KEY_ACCOUNT_ID + " FROM " + TABLE_ACCOUNTS, null);
+		try {
+			while (cursor.moveToNext()) {
+				int accountId = cursor.getInt(cursor.getColumnIndex(KEY_ACCOUNT_ID));
+				accountIds.add(accountId);
+			}
+		}
+		finally {
+			cursor.close();
+		}
+		if (accountIds.size() == 0) {
+			return 0;
+		}
+		else {
+			int maxAccId = 0;
+			for (Integer i: accountIds) {
+				if (i >= maxAccId) {
+					maxAccId = i + 1;
+				}
+			}
+			return maxAccId;
+		}
+	}
+
     //add account in table accounts
     public void addAccount (Account account) {
         ContentValues values = new ContentValues();
@@ -356,20 +384,6 @@ public class DBManager extends SQLiteOpenHelper {
     }
 
 	public int getNextUserCategoryIndex() {
-//		int categoryId = 0;
-//		Cursor cursor = getWritableDatabase().rawQuery("SELECT MAX("
-//				+ KEY_CATEGORIES_ID + ") FROM " + TABLE_CATEGORIES, null);
-//		if (cursor == null) { return categoryId; }
-//		try {
-//			if (cursor.getCount() != 0 && cursor.moveToFirst()) {
-//				categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
-//				categoryId++;
-//			}
-//		}
-//		finally {
-//			cursor.close();
-//		}
-//		return categoryId;
 
 		ArrayList<Integer> categoryIds = new ArrayList<>();
 		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
@@ -410,6 +424,7 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
         getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
     }
+
     //load transactions for user x from transactions
     public ArrayList<Transaction> loadTransactionsForUser (int localID) {
         ArrayList<Transaction> transactions = new ArrayList<>();

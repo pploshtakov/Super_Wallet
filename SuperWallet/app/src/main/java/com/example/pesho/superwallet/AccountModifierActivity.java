@@ -77,7 +77,7 @@ public class AccountModifierActivity extends AppCompatActivity {
 
 		// We dont have a category passed in, get first empty index
 		if (accountId == -999) {
-			accountId = DBManager.getInstance(this).getNextUserCategoryIndex();
+			accountId = DBManager.getInstance(this).getNextAccountIndex();
 			addButton.setText("Add");
 		}
 		else {
