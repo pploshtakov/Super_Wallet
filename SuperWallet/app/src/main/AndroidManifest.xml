@@ -21,7 +21,6 @@
             android:name=".MainActivity"
             android:label="@string/home"/>
         <activity android:name=".RegisterActivity"/>
-        <activity android:name=".AddTransactionActivity"/>
         <activity
             android:name=".AccountsActivity"
             android:label="@string/accounts"/>
@@ -29,7 +28,7 @@
             android:name=".CategoryListActivity"
             android:label="@string/category"/>
         <activity android:name=".CategoryModifierActivity"/>
-        <activity android:name=".AddTrActivity"/>
+        <activity android:name=".AddTransactionsActivity"/>
         <activity android:name=".CategoryIconChooserActivity">
         </activity>
     </application>

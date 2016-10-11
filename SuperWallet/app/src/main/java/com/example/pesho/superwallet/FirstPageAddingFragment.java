@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -65,6 +66,7 @@ public class FirstPageAddingFragment extends Fragment {
     Button selectCategoryButton;
     Spinner accountsSpinner;
     Spinner accountsSpinner1;
+    ImageButton saveButton;
     public FirstPageAddingFragment() {
         // Required empty public constructor
     }
@@ -75,18 +77,36 @@ public class FirstPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_first_page_adding, container, false);
+        //save transaction
+        saveButton = (ImageButton) root.findViewById(R.id.addt_first_page_save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myActivity.saveTransaction();
+            }
+        });
         //set transaction type TV
         transactionTypeTV = (TextView) root.findViewById(R.id.addt_transaction_type_TV);
         transactionTypeTV.setText(myActivity.getTransactionType());
         //accounts spinner
-        //TODO delete hardcoded accounts
-//        UsersManager.loggedUser.addAccount(new Account("mama ti 1", 1000, Account.ACCOUNT_TYPE.CASH));
-//        UsersManager.loggedUser.addAccount(new Account("mama ti 2", 1000, Account.ACCOUNT_TYPE.CASH));
-//        UsersManager.loggedUser.addAccount(new Account("mama ti 3", 1000, Account.ACCOUNT_TYPE.CASH));
-
         accountsSpinner = (Spinner) root.findViewById(R.id.addt_account_spinner);
-        ArrayAdapter adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, UsersManager.loggedUser.getAccounts());
+        ArrayAdapter adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, myActivity.getAccounts());
         accountsSpinner.setAdapter(adapter);
+
+        //spinners listener
+        accountsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Account selectedAccount = myActivity.getAccounts().get(position);
+                myActivity.setAccountFrom(selectedAccount);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         //select category button
         selectCategoryButton = (Button) root.findViewById(R.id.addt_select_category_button);
 
@@ -96,6 +116,7 @@ public class FirstPageAddingFragment extends Fragment {
             //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
             defaultCategories = DBManager.getInstance((Context) myActivity).loadDefaultCategories();
             category = defaultCategories.get(0);
+            myActivity.setCategory(category);
             selectCategoryButton.setText(category.getCategoryName());
             Drawable img = getContext().getResources().getDrawable( category.getCategoryIcon() );
             selectCategoryButton.setCompoundDrawables(img,null,null,null);
@@ -112,6 +133,18 @@ public class FirstPageAddingFragment extends Fragment {
             selectCategoryButton.setVisibility(View.GONE);
             accountsSpinner1 = (Spinner) root.findViewById(R.id.addt_account1_spinner);
             accountsSpinner1.setVisibility(View.VISIBLE);
+            accountsSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Account selectedAccount = myActivity.getAccounts().get(position);
+                    myActivity.setAccountTo(selectedAccount);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
             //accounts spinner 1
             accountsSpinner1.setAdapter(adapter);
         }
@@ -241,11 +274,20 @@ public class FirstPageAddingFragment extends Fragment {
                         return;
                 }
                 if (lastValue.equals("0")) {
-                    amountTV.setText(symbol + "");
+                    if (symbol == '.') {
+                        amountTV.setText("0.");
+                    } else {
+                        amountTV.setText(symbol + "");
+                    }
                 } else {
-                    amountTV.setText(lastValue + symbol);
-                    if(lastValue.isEmpty()) {
+                    if(!lastValue.isEmpty()) {
+                        amountTV.setText(lastValue + symbol);
+                    }else {
+                        if (symbol == '.') {
+                            lastValue = "0";
+                        }
                         lastValue += symbol;
+                        amountTV.setText(lastValue);
                     }
                 }
                 myActivity.setAmount(amountTV.getText().toString());
@@ -316,6 +358,7 @@ public class FirstPageAddingFragment extends Fragment {
                 for (int i = 0; i < defaultCategories.size(); i++) {
                     if (defaultCategories.get(i).getCategoryId() == data.getIntExtra("categoryId", 0)) {
                         category = defaultCategories.get(i);
+                        myActivity.setCategory(category);
                         break;
                     }
                 }

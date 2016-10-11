@@ -1,7 +1,6 @@
 package com.example.pesho.superwallet;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -131,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         addIncomeFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
+                final Intent intent = new Intent(MainActivity.this, AddTransactionsActivity.class);
                 intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Income.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
@@ -140,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         addExpenseFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
+                final Intent intent = new Intent(MainActivity.this, AddTransactionsActivity.class);
                 intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Expense.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         addTransferFB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Intent intent = new Intent(MainActivity.this, AddTrActivity.class);
+                final Intent intent = new Intent(MainActivity.this, AddTransactionsActivity.class);
                 intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Transfer.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
             }

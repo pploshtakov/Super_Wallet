@@ -18,6 +18,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/back"
             android:background="@color/transparent"
+            android:id="@+id/second_page_back_button"
             />
         <TextView
             android:layout_width="0dp"
@@ -35,6 +36,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/save"
             android:background="@color/transparent"
+            android:id="@+id/second_page_save_button"
             />
     </LinearLayout>
 
@@ -50,22 +52,42 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:hint="@string/description"
+            android:maxLines="3"
+            android:scrollbars="vertical"
             android:textSize="@dimen/addt_currency_text_size"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:gravity="center"
             android:id="@+id/addt_description_tv"
             />
-        <Spinner
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:id="@+id/addt_account_spinner"
-            />
+            android:orientation="horizontal"
+            >
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/addt_account_spinner"
+                />
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:id="@+id/addt_account1_spinner"
+                />
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/addt_currency_text_size"
+            android:gravity="center"
             android:id="@+id/addt_date_tv"
             />
 

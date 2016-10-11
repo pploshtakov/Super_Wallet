@@ -9,9 +9,13 @@ import android.util.Log;
 
 import com.example.pesho.superwallet.R;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class DBManager extends SQLiteOpenHelper {
     private static DBManager ourInstance;
@@ -378,8 +382,9 @@ public class DBManager extends SQLiteOpenHelper {
 	}
 
     //add transaction in table transactions
-    public void addTransaction(String date, String description, Transaction.TRANSACTIONS_TYPE transactionType,
+    public  void addTransaction(String date, String description, Transaction.TRANSACTIONS_TYPE transactionType,
                                double amount, Category category) {
+        Log.e("Real", "mama ti");
         ContentValues values = new ContentValues();
         values.put(KEY_TRANSACTION_DATE, date);
         values.put(KEY_TRANSACTION_DESCRIPTION, description);
@@ -403,8 +408,9 @@ public class DBManager extends SQLiteOpenHelper {
             double amount = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_AMOUNT));
             int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY_ID));
             Transaction.TRANSACTIONS_TYPE type;
-
-			Category category = UsersManager.loggedUser.getCategory(categoryId);
+            Category category = null;
+            if (UsersManager.loggedUser != null)
+			category = UsersManager.loggedUser.getCategory(categoryId);
 			if (category == null) { continue; }
 
             if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
@@ -414,7 +420,17 @@ public class DBManager extends SQLiteOpenHelper {
             } else {
                 type = Transaction.TRANSACTIONS_TYPE.Transfer;
             }
-            transactions.add(new Transaction(date, description, type, amount, category));
+            //************************************
+            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+            Date realDate = null;
+            try {
+                realDate = format.parse(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Log.e("RealDate", realDate.toString());
+            //********************************************
+            transactions.add(new Transaction(realDate, description, type, amount, category));
         }
         cursor.close();
         return transactions;
