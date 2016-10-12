@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Category;
 
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,7 +17,7 @@ import java.util.Date;
 public interface AddTransactionsCommunicator {
     String getTransactionType();
     ArrayList<Account> getAccounts();
-    void setTransactionDate(Date date);
+    void setTransactionDate(LocalDateTime date);
     void registerFragment(Fragment fragment);
     void setCategory(Category category);
     void setAccountFrom(Account account);

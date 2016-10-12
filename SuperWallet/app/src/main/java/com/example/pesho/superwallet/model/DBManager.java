@@ -51,11 +51,14 @@ public class DBManager extends SQLiteOpenHelper {
 	private static final String KEY_CATEGORIES_DESCRIPTION = "categoryDescription";
     private static final String KEY_CATEGORIES_USER_ID = "userID";
     //transactions column names
-    private static final String KEY_TRANSACTION_DATE = "date";
-    private static final String KEY_TRANSACTION_DESCRIPTION = "description";
+	private static final String KEY_TRANSACTION_ID = "transactionId";
+    private static final String KEY_TRANSACTION_DATE = "transactionDate";
+    private static final String KEY_TRANSACTION_DESCRIPTION = "transactionDescription";
     private static final String KEY_TRANSACTION_TYPE = "transactionType";
-    private static final String KEY_TRANSACTION_AMOUNT = "amount";
+    private static final String KEY_TRANSACTION_AMOUNT = "transactionAmount";
     private static final String KEY_TRANSACTION_CATEGORY_ID = "categoryId";
+	private static final String KEY_TRANSACTION_ACCOUNT_FROM_ID = "accountFromId";
+	private static final String KEY_TRANSACTION_ACCOUNT_TO_ID = "accountToId";
     private static final String KEY_TRANSACTION_USER_ID = "userID";
     //table users create statement
     private static final String CREATE_TABLE_USERS = "CREATE TABLE "
@@ -78,8 +81,8 @@ public class DBManager extends SQLiteOpenHelper {
             + KEY_CATEGORIES_ICON + " INTEGER)";
     //table transactions create statement
     private static final String CREATE_TABLE_TRANSACTIONS = "CREATE TABLE "
-            + TABLE_TRANSACTIONS + "(" + KEY_TRANSACTION_DATE + " TEXT," + KEY_TRANSACTION_DESCRIPTION + " TEXT," + KEY_TRANSACTION_TYPE
-            + " TEXT," + KEY_TRANSACTION_AMOUNT + " REAL," + KEY_TRANSACTION_CATEGORY_ID + " INTEGER,"
+            + TABLE_TRANSACTIONS + "(" + KEY_TRANSACTION_ID + " INTEGER PRIMARY KEY," + KEY_TRANSACTION_DATE + " TIMESTAMP," + KEY_TRANSACTION_DESCRIPTION + " TEXT," + KEY_TRANSACTION_TYPE
+            + " TEXT," + KEY_TRANSACTION_AMOUNT + " REAL," + KEY_TRANSACTION_CATEGORY_ID + " INTEGER," + KEY_TRANSACTION_ACCOUNT_FROM_ID + " INTEGER, " + KEY_TRANSACTION_ACCOUNT_TO_ID + " INTEGER, "
             + KEY_TRANSACTION_USER_ID + " INTEGER," + " FOREIGN KEY"
             + "(" + KEY_TRANSACTION_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
 
@@ -224,7 +227,7 @@ public class DBManager extends SQLiteOpenHelper {
             String email = cursor.getString(cursor.getColumnIndex(KEY_EMAIL));
             ArrayList<Account> accounts = loadAccountsForUser(localID);
             ArrayList<Category> categories = loadCategoriesForUser(localID);
-            ArrayList<Transaction> transactions = loadTransactionsForUser(localID);
+            ArrayList<Transaction> transactions = loadTransactionsForUser(localID, categories, accounts);
             users.put(username, new User(localID, googleID, facebookID, name, username, password, email,
                     transactions,accounts,categories));
         }
@@ -411,49 +414,143 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 	}
 
+	public int getNextTransactionIndex() {
+
+		ArrayList<Integer> transactionIds = new ArrayList<>();
+		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
+				+ KEY_TRANSACTION_ID + " FROM " + TABLE_TRANSACTIONS, null);
+		try {
+			while (cursor.moveToNext()) {
+				int transactionId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ID));
+				transactionIds.add(transactionId);
+			}
+		}
+		finally {
+			cursor.close();
+		}
+		if (transactionIds.size() == 0) {
+			return 0;
+		}
+		else {
+			int maxTransactionId = 0;
+			for (Integer i: transactionIds) {
+				if (i >= maxTransactionId) {
+					maxTransactionId = i + 1;
+				}
+			}
+			return maxTransactionId;
+		}
+	}
+
+	// TODO doesnt work for Transfer...
+	public void addTransaction(Transfer transfer) {
+		ContentValues values = new ContentValues();
+		values.put(KEY_TRANSACTION_ID, transfer.getTransactionId());
+		values.put(KEY_TRANSACTION_DATE, transfer.getDateAsSQLTimestamp().toString());
+		values.put(KEY_TRANSACTION_DESCRIPTION, transfer.getDescription());
+		values.put(KEY_TRANSACTION_TYPE, transfer.getTransactionType().toString());
+		values.put(KEY_TRANSACTION_AMOUNT, transfer.getAmount());
+		values.put(KEY_TRANSACTION_CATEGORY_ID, "");
+		values.put(KEY_TRANSACTION_ACCOUNT_FROM_ID, transfer.getAccountFrom().getAccountId());
+		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, transfer.getAccountTo().getAccountId());
+		values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
+		long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
+		Log.e("SuperWallet ", "AddTransfer result: " + result);
+	}
+
     //add transaction in table transactions
-    public  void addTransaction(String date, String description, Transaction.TRANSACTIONS_TYPE transactionType,
-                               double amount, Category category) {
+    public  void addTransaction(Transaction transaction) {
 
         ContentValues values = new ContentValues();
-        values.put(KEY_TRANSACTION_DATE, date);
-        values.put(KEY_TRANSACTION_DESCRIPTION, description);
-        values.put(KEY_TRANSACTION_TYPE, transactionType.toString());
-        values.put(KEY_TRANSACTION_AMOUNT, amount);
-        values.put(KEY_TRANSACTION_CATEGORY_ID, category.getCategoryId());
+		values.put(KEY_TRANSACTION_ID, transaction.getTransactionId());
+        values.put(KEY_TRANSACTION_DATE, transaction.getDateAsSQLTimestamp().toString());
+        values.put(KEY_TRANSACTION_DESCRIPTION, transaction.getDescription());
+        values.put(KEY_TRANSACTION_TYPE, transaction.getTransactionType().toString());
+        values.put(KEY_TRANSACTION_AMOUNT, transaction.getAmount());
+		if (transaction.getCategory() == null) {
+			values.put(KEY_TRANSACTION_CATEGORY_ID, "");
+		}
+		else {
+			values.put(KEY_TRANSACTION_CATEGORY_ID, transaction.getCategory().getCategoryId() );
+		}
+		values.put(KEY_TRANSACTION_ACCOUNT_FROM_ID, "-1");
+		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, "-1");
         values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
-        getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
+        long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
+		Log.e("SuperWallet ", "AddTransaction result: " + result);
     }
 
     //load transactions for user x from transactions
-    public ArrayList<Transaction> loadTransactionsForUser (int localID) {
+    public ArrayList<Transaction> loadTransactionsForUser (int localID, ArrayList<Category> categories, ArrayList<Account> accounts) {
         ArrayList<Transaction> transactions = new ArrayList<>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT "
-                + KEY_TRANSACTION_DATE + ", " + KEY_TRANSACTION_DESCRIPTION + ", " + KEY_TRANSACTION_TYPE
-                +  ", " + KEY_TRANSACTION_AMOUNT +  ", " + KEY_TRANSACTION_CATEGORY_ID  + " FROM " + TABLE_TRANSACTIONS
+                + KEY_TRANSACTION_ID + ", " + KEY_TRANSACTION_DATE + ", " + KEY_TRANSACTION_DESCRIPTION + ", " + KEY_TRANSACTION_TYPE
+                +  ", " + KEY_TRANSACTION_AMOUNT +  ", " + KEY_TRANSACTION_CATEGORY_ID + ", " + KEY_TRANSACTION_ACCOUNT_FROM_ID + ", " + KEY_TRANSACTION_ACCOUNT_TO_ID + " FROM " + TABLE_TRANSACTIONS
                 + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
+		int numRows = 0;
+		Log.e("SuperWallet ", "DB contains " + numRows + " on transactions.");
         while (cursor.moveToNext()) {
+			int transactionId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ID));
             String date = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_DATE));
             String description = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_DESCRIPTION));
             String transactionType = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_TYPE));
             double amount = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_AMOUNT));
-            int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY_ID));
-            Transaction.TRANSACTIONS_TYPE type;
-//            Category category = UsersManager.loggedUser.getCategory(categoryId);
-//			if (category == null) { continue; }
-            Category category = null;
-            if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
-                type = Transaction.TRANSACTIONS_TYPE.Income;
-            } else if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
-                type = Transaction.TRANSACTIONS_TYPE.Expense;
-            } else {
-                type = Transaction.TRANSACTIONS_TYPE.Transfer;
-            }
 
-            transactions.add(new Transaction(date, description, type, amount, category));
+			if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString()) || transactionType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
+				Transaction.TRANSACTIONS_TYPE type = Transaction.TRANSACTIONS_TYPE.valueOf(transactionType);
+
+				Category category = null;
+				int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY_ID));
+				for (Category cat: categories) {
+					if (cat.getCategoryId() == categoryId) {
+						category = cat;
+						break;
+					}
+				}
+				if (category == null) { continue; }
+
+				Transaction transaction = new Transaction(transactionId, Transaction.getDateFromSQLTimestamp(date), type, amount);
+				transaction.setDescription(description);
+				transaction.setCategory(category);
+				transactions.add(transaction);
+
+            } else {
+				Account accountFrom = null;
+				Account accountTo = null;
+
+				int accountFromId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_FROM_ID));
+				int accountToId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_TO_ID));
+				for (Account acc: accounts) {
+					if (acc.getAccountId() == accountFromId) {
+						accountFrom = acc;
+						if (accountTo != null) {
+							break;
+						}
+					}
+					if (acc.getAccountId() == accountToId) {
+						accountTo = acc;
+						if (accountFrom != null) {
+							break;
+						}
+					}
+				}
+
+				if (accountFrom == null || accountTo == null) {
+					continue;
+				}
+
+				Transaction transfer = new Transfer(transactionId, Transaction.getDateFromSQLTimestamp(date), amount, accountFrom, accountTo);
+				transfer.setDescription(description);
+				transactions.add(transfer);
+            }
         }
-        cursor.close();
-        return transactions;
+		Log.e("SuperWallet ", "DB contains " + numRows + " on transactions.");
+		cursor.close();
+
+		cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_TRANSACTIONS, null);
+		Log.e("SuperWallet ", "DB TRANSACTIONS table contains " + cursor.getCount());
+		cursor.close();
+		return transactions;
     }
 
 }

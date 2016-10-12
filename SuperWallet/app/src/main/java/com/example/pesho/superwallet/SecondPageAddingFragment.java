@@ -22,6 +22,8 @@ import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Transaction;
 
+import org.joda.time.LocalDateTime;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -119,7 +121,7 @@ public class SecondPageAddingFragment extends Fragment {
         myCalendar = Calendar.getInstance();
         String ct = DateFormat.getDateInstance().format(new Date());
         dateTV.setText(ct);
-        myActivity.setTransactionDate(new Date());
+        myActivity.setTransactionDate(new LocalDateTime());
         //date picker dialog
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -129,7 +131,7 @@ public class SecondPageAddingFragment extends Fragment {
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                myActivity.setTransactionDate(myCalendar.getTime());
+                myActivity.setTransactionDate(new LocalDateTime(myCalendar));
                 updateLabel();
                 //dateTV.setText(DateFormat.getInstance().format(myCalendar.getTime()).substring(0, 8));
             }
