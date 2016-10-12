@@ -21,6 +21,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ADD_TRANSACTION = 20;
@@ -67,6 +68,31 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item3);
         drawer.addItem(item4);
         drawer.addItem(item5);
+
+        //drawer item selected listener
+        drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                switch (position) {
+                    case 1:
+                        Toast.makeText(MainActivity.this, "Day", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case 2:
+                        Toast.makeText(MainActivity.this, "Week", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case 3:
+                        Toast.makeText(MainActivity.this, "Month", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case 4:
+                        Toast.makeText(MainActivity.this, "Year", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case 5:
+                        Toast.makeText(MainActivity.this, "Date", Toast.LENGTH_SHORT).show();
+                        return true;
+                }
+                return false;
+            }
+        });
 
         //adding floating buttons
         addTransactionButton = (FloatingActionMenu) findViewById(R.id.main_fab);

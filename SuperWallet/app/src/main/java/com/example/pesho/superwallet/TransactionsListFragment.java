@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
+import com.andexert.expandablelayout.library.ExpandableLayoutListView;
 import com.example.pesho.superwallet.model.Transaction;
 import com.example.pesho.superwallet.model.UsersManager;
 
@@ -23,6 +25,7 @@ public class TransactionsListFragment extends Fragment {
 
 	LocalDateTime startDate;
 	LocalDateTime endDate;
+	ArrayList<Transaction> transactions;
 
     public TransactionsListFragment() {
         // Required empty public constructor
@@ -32,6 +35,7 @@ public class TransactionsListFragment extends Fragment {
 		endDate = endDate.plusDays(1).withTime(0,0,0,0);
 		Log.e("SuperWallet ", "Fragment from " + startDate + " to " + endDate);
 		ArrayList<Transaction> transactions = UsersManager.loggedUser.getTransactions(startDate, endDate);
+		this.transactions = transactions;
 		for (Transaction t: transactions) {
 			Log.e("SuperWallet ", "Transaction id: " + t.getTransactionId() + " for DateTime: " + t.getDate());
 		}
@@ -43,7 +47,13 @@ public class TransactionsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_transactions_list, container, false);
+		View root = inflater.inflate(R.layout.fragment_transactions_list, container, false);
+		transactions = UsersManager.loggedUser.getTransactions(startDate, endDate);
+		final ArrayAdapter<Transaction> arrayAdapter = new ArrayAdapter(getContext(), R.layout.view_row, R.id.header_text, transactions);
+		final ExpandableLayoutListView expandableLayoutListView =(ExpandableLayoutListView) root.findViewById(R.id.listview);
+
+		expandableLayoutListView.setAdapter(arrayAdapter);
+        return root;
     }
 
 }

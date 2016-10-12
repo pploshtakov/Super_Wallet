@@ -39,4 +39,6 @@ dependencies {
     compile 'com.github.chenupt.android:springindicator:1.0.2@aar'
     testCompile 'junit:junit:4.12'
     compile 'net.danlew:android.joda:2.9.4.2'
+    //ExpandableLayout
+    compile 'com.github.traex.expandablelayout:library:1.2.2'
 }
