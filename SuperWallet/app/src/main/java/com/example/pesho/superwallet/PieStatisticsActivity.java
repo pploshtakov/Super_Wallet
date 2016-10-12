@@ -37,7 +37,7 @@ public class PieStatisticsActivity extends AppCompatActivity {
 		LocalDateTime end = LocalDateTime.now().withTime(23,59,59,999);
 
 
-		List<SliceValue> list = new ArrayList<>();
+		List<SliceValue> list = new ArrayList<SliceValue>();
 		ArrayList<Transaction> transactions = UsersManager.getInstance(this).loggedUser.getTransactions(start, end);
 		for (Transaction t: transactions) {
 			SliceValue val = new SliceValue((float)t.getAmount() , ChartUtils.pickColor());

@@ -18,7 +18,6 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -31,11 +30,7 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton addTransferFB;
 
     AccountHeader header;
-//maika ti stara skapan git
-    
 
-    //    TabLayout settingsTab;
-//    TabLayout reportsTab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

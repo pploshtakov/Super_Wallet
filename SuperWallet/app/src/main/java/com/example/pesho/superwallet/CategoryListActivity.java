@@ -54,7 +54,7 @@ public class CategoryListActivity
 		setContentView(R.layout.activity_category_list);
 
 		// Create the categories array and get the gridView
-		categories = new ArrayList<>();
+		categories = new ArrayList<Category>();
 		gridView = (GridView) findViewById(R.id.category_grid_view);
 		addCategoryButton = (Button) findViewById(R.id.add_category_button);
 

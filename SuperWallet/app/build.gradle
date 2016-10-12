@@ -45,4 +45,5 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.4.2'
     //ExpandableLayout
     compile 'com.github.traex.expandablelayout:library:1.2.2'
+    compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
 }

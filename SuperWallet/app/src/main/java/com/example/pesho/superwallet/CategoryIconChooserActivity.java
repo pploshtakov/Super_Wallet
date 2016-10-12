@@ -31,7 +31,7 @@ public class CategoryIconChooserActivity extends AppCompatActivity
 
 		gridView = (GridView) findViewById(R.id.iconChooserGridView);
 
-		drawables = new ArrayList<>();
+		drawables = new ArrayList<Integer>();
 
 		drawables.add(R.drawable.taxi);
 		drawables.add(R.drawable.phone);

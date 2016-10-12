@@ -49,7 +49,7 @@ public class AccountsActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_accounts);
 
-		accounts = new ArrayList<>();
+		accounts = new ArrayList<Account>();
 		listView = (ListView) findViewById(R.id.accounts_list_view);
 		addAccountButton = (Button) findViewById(R.id.add_account_button);
 

@@ -63,7 +63,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             transactionsType = intent.getStringExtra("Transaction");
         }
         //load accounts
-        accounts = new ArrayList<>();
+        accounts = new ArrayList<Account>();
         accountFrom = UsersManager.loggedUser.getDefaultAccount();
         if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
             accountTo = accountFrom;
@@ -113,7 +113,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 
     @Override
     public void registerFragment(Fragment fragment) {
-        fragments = new ArrayList<>();
+        fragments = new ArrayList<Fragment>();
         fragments.add(fragment);
     }
 

@@ -34,9 +34,9 @@ public class User {
 		this.name = name;
 		this.email = email;
 
-		myTransactions = new ArrayList<>();
-		myAccounts = new ArrayList<>();
-		myCategories = new ArrayList<>();
+		myTransactions = new ArrayList<Transaction>();
+		myAccounts = new ArrayList<Account>();
+		myCategories = new ArrayList<Category>();
 
 		defaultAccount = new Account(-2, "Cash", 0.0, Account.ACCOUNT_TYPE.CASH);
 	}
@@ -150,13 +150,13 @@ public class User {
 	}
 
 	public ArrayList<Category> getCategories() {
-		return new ArrayList<>(myCategories);
+		return new ArrayList<Category>(myCategories);
 	}
 
 	public Account getDefaultAccount() { return defaultAccount; }
 
 	public ArrayList<Account> getAccounts() {
-        return new ArrayList<>(myAccounts);
+        return new ArrayList<Account>(myAccounts);
     }
 
     public void addAccount (Account acct) {
@@ -171,7 +171,7 @@ public class User {
 		Log.e("SuperWallet ", "Getting transactions for period " + startDate + " to " + endDate);
 		Log.e("SuperWallet ", "Transactions contains " + myTransactions.size() + " items");
 
-		ArrayList<Transaction> transactions = new ArrayList<>();
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
 		LocalDateTime tDate;
 		for (Transaction t: myTransactions) {
 			tDate = t.getDate();

@@ -202,7 +202,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 	public int getNextUserLocalId() {
 
-		ArrayList<Integer> userIds = new ArrayList<>();
+		ArrayList<Integer> userIds = new ArrayList<Integer>();
 		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
 				+ KEY_LOCAL_ID + " FROM " + TABLE_USERS, null);
 		try {
@@ -243,7 +243,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     //load users from table users
     public HashMap<String, User> loadUsers() {
-        HashMap<String, User> users = new HashMap<>();
+        HashMap<String, User> users = new HashMap<String, User>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT " + KEY_LOCAL_ID + ", " + KEY_GOOGLE_ID + ", " + KEY_FACEBOOK_ID + ", " + KEY_NAME +
         ", " + KEY_USERNAME + ", " + KEY_PASSWORD + ", " + KEY_EMAIL + " FROM " + TABLE_USERS, null);
         while (cursor.moveToNext()) {
@@ -272,7 +272,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 	public int getNextAccountIndex() {
 
-		ArrayList<Integer> accountIds = new ArrayList<>();
+		ArrayList<Integer> accountIds = new ArrayList<Integer>();
 		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
 				+ KEY_ACCOUNT_ID + " FROM " + TABLE_ACCOUNTS, null);
 		try {
@@ -324,7 +324,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     //load accounts for user x from accounts
     public ArrayList<Account> loadAccountsForUser (int localID) {
-        ArrayList<Account> accounts = new ArrayList<>();
+        ArrayList<Account> accounts = new ArrayList<Account>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_ACCOUNTS + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
         while (cursor.moveToNext()) {
 			int accountId = cursor.getInt(cursor.getColumnIndex(KEY_ACCOUNT_ID));
@@ -372,7 +372,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     //load categories for user x from categories
     public ArrayList<Category> loadCategoriesForUser(int localID) {
-        ArrayList<Category> categories = new ArrayList<>();
+        ArrayList<Category> categories = new ArrayList<Category>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_CATEGORIES + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
         while (cursor.moveToNext()) {
             int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
@@ -399,7 +399,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     //load categories for user x from categories
     public ArrayList<Category> loadDefaultCategories() {
-        ArrayList<Category> categories = new ArrayList<>();
+        ArrayList<Category> categories = new ArrayList<Category>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT "
                 + KEY_CATEGORIES_ID + ", " + KEY_CATEGORIES_NAME + ", " + KEY_CATEGORIES_TYPE + "," + KEY_CATEGORIES_ICON + " FROM " + TABLE_DEFAULT_CATEGORIES, null);
         while (cursor.moveToNext()) {
@@ -423,7 +423,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 	public int getNextUserCategoryIndex() {
 
-		ArrayList<Integer> categoryIds = new ArrayList<>();
+		ArrayList<Integer> categoryIds = new ArrayList<Integer>();
 		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
 				+ KEY_CATEGORIES_ID + " FROM " + TABLE_CATEGORIES, null);
 		try {
@@ -451,7 +451,7 @@ public class DBManager extends SQLiteOpenHelper {
 
 	public int getNextTransactionIndex() {
 
-		ArrayList<Integer> transactionIds = new ArrayList<>();
+		ArrayList<Integer> transactionIds = new ArrayList<Integer>();
 		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
 				+ KEY_TRANSACTION_ID + " FROM " + TABLE_TRANSACTIONS, null);
 		try {
@@ -515,7 +515,7 @@ public class DBManager extends SQLiteOpenHelper {
 
     //load transactions for user x from transactions
     public ArrayList<Transaction> loadTransactionsForUser (User user, ArrayList<Category> categories, ArrayList<Account> accounts) {
-        ArrayList<Transaction> transactions = new ArrayList<>();
+        ArrayList<Transaction> transactions = new ArrayList<Transaction>();
         Cursor cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_TRANSACTIONS + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(user.getLocalID())});
 
 		ArrayList<Category> defaultCategories = loadDefaultCategories();

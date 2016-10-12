@@ -30,7 +30,7 @@ public class UsersManager {
 
 		defaultCategories = DBManager.getInstance(context).loadDefaultCategories();
 
-        users = new HashMap<>();
+        users = new HashMap<String, User>();
         users = DBManager.getInstance(context).loadUsers();
     }
 
