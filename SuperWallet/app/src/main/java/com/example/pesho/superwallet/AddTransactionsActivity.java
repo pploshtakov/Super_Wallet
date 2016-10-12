@@ -16,8 +16,12 @@ import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Category;
 import com.example.pesho.superwallet.model.DBManager;
 import com.example.pesho.superwallet.model.Transaction;
+import com.example.pesho.superwallet.model.Transfer;
 import com.example.pesho.superwallet.model.UsersManager;
 
+import org.joda.time.LocalDateTime;
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -48,7 +52,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     private Account accountTo;
     private double amount;
     private String description;
-    private Date transactionDate;
+    private LocalDateTime transactionDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +66,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         //load accounts
         accounts = new ArrayList<>();
         accountFrom = UsersManager.loggedUser.getDefaultAccount();
-        if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer)) {
+        if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
             accountTo = accountFrom;
         }
         accounts.add(accountFrom);
@@ -103,7 +107,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     }
 
     @Override
-    public void setTransactionDate(Date date) {
+    public void setTransactionDate(LocalDateTime date) {
         this.transactionDate = date;
 
     }
@@ -160,16 +164,28 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     //save transaction
     @Override
     public void saveTransaction() {
+		Log.e("SuperWallet ", "Save transaction entered.");
         Transaction.TRANSACTIONS_TYPE tp;
+
+		int transactionId = DBManager.getInstance(this).getNextTransactionIndex();
+
         if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
-            tp = Transaction.TRANSACTIONS_TYPE.Transfer;
-        } else if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
-            tp = Transaction.TRANSACTIONS_TYPE.Income;
-        } else {
-            tp = Transaction.TRANSACTIONS_TYPE.Expense;
+
+			Transfer transfer = new Transfer(transactionId, transactionDate, amount, accountFrom, accountTo);
+			transfer.setDescription(description);
+
+			DBManager.getInstance(this).addTransaction(transfer);
+
+        } else if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString()) || transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
+            tp = Transaction.TRANSACTIONS_TYPE.valueOf(transactionsType);
+
+			Transaction transaction = new Transaction(transactionId, transactionDate, tp, amount );
+			transaction.setCategory(category);
+			transaction.setDescription(description);
+
+			DBManager.getInstance(this).addTransaction(transaction);
         }
-        Transaction transaction = new Transaction(transactionDate.toString(), description, tp, amount, category );
-        DBManager.getInstance(this).addTransaction(transactionDate.toString(), description, tp, amount, category );
+
         setResult(RESULT_OK);
         finish();
     }

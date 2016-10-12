@@ -19,6 +19,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 10 ;
@@ -32,8 +34,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_login);
+
+		JodaTimeAndroid.init(this);
+
         UsersManager.getInstance(this);
+
         loginButton = (Button) findViewById(R.id.lp_login_button);
         registerButton = (Button) findViewById(R.id.lp_register_button);
         usernameET = (EditText) findViewById(R.id.lp_username_ET);

@@ -3,6 +3,11 @@ package com.example.pesho.superwallet.model;
 import android.net.Uri;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -147,4 +152,23 @@ public class User {
     public void addAccount (Account acct) {
         myAccounts.add(acct);
     }
+
+	public ArrayList<Transaction> getTransactions(LocalDateTime startDate, LocalDateTime endDate) {
+		if (startDate.isAfter(endDate)) {
+			return null;
+		}
+
+		Log.e("SuperWallet ", "Getting transactions for period " + startDate + " to " + endDate);
+		Log.e("SuperWallet ", "Transactions contains " + myTransactions.size() + " items");
+
+		ArrayList<Transaction> transactions = new ArrayList<>();
+		LocalDateTime tDate;
+		for (Transaction t: myTransactions) {
+			tDate = t.getDate();
+			if (tDate.isEqual(startDate) || tDate.isEqual(endDate) || (tDate.isAfter(startDate) && tDate.isBefore(endDate))) {
+				transactions.add(t);
+			}
+		}
+		return transactions;
+	}
 }
