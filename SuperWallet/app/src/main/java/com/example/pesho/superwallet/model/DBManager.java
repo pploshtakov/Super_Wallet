@@ -261,6 +261,10 @@ public class DBManager extends SQLiteOpenHelper {
 			ArrayList<Category> categories = loadCategoriesForUser(localID);
 			ArrayList<Transaction> transactions = loadTransactionsForUser(user, categories, accounts);
 
+			user.setMyAccounts(accounts);
+			user.setMyCategories(categories);
+			user.setMyTransactions(transactions);
+
         }
         cursor.close();
         return users;
