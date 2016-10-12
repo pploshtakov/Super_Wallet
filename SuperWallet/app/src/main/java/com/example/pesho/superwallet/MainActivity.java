@@ -18,6 +18,7 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         //create nav drawer
         header = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.color.colorAccent)
+                .withHeaderBackground(R.drawable.header_background)
                 .addProfiles(
                         new ProfileDrawerItem().withName(UsersManager.loggedUser.getName())
                                 .withEmail(UsersManager.loggedUser.getEmail())
@@ -53,13 +54,13 @@ public class MainActivity extends AppCompatActivity {
                 )
                 .withSelectionListEnabledForSingleProfile(false)
                 .build();
-        Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.myGreen).withAccountHeader(header).build();
+        Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.closeToPrimary).withAccountHeader(header).build();
         //create drawer's items
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withTextColorRes(R.color.white).withName(R.string.drawer_item_day);
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_week);
-        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.drawer_item_month);
-        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withName(R.string.drawer_item_year);
-        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(5).withName(R.string.drawer_item_choose_date);
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withTextColorRes(R.color.white).withName(R.string.drawer_item_week);
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withTextColorRes(R.color.white).withName(R.string.drawer_item_month);
+        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withTextColorRes(R.color.white).withName(R.string.drawer_item_year);
+        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(5).withTextColorRes(R.color.white).withName(R.string.drawer_item_choose_date);
         //add drawer items
         drawer.addItem(item1);
         drawer.addItem(item2);
@@ -67,63 +68,11 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item4);
         drawer.addItem(item5);
 
+        //adding floating buttons
         addTransactionButton = (FloatingActionMenu) findViewById(R.id.main_fab);
         addIncomeFB = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_income);
         addExpenseFB = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_expense);
         addTransferFB = (com.github.clans.fab.FloatingActionButton) findViewById(R.id.menu_transfer);
-
-        //sorting reports tab
-//        reportsTab = (TabLayout) findViewById(R.id.ma_reports_tab);
-//        reportsTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                switch (tab.getText().toString()) {
-//                    case "Daily":
-//                    case "Weekly":
-//                    case "Monthly":
-//                    case "Year":
-//                }
-//            }
-//
-//                @Override
-//                public void onTabUnselected(TabLayout.Tab tab) {
-//
-//                }
-//
-//                @Override
-//                public void onTabReselected(TabLayout.Tab tab) {
-//
-//                }
-//            });
-//        //tab layout bottom of main screen
-//        settingsTab = (TabLayout) findViewById(R.id.ma_settings_tab);
-//        settingsTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//                //switch tabs by name
-//                switch (tab.getText().toString()) {
-//                    case "Bills":
-//                    case "Stats":
-//                    case "Accounts":
-//                        Intent intent = new Intent(MainActivity.this, AccountsActivity.class);
-//                        startActivity(intent);
-//                        break;
-//                    case "Profile":
-//                    case "Settings":
-//                }
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
 
         //floating action button - add transaction
         //add income

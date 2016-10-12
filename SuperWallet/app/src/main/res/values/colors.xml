@@ -6,4 +6,5 @@
     <color name="black">#90000000</color>
     <color name="myGreen">#61F051</color>
     <color name="closeToPrimary">#9CD3BF</color>
+    <color name="nav_drawer_color">#6a88ea</color>
 </resources>
