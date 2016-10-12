@@ -123,7 +123,7 @@ public class FirstPageAddingFragment extends Fragment {
                 myActivity.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
 
             //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
-            defaultCategories = DBManager.getInstance((Context) myActivity).loadDefaultCategories();
+            defaultCategories = UsersManager.getInstance(getContext()).getDefaultCategories();
             category = defaultCategories.get(0);
             myActivity.setCategory(category);
             selectCategoryButton.setText(category.getCategoryName());

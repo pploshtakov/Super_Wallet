@@ -138,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_stats:
                 Toast.makeText(MainActivity.this, "stats", Toast.LENGTH_SHORT).show();
+				Intent statisticsIntent = new Intent(this, PieStatisticsActivity.class);
+				startActivity(statisticsIntent);
                 return true;
             case R.id.action_category:
                 // User chose the "Settings" item, show the app settings UI...

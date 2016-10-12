@@ -154,9 +154,11 @@ public class User {
 	}
 
 	public Account getDefaultAccount() { return defaultAccount; }
-    public ArrayList<Account> getAccounts() {
+
+	public ArrayList<Account> getAccounts() {
         return new ArrayList<>(myAccounts);
     }
+
     public void addAccount (Account acct) {
         myAccounts.add(acct);
     }
