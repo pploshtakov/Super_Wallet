@@ -17,11 +17,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+        targetCompatibility JavaVersion.VERSION_1_6
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    apply plugin: 'com.google.gms.google-services'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //    apply plugin: 'com.google.gms.google-services'
     //material drawer
     compile('com.mikepenz:materialdrawer:5.6.0@aar') {
         transitive = true

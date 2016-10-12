@@ -49,7 +49,7 @@ public class TransactionsListFragment extends Fragment {
         // Inflate the layout for this fragment
 		View root = inflater.inflate(R.layout.fragment_transactions_list, container, false);
 		transactions = UsersManager.loggedUser.getTransactions(startDate, endDate);
-		final ArrayAdapter<Transaction> arrayAdapter = new ArrayAdapter(getContext(), R.layout.view_row, R.id.header_text, transactions);
+		final ArrayAdapter arrayAdapter = new ArrayAdapter(getContext(), R.layout.view_row, R.id.header_text, transactions);
 		final ExpandableLayoutListView expandableLayoutListView =(ExpandableLayoutListView) root.findViewById(R.id.listview);
 
 		expandableLayoutListView.setAdapter(arrayAdapter);
