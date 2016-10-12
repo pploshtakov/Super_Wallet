@@ -39,7 +39,6 @@ public class User {
 		myCategories = new ArrayList<>();
 
 		defaultAccount = new Account(-2, "Cash", 0.0, Account.ACCOUNT_TYPE.CASH);
-		Log.e("SuperWallet ", "DefaultAccount: " + defaultAccount.getAccountName());
 	}
 
     //constructor for users registered directly from app
@@ -69,7 +68,7 @@ public class User {
 
     //constructor from DB
     public User(int localID, String googleID, String facebookID, String name, String userName, String password,
-                String email, ArrayList<Transaction> transactions, ArrayList<Account> accounts, ArrayList<Category> categories) {
+                String email) {
 		this(name, email);
 
         this.localID = localID;
@@ -77,9 +76,6 @@ public class User {
         this.password = password;
         this.facebookID = facebookID;
         this.googleID = googleID;
-        myTransactions = transactions;
-        myAccounts = accounts;
-        myCategories = categories;
     }
 
     public String getName() {
@@ -110,7 +106,19 @@ public class User {
         return password;
     }
 
-    public Category getCategory(String categoryName) {
+	public void setMyTransactions(ArrayList<Transaction> myTransactions) {
+		this.myTransactions = myTransactions;
+	}
+
+	public void setMyAccounts(ArrayList<Account> myAccounts) {
+		this.myAccounts = myAccounts;
+	}
+
+	public void setMyCategories(ArrayList<Category> myCategories) {
+		this.myCategories = myCategories;
+	}
+
+	public Category getCategory(String categoryName) {
         for (int i = 0; i < myCategories.size(); i++) {
             if (myCategories.get(i).getCategoryName().equals(categoryName)) {
                 return myCategories.get(i);

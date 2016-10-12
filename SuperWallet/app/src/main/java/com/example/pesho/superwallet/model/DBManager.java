@@ -199,7 +199,36 @@ public class DBManager extends SQLiteOpenHelper {
 
 		this.onCreate(db);
     }
-    //add user in table users
+
+	public int getNextUserLocalId() {
+
+		ArrayList<Integer> userIds = new ArrayList<>();
+		Cursor cursor = getWritableDatabase().rawQuery("SELECT "
+				+ KEY_LOCAL_ID + " FROM " + TABLE_USERS, null);
+		try {
+			while (cursor.moveToNext()) {
+				int userId = cursor.getInt(cursor.getColumnIndex(KEY_LOCAL_ID));
+				userIds.add(userId);
+			}
+		}
+		finally {
+			cursor.close();
+		}
+		if (userIds.size() == 0) {
+			return 0;
+		}
+		else {
+			int maxUserId = 0;
+			for (Integer i: userIds) {
+				if (i >= maxUserId) {
+					maxUserId = i + 1;
+				}
+			}
+			return maxUserId;
+		}
+	}
+
+	//add user in table users
     public void addUser (int localID, String googleID, String facebookID, String name, String username, String password, String email ) {
         ContentValues values = new ContentValues();
         values.put(KEY_LOCAL_ID, localID);
@@ -225,11 +254,13 @@ public class DBManager extends SQLiteOpenHelper {
             String username = cursor.getString(cursor.getColumnIndex(KEY_USERNAME));
             String password = cursor.getString(cursor.getColumnIndex(KEY_PASSWORD));
             String email = cursor.getString(cursor.getColumnIndex(KEY_EMAIL));
-            ArrayList<Account> accounts = loadAccountsForUser(localID);
-            ArrayList<Category> categories = loadCategoriesForUser(localID);
-            ArrayList<Transaction> transactions = loadTransactionsForUser(localID, categories, accounts);
-            users.put(username, new User(localID, googleID, facebookID, name, username, password, email,
-                    transactions,accounts,categories));
+			User user = new User(localID, googleID, facebookID, name, username, password, email);
+            users.put(username, user);
+
+			ArrayList<Account> accounts = loadAccountsForUser(localID);
+			ArrayList<Category> categories = loadCategoriesForUser(localID);
+			ArrayList<Transaction> transactions = loadTransactionsForUser(user, categories, accounts);
+
         }
         cursor.close();
         return users;
@@ -455,7 +486,6 @@ public class DBManager extends SQLiteOpenHelper {
 		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, transfer.getAccountTo().getAccountId());
 		values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
 		long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
-		Log.e("SuperWallet ", "AddTransfer result: " + result);
 	}
 
     //add transaction in table transactions
@@ -477,18 +507,14 @@ public class DBManager extends SQLiteOpenHelper {
 		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, "-1");
         values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
         long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
-		Log.e("SuperWallet ", "AddTransaction result: " + result);
     }
 
     //load transactions for user x from transactions
-    public ArrayList<Transaction> loadTransactionsForUser (int localID, ArrayList<Category> categories, ArrayList<Account> accounts) {
+    public ArrayList<Transaction> loadTransactionsForUser (User user, ArrayList<Category> categories, ArrayList<Account> accounts) {
         ArrayList<Transaction> transactions = new ArrayList<>();
-        Cursor cursor = getWritableDatabase().rawQuery("SELECT "
-                + KEY_TRANSACTION_ID + ", " + KEY_TRANSACTION_DATE + ", " + KEY_TRANSACTION_DESCRIPTION + ", " + KEY_TRANSACTION_TYPE
-                +  ", " + KEY_TRANSACTION_AMOUNT +  ", " + KEY_TRANSACTION_CATEGORY_ID + ", " + KEY_TRANSACTION_ACCOUNT_FROM_ID + ", " + KEY_TRANSACTION_ACCOUNT_TO_ID + " FROM " + TABLE_TRANSACTIONS
-                + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(localID)});
-		int numRows = 0;
-		Log.e("SuperWallet ", "DB contains " + numRows + " on transactions.");
+        Cursor cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_TRANSACTIONS + " WHERE " + KEY_ACCOUNT_USER_ID + " = ?", new String[] {String.valueOf(user.getLocalID())});
+
+		ArrayList<Category> defaultCategories = loadDefaultCategories();
         while (cursor.moveToNext()) {
 			int transactionId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ID));
             String date = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_DATE));
@@ -501,36 +527,53 @@ public class DBManager extends SQLiteOpenHelper {
 
 				Category category = null;
 				int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY_ID));
-				for (Category cat: categories) {
+
+				for (Category cat: defaultCategories) {
 					if (cat.getCategoryId() == categoryId) {
 						category = cat;
 						break;
 					}
 				}
-				if (category == null) { continue; }
+
+				if (category == null) {
+					for (Category cat : categories) {
+						if (cat.getCategoryId() == categoryId) {
+							category = cat;
+							break;
+						}
+					}
+				}
 
 				Transaction transaction = new Transaction(transactionId, Transaction.getDateFromSQLTimestamp(date), type, amount);
 				transaction.setDescription(description);
 				transaction.setCategory(category);
 				transactions.add(transaction);
-
             } else {
 				Account accountFrom = null;
 				Account accountTo = null;
 
 				int accountFromId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_FROM_ID));
 				int accountToId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_TO_ID));
-				for (Account acc: accounts) {
-					if (acc.getAccountId() == accountFromId) {
-						accountFrom = acc;
-						if (accountTo != null) {
-							break;
+				if (accountFromId == user.getDefaultAccount().getAccountId()) {
+					accountFrom = user.getDefaultAccount();
+				}
+				if (accountToId == user.getDefaultAccount().getAccountId()) {
+					accountTo = user.getDefaultAccount();
+				}
+
+				if (accountFrom == null || accountTo == null) {
+					for (Account acc : accounts) {
+						if (acc.getAccountId() == accountFromId) {
+							accountFrom = acc;
+							if (accountTo != null) {
+								break;
+							}
 						}
-					}
-					if (acc.getAccountId() == accountToId) {
-						accountTo = acc;
-						if (accountFrom != null) {
-							break;
+						if (acc.getAccountId() == accountToId) {
+							accountTo = acc;
+							if (accountFrom != null) {
+								break;
+							}
 						}
 					}
 				}
@@ -544,11 +587,6 @@ public class DBManager extends SQLiteOpenHelper {
 				transactions.add(transfer);
             }
         }
-		Log.e("SuperWallet ", "DB contains " + numRows + " on transactions.");
-		cursor.close();
-
-		cursor = getWritableDatabase().rawQuery("SELECT * FROM " + TABLE_TRANSACTIONS, null);
-		Log.e("SuperWallet ", "DB TRANSACTIONS table contains " + cursor.getCount());
 		cursor.close();
 		return transactions;
     }

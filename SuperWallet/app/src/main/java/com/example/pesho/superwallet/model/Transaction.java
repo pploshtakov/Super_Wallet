@@ -67,7 +67,7 @@ public class Transaction {
 	}
 
 	public static LocalDateTime getDateFromSQLTimestamp(String timestamp_str) {
-		Timestamp timestamp = new Timestamp(Long.parseLong(timestamp_str));
+		Timestamp timestamp = Timestamp.valueOf(timestamp_str);
 		return LocalDateTime.fromDateFields(timestamp);
 	}
 }

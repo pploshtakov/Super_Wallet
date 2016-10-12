@@ -1,7 +1,9 @@
 package com.example.pesho.superwallet.model;
 
 import android.content.Context;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -14,6 +16,8 @@ public class UsersManager {
     private static Context context;
     public static User loggedUser;
 
+	private static ArrayList<Category> defaultCategories;
+
     public static UsersManager getInstance(Context context) {
         if (ourInstance == null) {
             ourInstance = new UsersManager(context);
@@ -23,9 +27,16 @@ public class UsersManager {
 
     private UsersManager(Context context) {
         this.context = context;
+
+		defaultCategories = DBManager.getInstance(context).loadDefaultCategories();
+
         users = new HashMap<>();
         users = DBManager.getInstance(context).loadUsers();
     }
+
+	public ArrayList<Category> getDefaultCategories() {
+		return defaultCategories;
+	}
 
     public static boolean isUserExistByName(String username) {
         return users.containsKey(username);
@@ -56,7 +67,7 @@ public class UsersManager {
     }
 
     public static int generateLocalID() {
-        return users.size() + 1;
+        return DBManager.getInstance(context).getNextUserLocalId();
     }
 
     public static boolean checkPass(String username, String password) {
@@ -69,6 +80,7 @@ public class UsersManager {
 
     public static void setLoggedUser(String username) {
         loggedUser = users.get(username);
+		Log.e("SuperWallet ", "Logged In User ID[" + loggedUser.getLocalID() + "]");
     }
 
 
