@@ -87,28 +87,39 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item4);
         drawer.addItem(item5);
 
+
+
         //drawer item selected listener
         drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                TransactionsListFragment fragment = ((MainActivity.ScreenSlidePagerAdapter)mPagerAdapter).getCurrentFragment(mPager.getCurrentItem());
+                LocalDateTime startDate = new LocalDateTime();
+                LocalDateTime endDate = new LocalDateTime();
                 switch (position) {
                     case 1:
-                        Toast.makeText(MainActivity.this, "Day", Toast.LENGTH_SHORT).show();
-                        return true;
+                        startDate = startDate.withTime(0,0,0,0);
+                        endDate = endDate.plusDays(1).withTime(0,0,0,0);
+                        break;
                     case 2:
-                        Toast.makeText(MainActivity.this, "Week", Toast.LENGTH_SHORT).show();
-                        return true;
+                        startDate = startDate.minusDays(startDate.getDayOfWeek() - 1);
+                        endDate = endDate.plusDays(8 - endDate.getDayOfWeek());
+                        break;
                     case 3:
-                        Toast.makeText(MainActivity.this, "Month", Toast.LENGTH_SHORT).show();
-                        return true;
+                        startDate = startDate.minusDays(startDate.getDayOfMonth() - 1);
+                        endDate = endDate.plusDays(32 - endDate.getDayOfMonth());
+                        break;
                     case 4:
-                        Toast.makeText(MainActivity.this, "Year", Toast.LENGTH_SHORT).show();
-                        return true;
+                        startDate = startDate.minusDays(startDate.getDayOfYear() - 1);
+                        endDate = endDate.plusDays(366 - endDate.getDayOfYear());
+                        break;
                     case 5:
                         Toast.makeText(MainActivity.this, "Date", Toast.LENGTH_SHORT).show();
                         return true;
                 }
-                return false;
+                fragment.refreshList(startDate, endDate);
+                mPagerAdapter.notifyDataSetChanged();
+                return true;
             }
         });
 
@@ -195,16 +206,24 @@ public class MainActivity extends AppCompatActivity {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
+        ArrayList<TransactionsListFragment> fragments = new ArrayList<TransactionsListFragment>();
         @Override
         public Fragment getItem(int position) {
-            return new TransactionsListFragment();
+            TransactionsListFragment fr = new TransactionsListFragment();
+            fragments.add(position,fr);
+            return fr;
+        }
+
+        public TransactionsListFragment getCurrentFragment(int position) {
+            return fragments.get(position);
         }
 
         @Override
         public int getCount() {
             return NUM_PAGES;
         }
+
+
 
     }
 }

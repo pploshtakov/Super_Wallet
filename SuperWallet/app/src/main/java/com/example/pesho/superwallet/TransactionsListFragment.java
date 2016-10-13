@@ -105,8 +105,16 @@ public class TransactionsListFragment extends Fragment {
 		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 		String start = sdf.format(startDate.toDate());
 		String end = sdf.format(endDate.toDate());
-
 		periodTV.setText(start + " - " + end);
+	}
+
+	public void refreshList(LocalDateTime startDate, LocalDateTime endDate) {
+		transactions = UsersManager.loggedUser.getTransactions(startDate, endDate);
+		adapter = (TransactionRecyclerAdapter) myRecyclerView.getAdapter();
+		adapter.setNewList(transactions);
+		adapter.notifyDataSetChanged();
+		calculateReports();
+		setPeriod(startDate, endDate);
 	}
 
 }
