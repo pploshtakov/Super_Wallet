@@ -45,7 +45,7 @@
         android:layout_height="0dp"
         android:layout_weight="4"
         android:orientation="vertical"
-        android:background="@color/closeToPrimary"
+        android:background="@color/secondPrimary"
     >
         <TextView
             android:layout_width="match_parent"

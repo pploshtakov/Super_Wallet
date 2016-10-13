@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 )
                 .withSelectionListEnabledForSingleProfile(false)
                 .build();
-        Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.closeToPrimary).withAccountHeader(header).build();
+        Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.secondPrimary).withAccountHeader(header).build();
         //create drawer's items
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withTextColorRes(R.color.white).withName(R.string.drawer_item_day);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withTextColorRes(R.color.white).withName(R.string.drawer_item_week);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5ab795</color>
+    <color name="colorPrimary">#67AD6E</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#f2681d</color>
     <color name="black">#90000000</color>
     <color name="myGreen">#61F051</color>
-    <color name="closeToPrimary">#9CD3BF</color>
+    <color name="secondPrimary">#9CE9A4</color>
     <color name="nav_drawer_color">#6a88ea</color>
 </resources>
