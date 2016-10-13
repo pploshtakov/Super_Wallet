@@ -48,8 +48,12 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
 
     @Override
     public int getItemCount() {
-        return transactions.size();
+        if (transactions != null) {
+            return transactions.size();
+        }
+        return 0;
     }
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView categoryTV;

@@ -84,11 +84,13 @@ public class TransactionsListFragment extends Fragment {
 		double income = 0;
 		double expense = 0;
 		double total = 0;
-		for (Transaction tr: transactions) {
-			if (tr.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income)) {
-				income += tr.getAmount();
-			} else if (tr.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Expense)) {
-				expense += tr.getAmount();
+		if (transactions != null) {
+			for (Transaction tr : transactions) {
+				if (tr.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income)) {
+					income += tr.getAmount();
+				} else if (tr.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Expense)) {
+					expense += tr.getAmount();
+				}
 			}
 		}
 		total = income - expense;

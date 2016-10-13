@@ -38,12 +38,14 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton addExpenseFB;
     com.github.clans.fab.FloatingActionButton addTransferFB;
 
-    private static final int NUM_PAGES = 50;
+    private static final int NUM_PAGES = 30;
+    private int SET_FIRST_PAGE = 28;
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
 
 
     AccountHeader header;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mPager = (ViewPager) findViewById(R.id.main_pager);
         mPagerAdapter = new MainActivity.ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
-        mPager.setCurrentItem(45);
+        mPager.setCurrentItem(SET_FIRST_PAGE);
         mPagerAdapter.notifyDataSetChanged();
 
         
@@ -159,7 +161,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                TransactionsListFragment fragment = ((MainActivity.ScreenSlidePagerAdapter)mPagerAdapter).getCurrentFragment(position);
+                fragment.refreshList(new LocalDateTime().minusDays(NUM_PAGES - position + 2), new LocalDateTime().minusDays(NUM_PAGES - position + 1));
+                mPagerAdapter.notifyDataSetChanged();
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 
     }
