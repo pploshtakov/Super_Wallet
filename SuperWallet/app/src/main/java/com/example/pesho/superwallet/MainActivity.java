@@ -30,7 +30,6 @@ import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 
-import github.chenupt.springindicator.SpringIndicator;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ADD_TRANSACTION = 20;
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton addExpenseFB;
     com.github.clans.fab.FloatingActionButton addTransferFB;
 
-    private static final int NUM_PAGES = 2;
+    private static final int NUM_PAGES = 50;
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
 
@@ -54,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
         mPager = (ViewPager) findViewById(R.id.main_pager);
         mPagerAdapter = new MainActivity.ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(45);
+        mPagerAdapter.notifyDataSetChanged();
+
         
         
         
@@ -207,11 +209,17 @@ public class MainActivity extends AppCompatActivity {
             super(fm);
         }
         ArrayList<TransactionsListFragment> fragments = new ArrayList<TransactionsListFragment>();
+        void loadPages(){
+            for (int i = 0; i < NUM_PAGES; i++) {
+                fragments.add(new TransactionsListFragment());
+            }
+        }
         @Override
         public Fragment getItem(int position) {
-            TransactionsListFragment fr = new TransactionsListFragment();
-            fragments.add(position,fr);
-            return fr;
+            loadPages();
+//            TransactionsListFragment fr = new TransactionsListFragment();
+//            fragments.add(position,fr);
+            return fragments.get(position);
         }
 
         public TransactionsListFragment getCurrentFragment(int position) {
