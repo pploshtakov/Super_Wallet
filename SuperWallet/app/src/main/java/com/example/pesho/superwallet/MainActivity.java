@@ -1,8 +1,12 @@
 package com.example.pesho.superwallet;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,6 +26,12 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import org.joda.time.LocalDateTime;
+
+import java.util.ArrayList;
+
+import github.chenupt.springindicator.SpringIndicator;
+
 public class MainActivity extends AppCompatActivity {
     private static final int ADD_TRANSACTION = 20;
     FloatingActionMenu addTransactionButton;
@@ -29,17 +39,29 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton addExpenseFB;
     com.github.clans.fab.FloatingActionButton addTransferFB;
 
+    private static final int NUM_PAGES = 2;
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
+
+
     AccountHeader header;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TransactionsListFragment fragment = new TransactionsListFragment();
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container, fragment);
-        fragmentTransaction.commit();
+        // Instantiate a ViewPager and a PagerAdapter.
+        mPager = (ViewPager) findViewById(R.id.main_pager);
+        mPagerAdapter = new MainActivity.ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
+        
+        
+        
+//        TransactionsListFragment fragment = new TransactionsListFragment();
+//        FragmentManager manager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+//        fragmentTransaction.replace(R.id.fragment_container, fragment);
+//        fragmentTransaction.commit();
         //create nav drawer
         header = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -129,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -167,4 +190,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        public ScreenSlidePagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return new TransactionsListFragment();
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+
+    }
 }
