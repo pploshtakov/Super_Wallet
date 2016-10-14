@@ -9,10 +9,12 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.example.pesho.superwallet.model.Transaction;
@@ -29,6 +31,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,34 +41,19 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton addExpenseFB;
     com.github.clans.fab.FloatingActionButton addTransferFB;
 
-    private static final int NUM_PAGES = 30;
-    private int SET_FIRST_PAGE = 28;
-    private ViewPager mPager;
-    private PagerAdapter mPagerAdapter;
-
-
     AccountHeader header;
 
+    private FrameLayout transactionsListFL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.main_pager);
-        mPagerAdapter = new MainActivity.ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setCurrentItem(SET_FIRST_PAGE);
-        mPagerAdapter.notifyDataSetChanged();
 
-        
-        
-        
-//        TransactionsListFragment fragment = new TransactionsListFragment();
-//        FragmentManager manager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = manager.beginTransaction();
-//        fragmentTransaction.replace(R.id.fragment_container, fragment);
-//        fragmentTransaction.commit();
+        TransactionsListFragment mCurrentFragment = new TransactionsListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.transactions_list, mCurrentFragment).commit();
+
         //create nav drawer
         header = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -91,9 +79,8 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item4);
         drawer.addItem(item5);
 
-
-
         //drawer item selected listener
+        /*
         drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -126,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        */
 
         //adding floating buttons
         addTransactionButton = (FloatingActionMenu) findViewById(R.id.main_fab);
@@ -160,26 +148,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, ADD_TRANSACTION);
             }
         });
-
-        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                TransactionsListFragment fragment = ((MainActivity.ScreenSlidePagerAdapter)mPagerAdapter).getCurrentFragment(position);
-                fragment.refreshList(new LocalDateTime().minusDays(NUM_PAGES - position + 2), new LocalDateTime().minusDays(NUM_PAGES - position + 1));
-                mPagerAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
 
     }
 
@@ -222,35 +190,4 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-        ArrayList<TransactionsListFragment> fragments = new ArrayList<TransactionsListFragment>();
-        void loadPages(){
-            for (int i = 0; i < NUM_PAGES; i++) {
-                fragments.add(new TransactionsListFragment());
-            }
-        }
-        @Override
-        public Fragment getItem(int position) {
-            loadPages();
-//            TransactionsListFragment fr = new TransactionsListFragment();
-//            fragments.add(position,fr);
-            return fragments.get(position);
-        }
-
-        public TransactionsListFragment getCurrentFragment(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_PAGES;
-        }
-
-
-
-    }
 }

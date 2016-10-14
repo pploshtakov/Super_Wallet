@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.pesho.superwallet.model.Transaction;
+import com.example.pesho.superwallet.model.Transfer;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,8 +38,15 @@ public class TransactionRecyclerAdapter extends RecyclerView.Adapter<Transaction
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+        String catText;
         Transaction transaction = transactions.get(position);
-        holder.categoryTV.setText(transaction.getCategory().getCategoryName());
+        if (transaction instanceof Transfer) {
+            catText = "Transfer";
+        }
+        else {
+            catText = transaction.getCategory().getCategoryName();
+        }
+        holder.categoryTV.setText(catText);
         String myFormat = "dd.MM.yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         holder.dateTV.setText(sdf.format(transaction.getDate().toDate()));
