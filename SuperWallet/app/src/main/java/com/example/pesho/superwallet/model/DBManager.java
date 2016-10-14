@@ -502,8 +502,7 @@ public class DBManager extends SQLiteOpenHelper {
 		else {
 			values.put(KEY_TRANSACTION_CATEGORY_ID, transaction.getCategory().getCategoryId() );
 		}
-		values.put(KEY_TRANSACTION_ACCOUNT_FROM_ID, "-1");
-		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, "-1");
+		
         values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
         long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
     }
@@ -524,7 +523,6 @@ public class DBManager extends SQLiteOpenHelper {
 
 			if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString()) || transactionType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
 				Transaction.TRANSACTIONS_TYPE type = Transaction.TRANSACTIONS_TYPE.valueOf(transactionType);
-
 				Category category = null;
 				int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_CATEGORY_ID));
 
@@ -535,7 +533,7 @@ public class DBManager extends SQLiteOpenHelper {
 					}
 				}
 
-				if (category == null) {
+                if (category == null) {
 					for (Category cat : categories) {
 						if (cat.getCategoryId() == categoryId) {
 							category = cat;
@@ -555,9 +553,11 @@ public class DBManager extends SQLiteOpenHelper {
                         }
                     }
                 }
+
                 if (accountFrom == null) {
                     continue;
                 }
+
                 Transaction transaction = new Transaction(transactionId, Transaction.getDateFromSQLTimestamp(date), type, amount, accountFrom);
                 if (transaction.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income)) {
                     accountFrom.setBalance(accountFrom.getAccountBalance() + transaction.getAmount());
@@ -620,6 +620,9 @@ public class DBManager extends SQLiteOpenHelper {
         ArrayList<Account> accounts = loadAccountsForUser(user.getLocalID());
         ArrayList<Category> categories = loadCategoriesForUser(user.getLocalID());
         ArrayList<Transaction> transactions = loadTransactionsForUser(user, categories, accounts);
+        Log.e("UserData", String.valueOf(accounts.size()));
+        Log.e("UserData", String.valueOf(categories.size()));
+        Log.e("UserData", String.valueOf(transactions.size()));
 
         user.setMyAccounts(accounts);
         user.setMyCategories(categories);
