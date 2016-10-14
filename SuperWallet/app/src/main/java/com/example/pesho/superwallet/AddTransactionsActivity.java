@@ -79,6 +79,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         springIndicator = (SpringIndicator) findViewById(R.id.indicator);
         springIndicator.setViewPager(mPager);
 
+
     }
 
     @Override
@@ -172,17 +173,28 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 
 			Transfer transfer = new Transfer(transactionId, transactionDate, amount, accountFrom, accountTo);
 			transfer.setDescription(description);
+            accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
+            accountTo.setBalance(accountTo.getAccountBalance() + amount);
+            DBManager.getInstance(this).updateAccount(accountFrom);
+            DBManager.getInstance(this).updateAccount(accountTo);
+            DBManager.getInstance(this).addTransaction(transfer);
 
-			DBManager.getInstance(this).addTransaction(transfer);
-
-        } else if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString()) || transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
+        } else if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
             tp = Transaction.TRANSACTIONS_TYPE.valueOf(transactionsType);
-
-			Transaction transaction = new Transaction(transactionId, transactionDate, tp, amount );
+			Transaction transaction = new Transaction(transactionId, transactionDate, tp, amount, accountFrom );
 			transaction.setCategory(category);
 			transaction.setDescription(description);
-
-			DBManager.getInstance(this).addTransaction(transaction);
+            accountFrom.setBalance(accountFrom.getAccountBalance() + amount);
+            DBManager.getInstance(this).updateAccount(accountFrom);
+            DBManager.getInstance(this).addTransaction(transaction);
+        } else {
+            tp = Transaction.TRANSACTIONS_TYPE.valueOf(transactionsType);
+            Transaction transaction = new Transaction(transactionId, transactionDate, tp, amount , accountFrom);
+            transaction.setCategory(category);
+            transaction.setDescription(description);
+            accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
+            DBManager.getInstance(this).updateAccount(accountFrom);
+            DBManager.getInstance(this).addTransaction(transaction);
         }
 
         setResult(RESULT_OK);

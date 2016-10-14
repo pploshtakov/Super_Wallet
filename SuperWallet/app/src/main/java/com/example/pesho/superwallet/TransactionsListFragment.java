@@ -11,13 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+
 import android.widget.TextView;
 
 import com.example.pesho.superwallet.model.Transaction;
 import com.example.pesho.superwallet.model.UsersManager;
 
-import org.joda.time.DateTime;
+
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;

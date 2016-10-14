@@ -8,18 +8,15 @@ import org.joda.time.LocalDateTime;
 
 public class Transfer extends Transaction {
 
-	private Account accountFrom;
+
 	private Account accountTo;
 
 	public Transfer(int transactionId, LocalDateTime date, double amount, Account accountFrom, Account accountTo) {
-		super(transactionId, date, TRANSACTIONS_TYPE.Transfer, amount);
-		this.accountFrom = accountFrom;
+		super(transactionId, date, TRANSACTIONS_TYPE.Transfer, amount, accountFrom);
 		this.accountTo = accountTo;
 	}
 
-	public Account getAccountFrom() {
-		return accountFrom;
-	}
+
 
 	public Account getAccountTo() {
 		return accountTo;

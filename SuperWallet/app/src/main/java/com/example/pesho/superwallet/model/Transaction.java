@@ -15,15 +15,17 @@ public class Transaction {
 	private int transactionId;
     private LocalDateTime date;
     private String description;
+    protected Account accountFrom;
     private TRANSACTIONS_TYPE transactionType;
     private Category category;
     private double amount;
 
-    public Transaction(int transactionId, LocalDateTime date, TRANSACTIONS_TYPE transactionType, double amount) {
+    public Transaction(int transactionId, LocalDateTime date, TRANSACTIONS_TYPE transactionType, double amount, Account accountFrom) {
 		this.transactionId = transactionId;
         this.date = date;
         this.transactionType = transactionType;
         this.amount = amount;
+        this.accountFrom = accountFrom;
     }
 
 	public int getTransactionId() {
@@ -70,4 +72,8 @@ public class Transaction {
 		Timestamp timestamp = Timestamp.valueOf(timestamp_str);
 		return LocalDateTime.fromDateFields(timestamp);
 	}
+
+    public Account getAccountFrom() {
+        return accountFrom;
+    }
 }

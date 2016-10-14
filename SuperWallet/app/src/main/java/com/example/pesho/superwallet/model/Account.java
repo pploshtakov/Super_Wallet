@@ -55,4 +55,8 @@ public class Account {
     public String toString() {
         return accountName + "/" + String.valueOf(balance) ;
     }
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
 }

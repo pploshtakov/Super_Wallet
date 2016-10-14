@@ -500,6 +500,7 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_TRANSACTION_DATE, transaction.getDateAsSQLTimestamp().toString());
         values.put(KEY_TRANSACTION_DESCRIPTION, transaction.getDescription());
         values.put(KEY_TRANSACTION_TYPE, transaction.getTransactionType().toString());
+        values.put(KEY_TRANSACTION_ACCOUNT_FROM_ID, transaction.getAccountFrom().getAccountId());
         values.put(KEY_TRANSACTION_AMOUNT, transaction.getAmount());
 		if (transaction.getCategory() == null) {
 			values.put(KEY_TRANSACTION_CATEGORY_ID, "");
@@ -524,6 +525,7 @@ public class DBManager extends SQLiteOpenHelper {
             String date = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_DATE));
             String description = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_DESCRIPTION));
             String transactionType = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_TYPE));
+            int accountFromId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_FROM_ID));
             double amount = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_AMOUNT));
 
 			if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString()) || transactionType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
@@ -547,8 +549,27 @@ public class DBManager extends SQLiteOpenHelper {
 						}
 					}
 				}
+                Account accountFrom = null;
 
-				Transaction transaction = new Transaction(transactionId, Transaction.getDateFromSQLTimestamp(date), type, amount);
+                if (accountFromId == UsersManager.loggedUser.getDefaultAccount().getAccountId()) {
+                    accountFrom = UsersManager.loggedUser.getDefaultAccount();
+                } else {
+                    for (Account acc : accounts) {
+                        if (acc.getAccountId() == accountFromId) {
+                            accountFrom = acc;
+                            break;
+                        }
+                    }
+                }
+                if (accountFrom == null) {
+                    continue;
+                }
+                Transaction transaction = new Transaction(transactionId, Transaction.getDateFromSQLTimestamp(date), type, amount, accountFrom);
+                if (transaction.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income)) {
+                    accountFrom.setBalance(accountFrom.getAccountBalance() + transaction.getAmount());
+                } else {
+                    accountFrom.setBalance(accountFrom.getAccountBalance() - transaction.getAmount());
+                }
 				transaction.setDescription(description);
 				transaction.setCategory(category);
 				transactions.add(transaction);
@@ -556,7 +577,6 @@ public class DBManager extends SQLiteOpenHelper {
 				Account accountFrom = null;
 				Account accountTo = null;
 
-				int accountFromId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_FROM_ID));
 				int accountToId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_TO_ID));
 				if (accountFromId == user.getDefaultAccount().getAccountId()) {
 					accountFrom = user.getDefaultAccount();
@@ -582,11 +602,17 @@ public class DBManager extends SQLiteOpenHelper {
 					}
 				}
 
-				if (accountFrom == null || accountTo == null) {
+				if (accountFrom == null && accountTo == null) {
 					continue;
 				}
 
 				Transaction transfer = new Transfer(transactionId, Transaction.getDateFromSQLTimestamp(date), amount, accountFrom, accountTo);
+                if (accountFrom != null) {
+                    accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
+                }
+                if (accountTo != null) {
+                    accountTo.setBalance(accountTo.getAccountBalance() + amount);
+                }
 				transfer.setDescription(description);
 				transactions.add(transfer);
             }
