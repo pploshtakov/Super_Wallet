@@ -57,5 +57,6 @@
     <string name="accountAdd_radio_text_cash">Cash</string>
     <string name="accountAdd_radio_text_account">Bank Account</string>
     <string name="accountAdd_radio_text_card">Card</string>
+    <string name="expand_arrow_icon">Expand arrow icon</string>
 
 </resources>
