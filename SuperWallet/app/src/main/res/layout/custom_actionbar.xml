@@ -14,6 +14,8 @@
         android:layout_centerVertical="true"
         android:background="?android:actionBarItemBackground"
         app:boom_inActionBar="true"
+        app:boom_button_color="@color/colorPrimary"
+        app:boom_button_pressed_color="@color/colorPrimary"
         />
 
     <TextView

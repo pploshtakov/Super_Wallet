@@ -5,7 +5,7 @@
         android:icon="@drawable/stats"
         android:title=""
 
-        pesho:showAsAction="always">
+        pesho:showAsAction="ifRoom">
     </item>
     <item android:id="@+id/action_home"
         android:title="@string/home"
@@ -25,9 +25,5 @@
         android:title="@string/settings"
         pesho:showAsAction="never">
     </item>
-
-
-
-
 
 </menu>
