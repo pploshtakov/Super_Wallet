@@ -58,5 +58,6 @@
     <string name="accountAdd_radio_text_account">Bank Account</string>
     <string name="accountAdd_radio_text_card">Card</string>
     <string name="expand_arrow_icon">Expand arrow icon</string>
+    <string name="negative_amount_toast">Transaction cannot be negative or zero!</string>
 
 </resources>

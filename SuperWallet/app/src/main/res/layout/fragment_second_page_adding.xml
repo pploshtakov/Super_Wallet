@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/fragment_second_page"
     tools:context="com.example.pesho.superwallet.SecondPageAddingFragment">
 
     <LinearLayout
@@ -58,7 +59,7 @@
             android:textColor="@color/white"
             android:textColorHint="@color/white"
             android:gravity="center"
-            android:id="@+id/addt_description_tv"
+            android:id="@+id/addt_description_et"
             />
         <LinearLayout
             android:layout_width="match_parent"

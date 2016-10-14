@@ -7,13 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,6 +46,7 @@ public class SecondPageAddingFragment extends Fragment {
     Spinner accountToSpinner;
     ImageButton backButton;
     ImageButton saveButton;
+    EditText descriptionET;
 
     public SecondPageAddingFragment() {
         // Required empty public constructor
@@ -55,6 +58,7 @@ public class SecondPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_second_page_adding, container, false);
+        descriptionET = (EditText) root.findViewById(R.id.addt_description_et);
         //save transaction
         saveButton = (ImageButton) root.findViewById(R.id.second_page_save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +78,7 @@ public class SecondPageAddingFragment extends Fragment {
             }
         });
 
+
         myActivity.registerFragment(this);
         titleTV = (TextView) root.findViewById(R.id.second_page_title);
         //get spinners and set adapter
@@ -83,12 +88,14 @@ public class SecondPageAddingFragment extends Fragment {
         accountFromSpinner.setAdapter(adapter);
         accountToSpinner.setAdapter(adapter);
 
+
         //set spinners listener
         accountFromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Account selectedAccount = myActivity.getAccounts().get(position);
                 myActivity.setAccountFrom(selectedAccount);
+                myActivity.setSelectedAccountFrom(accountFromSpinner.getSelectedItemPosition());
             }
 
             @Override
@@ -102,6 +109,7 @@ public class SecondPageAddingFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Account selectedAccount = myActivity.getAccounts().get(position);
                 myActivity.setAccountTo(selectedAccount);
+                myActivity.setSelectedAccountTo(accountToSpinner.getSelectedItemPosition());
             }
 
             @Override
@@ -145,7 +153,27 @@ public class SecondPageAddingFragment extends Fragment {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        //edittext get text immediately
+        descriptionET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                myActivity.setDescription("");
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                myActivity.setDescription(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                myActivity.setDescription(s.toString());
+            }
+        });
+
         return root;
+
     }
 
     void notifyAmountChanged(double amount) {
@@ -159,6 +187,8 @@ public class SecondPageAddingFragment extends Fragment {
     void notifyAccountToChanged(double amount) {
         //TODO set selected account
     }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -176,5 +206,15 @@ public class SecondPageAddingFragment extends Fragment {
         String myFormat = "dd.MM.yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         dateTV.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    public void refreshAccountFrom(int selectedAccountFrom) {
+        if(selectedAccountFrom != -1)
+        accountFromSpinner.setSelection(selectedAccountFrom);
+    }
+
+    public void refreshAccountTo(int selectedAccountTo) {
+        if (selectedAccountTo != -1)
+        accountToSpinner.setSelection(selectedAccountTo);
     }
 }

@@ -35,6 +35,16 @@ import static android.app.Activity.RESULT_OK;
 public class FirstPageAddingFragment extends Fragment {
     public static final int PICK_CATEGORY = 1;
 
+    public void refreshAccountFrom(int selectedAccountFrom) {
+        if (selectedAccountFrom != -1)
+        accountsSpinner.setSelection(selectedAccountFrom);
+    }
+
+    public void refreshAccountTo(int selectedAccountTo) {
+        if (selectedAccountTo != -1)
+        accountsSpinner1.setSelection(selectedAccountTo);
+    }
+
     enum ARITHMETIC_SIGN {PLUS, MINUS, DIVIDE, MUL}
     Category category;
     ArrayList<Category> defaultCategories;
@@ -78,6 +88,7 @@ public class FirstPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_first_page_adding, container, false);
+        myActivity.registerFragment(this);
         //save transaction
         saveButton = (ImageButton) root.findViewById(R.id.addt_first_page_save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +119,7 @@ public class FirstPageAddingFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Account selectedAccount = myActivity.getAccounts().get(position);
                 myActivity.setAccountFrom(selectedAccount);
+                myActivity.setSelectedAccountFrom(accountsSpinner.getSelectedItemPosition());
             }
 
             @Override
@@ -147,6 +159,7 @@ public class FirstPageAddingFragment extends Fragment {
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     Account selectedAccount = myActivity.getAccounts().get(position);
                     myActivity.setAccountTo(selectedAccount);
+                    myActivity.setSelectedAccountTo(accountsSpinner1.getSelectedItemPosition());
                 }
 
                 @Override

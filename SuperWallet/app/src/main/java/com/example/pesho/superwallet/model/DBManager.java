@@ -502,7 +502,7 @@ public class DBManager extends SQLiteOpenHelper {
 		else {
 			values.put(KEY_TRANSACTION_CATEGORY_ID, transaction.getCategory().getCategoryId() );
 		}
-		
+		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, "-1");
         values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
         long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
     }

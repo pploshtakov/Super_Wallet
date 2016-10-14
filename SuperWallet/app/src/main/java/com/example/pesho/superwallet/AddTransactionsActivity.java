@@ -9,6 +9,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.model.Account;
@@ -51,12 +52,15 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     private Account accountTo;
     private double amount;
     private String description;
+    private int selectedAccountFrom = -1;
+    private int selectedAccountTo = -1;
     private LocalDateTime transactionDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transactions);
+        fragments = new ArrayList<Fragment>();
         //get transaction's type
         Intent intent = getIntent();
         if (intent.hasExtra("Transaction")) {
@@ -79,6 +83,30 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         springIndicator = (SpringIndicator) findViewById(R.id.indicator);
         springIndicator.setViewPager(mPager);
 
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Fragment fragment;
+                if (position == 0) {
+
+                } else {
+
+//                    fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_second_page);
+//                    ((SecondPageAddingFragment)fragment).refreshAccountFrom(selectedAccountFrom);
+//                    ((SecondPageAddingFragment)fragment).refreshAccountTo(selectedAccountTo);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 
@@ -114,8 +142,8 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 
     @Override
     public void registerFragment(Fragment fragment) {
-        fragments = new ArrayList<Fragment>();
         fragments.add(fragment);
+
     }
 
 
@@ -168,10 +196,14 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         Transaction.TRANSACTIONS_TYPE tp;
 
 		int transactionId = DBManager.getInstance(this).getNextTransactionIndex();
-
+        if (amount <= 0) {
+            Toast.makeText(this, R.string.negative_amount_toast, Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
 
 			Transfer transfer = new Transfer(transactionId, transactionDate, amount, accountFrom, accountTo);
+            Log.e("Description", description);
 			transfer.setDescription(description);
             accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
             accountTo.setBalance(accountTo.getAccountBalance() + amount);
@@ -188,6 +220,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             tp = Transaction.TRANSACTIONS_TYPE.valueOf(transactionsType);
             Transaction transaction = new Transaction(transactionId, transactionDate, tp, amount , accountFrom);
             transaction.setCategory(category);
+            Log.e("Description", description);
             transaction.setDescription(description);
             accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
             DBManager.getInstance(this).addTransaction(transaction);
@@ -220,7 +253,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
                 case 1:
                     return new SecondPageAddingFragment();
             }
-            return new TransactionsListFragment();
+            return null;
         }
 
         @Override
@@ -230,4 +263,36 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 
     }
 
+    public void setSelectedAccountFrom(int selectedAccountFrom) {
+        this.selectedAccountFrom = selectedAccountFrom;
+        for (Fragment fr: fragments) {
+            if (fr instanceof FirstPageAddingFragment) {
+                ((FirstPageAddingFragment)fr).refreshAccountFrom(selectedAccountFrom);
+
+            } else {
+                ((SecondPageAddingFragment)fr).refreshAccountFrom(selectedAccountFrom);
+
+            }
+        }
+    }
+
+    public int getSelectedAccountFrom() {
+        return selectedAccountFrom;
+    }
+
+    public void setSelectedAccountTo(int selectedAccountTo) {
+        this.selectedAccountTo = selectedAccountTo;
+        for (Fragment fr: fragments) {
+            if (fr instanceof FirstPageAddingFragment) {
+                ((FirstPageAddingFragment)fr).refreshAccountTo(selectedAccountTo);
+            } else {
+                ((SecondPageAddingFragment)fr).refreshAccountTo(selectedAccountTo);
+
+            }
+        }
+    }
+
+    public int getSelectedAccountTo() {
+        return selectedAccountTo;
+    }
 }

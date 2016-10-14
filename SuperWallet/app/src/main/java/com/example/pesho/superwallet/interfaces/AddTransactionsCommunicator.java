@@ -27,4 +27,11 @@ public interface AddTransactionsCommunicator {
     void setDescription(String description);
     void saveTransaction();
     void cancelTransaction();
+    public void setSelectedAccountFrom(int selectedAccountFrom);
+
+    public int getSelectedAccountFrom();
+
+    public void setSelectedAccountTo(int selectedAccountTo);
+
+    public int getSelectedAccountTo();
 }
