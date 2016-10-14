@@ -1,20 +1,20 @@
 package com.example.pesho.superwallet;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pesho.superwallet.model.Transaction;
@@ -27,6 +27,12 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.Types.BoomType;
+import com.nightonke.boommenu.Types.ButtonType;
+import com.nightonke.boommenu.Types.OrderType;
+import com.nightonke.boommenu.Types.PlaceType;
+import com.nightonke.boommenu.Util;
 
 import org.joda.time.LocalDateTime;
 
@@ -43,12 +49,34 @@ public class MainActivity extends AppCompatActivity {
 
     AccountHeader header;
 
-    private FrameLayout transactionsListFL;
+    private boolean init = false;
+    private BoomMenuButton boomMenuButtonInActionBar;
+
+    View mCustomView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        ActionBar mActionBar = getSupportActionBar();
+        mActionBar.setDisplayShowHomeEnabled(false);
+        mActionBar.setDisplayShowTitleEnabled(false);
+        LayoutInflater mInflater = LayoutInflater.from(this);
+
+        mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
+        TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
+        mTitleTextView.setText(R.string.app_name);
+
+        boomMenuButtonInActionBar = (BoomMenuButton) mCustomView.findViewById(R.id.boom);
+
+        mActionBar.setCustomView(mCustomView);
+        mActionBar.setDisplayShowCustomEnabled(true);
+
+        ((Toolbar) mCustomView.getParent()).setContentInsetsAbsolute(0,0);
+
+
 
         TransactionsListFragment mCurrentFragment = new TransactionsListFragment();
         getSupportFragmentManager().beginTransaction()
@@ -188,6 +216,69 @@ public class MainActivity extends AppCompatActivity {
         MenuItem itemView = menu.findItem(R.id.action_home);
         itemView.setVisible(false);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        if (boomMenuButtonInActionBar != null) {
+            // Use a param to record whether the boom button has been initialized
+            // Because we don't need to init it again when onResume()
+            if (init) return;
+            init = true;
+
+            Drawable[] subButtonDrawables = new Drawable[3];
+            int[] drawablesResource = new int[]{
+                    R.drawable.house,
+                    R.drawable.fridge,
+                    R.drawable.fork_spoon
+            };
+            for (int i = 0; i < 3; i++)
+                subButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
+
+            String[] subButtonTexts = new String[]{"BoomMenuButton", "View source code", "Follow me"};
+
+            int[][] subButtonColors = new int[3][2];
+            for (int i = 0; i < 3; i++) {
+                subButtonColors[i][1] = ContextCompat.getColor(this, R.color.white);
+                subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
+            }
+
+            // Now with Builder, you can init BMB more convenient
+            new BoomMenuButton.Builder()
+                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.house), subButtonColors[0], "BoomMenuButton")
+                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.fridge), subButtonColors[0], "View source code")
+                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.fork_spoon), subButtonColors[0], "Follow me")
+                    .button(ButtonType.HAM)
+                    .boom(BoomType.PARABOLA)
+                    .place(PlaceType.HAM_3_1)
+                    .subButtonTextColor(ContextCompat.getColor(this, R.color.black))
+                    .subButtonsShadow(Util.getInstance().dp2px(2), Util.getInstance().dp2px(2))
+                    .delay(50)
+                    .duration(600)
+                    .showOrder(OrderType.REVERSE)
+                    .init(boomMenuButtonInActionBar).setOnSubButtonClickListener(new BoomMenuButton.OnSubButtonClickListener() {
+
+                @Override
+                public void onClick(int buttonIndex) {
+                    Log.e("SuperWallet ", "Button index: " + buttonIndex);
+                    if (buttonIndex == 0) {
+                        Intent intent = new Intent(MainActivity.this, CategoryListActivity.class);
+                        startActivityForResult(intent, 0);
+                    }
+                    if (buttonIndex == 1) {
+                        Intent intent = new Intent(MainActivity.this, AccountsActivity.class);
+                        startActivityForResult(intent, 0);
+                    }
+                }
+            });
+
+            Log.e("SuperWallet ", "Boom Menu Button !!!NOT NULL!!!");
+        }
+        else {
+            Log.e("SuperWallet ", "Boom Menu Button is NULL.");
+        }
     }
 
 }
