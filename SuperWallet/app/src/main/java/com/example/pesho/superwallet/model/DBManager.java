@@ -257,13 +257,7 @@ public class DBManager extends SQLiteOpenHelper {
 			User user = new User(localID, googleID, facebookID, name, username, password, email);
             users.put(username, user);
 
-			ArrayList<Account> accounts = loadAccountsForUser(localID);
-			ArrayList<Category> categories = loadCategoriesForUser(localID);
-			ArrayList<Transaction> transactions = loadTransactionsForUser(user, categories, accounts);
 
-			user.setMyAccounts(accounts);
-			user.setMyCategories(categories);
-			user.setMyTransactions(transactions);
 
         }
         cursor.close();
@@ -621,4 +615,14 @@ public class DBManager extends SQLiteOpenHelper {
 		return transactions;
     }
 
+
+    public void loadDataFor(User user) {
+        ArrayList<Account> accounts = loadAccountsForUser(user.getLocalID());
+        ArrayList<Category> categories = loadCategoriesForUser(user.getLocalID());
+        ArrayList<Transaction> transactions = loadTransactionsForUser(user, categories, accounts);
+
+        user.setMyAccounts(accounts);
+        user.setMyCategories(categories);
+        user.setMyTransactions(transactions);
+    }
 }

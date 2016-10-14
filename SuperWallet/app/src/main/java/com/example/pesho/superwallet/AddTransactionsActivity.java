@@ -175,8 +175,6 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 			transfer.setDescription(description);
             accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
             accountTo.setBalance(accountTo.getAccountBalance() + amount);
-            DBManager.getInstance(this).updateAccount(accountFrom);
-            DBManager.getInstance(this).updateAccount(accountTo);
             DBManager.getInstance(this).addTransaction(transfer);
 
         } else if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
@@ -185,7 +183,6 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 			transaction.setCategory(category);
 			transaction.setDescription(description);
             accountFrom.setBalance(accountFrom.getAccountBalance() + amount);
-            DBManager.getInstance(this).updateAccount(accountFrom);
             DBManager.getInstance(this).addTransaction(transaction);
         } else {
             tp = Transaction.TRANSACTIONS_TYPE.valueOf(transactionsType);
@@ -193,7 +190,6 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             transaction.setCategory(category);
             transaction.setDescription(description);
             accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
-            DBManager.getInstance(this).updateAccount(accountFrom);
             DBManager.getInstance(this).addTransaction(transaction);
         }
 

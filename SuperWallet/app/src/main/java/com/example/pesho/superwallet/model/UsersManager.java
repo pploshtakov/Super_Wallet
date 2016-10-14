@@ -80,6 +80,7 @@ public class UsersManager {
 
     public static void setLoggedUser(String username) {
         loggedUser = users.get(username);
+        DBManager.getInstance(context).loadDataFor(loggedUser);
 		Log.e("SuperWallet ", "Logged In User ID[" + loggedUser.getLocalID() + "]");
     }
 
