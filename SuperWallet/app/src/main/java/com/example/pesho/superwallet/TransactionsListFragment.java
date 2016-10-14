@@ -14,8 +14,13 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
 import com.example.pesho.superwallet.model.Transaction;
+import com.example.pesho.superwallet.model.TransactionsListCategory;
+import com.example.pesho.superwallet.model.TransactionsListTransaction;
+import com.example.pesho.superwallet.model.Transfer;
 import com.example.pesho.superwallet.model.UsersManager;
+import com.example.pesho.superwallet.myViews.CategoryExpandableAdapter;
 
 
 import org.joda.time.DateTimeConstants;
@@ -24,7 +29,10 @@ import org.joda.time.LocalDateTime;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import pro.alexzaitsev.freepager.library.view.infinite.Constants;
 import pro.alexzaitsev.freepager.library.view.infinite.InfiniteHorizontalPagerAdapter;
@@ -158,8 +166,52 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		transactions = UsersManager.loggedUser.getTransactions(currentPeriodStart, currentPeriodEnd);
 		periodTV.setText((new LocalDate(currentPeriodStart)).toString() + " - " + (new LocalDate(currentPeriodEnd)).toString());
 
-		adapter = new TransactionRecyclerAdapter(transactions, myRecyclerView);
-		myRecyclerView.setAdapter(adapter);
+		ArrayList<ParentObject> categoryList = new ArrayList<>();
+		HashMap<String, ArrayList<Transaction>> categoryMap = new HashMap<>();
+		for (Transaction tr: transactions) {
+			if (tr instanceof Transfer) {
+				if (!categoryMap.containsKey("Transfer")) {
+					categoryMap.put("Transfer", new ArrayList<Transaction>());
+				}
+				categoryMap.get("Transfer").add(tr);
+			}
+			else {
+				if (categoryMap.get(tr.getCategory().getCategoryName()) == null) {
+					categoryMap.put(tr.getCategory().getCategoryName(), new ArrayList<Transaction>());
+				}
+				categoryMap.get(tr.getCategory().getCategoryName()).add(tr);
+			}
+		}
+		for (Map.Entry e: categoryMap.entrySet()) {
+			TransactionsListCategory pObj = new TransactionsListCategory(e.getKey().toString());
+
+			ArrayList<Object> childList = new ArrayList<>();
+
+			if (e.getValue() instanceof ArrayList) {
+				ArrayList<Transaction> transactions = (ArrayList) e.getValue();
+				for (Transaction tr : transactions) {
+					childList.add(new TransactionsListTransaction(tr.getDate()));
+					Log.e("SuperWallet ", "Transaction id: " + tr.getTransactionId());
+				}
+			}
+
+			pObj.setChildObjectList(childList);
+			categoryList.add(pObj);
+		}
+//		for (int i = 0; i < 5; i++) {
+//			TransactionsListCategory pObj = new TransactionsListCategory("Category " + i);
+//			ArrayList<Object> childList = new ArrayList<Object>();
+//			childList.add(new TransactionsListTransaction(new LocalDateTime()));
+//			pObj.setChildObjectList(childList);
+//			categoryList.add(pObj);
+//		}
+		CategoryExpandableAdapter mCategoryExpandableAdapter = new CategoryExpandableAdapter(getActivity(), categoryList);
+		mCategoryExpandableAdapter.setCustomParentAnimationViewId(R.id.parent_list_item_expand_arrow);
+		mCategoryExpandableAdapter.setParentClickableViewAnimationDefaultDuration();
+		mCategoryExpandableAdapter.setParentAndIconExpandOnClick(true);
+
+		//adapter = new TransactionRecyclerAdapter(transactions, myRecyclerView);
+		myRecyclerView.setAdapter(mCategoryExpandableAdapter);
 
 		double[] reportData = calculateReports(transactions);
 
@@ -179,7 +231,7 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 	private double[] calculateReports(ArrayList<? extends Transaction> transactions) {
 		double income = 0;
 		double expense = 0;
-		double total = 0;
+		double total;
 		if (transactions != null) {
 			for (Transaction tr : transactions) {
 				if (tr.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income)) {
