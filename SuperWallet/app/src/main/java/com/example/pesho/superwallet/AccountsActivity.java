@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pesho.superwallet.model.Account;
+import com.example.pesho.superwallet.model.Category;
 import com.example.pesho.superwallet.model.DBManager;
 import com.example.pesho.superwallet.model.UsersManager;
 
@@ -378,8 +379,8 @@ public class AccountsActivity
 			// Now with Builder, you can init BMB more convenient
 			new BoomMenuButton.Builder()
 					.addSubButton(ContextCompat.getDrawable(this, R.drawable.house), subButtonColors[0], "BoomMenuButton")
-					.addSubButton(ContextCompat.getDrawable(this, R.drawable.fridge), subButtonColors[0], "View source code")
-					.addSubButton(ContextCompat.getDrawable(this, R.drawable.fork_spoon), subButtonColors[0], "Follow me")
+					.addSubButton(ContextCompat.getDrawable(this, R.drawable.category), subButtonColors[0], "View source code")
+					.addSubButton(ContextCompat.getDrawable(this, R.drawable.settings), subButtonColors[0], "Follow me")
 					.button(ButtonType.HAM)
 					.boom(BoomType.PARABOLA)
 					.place(PlaceType.HAM_3_1)
@@ -394,12 +395,14 @@ public class AccountsActivity
 				public void onClick(int buttonIndex) {
 					Log.e("SuperWallet ", "Button index: " + buttonIndex);
 					if (buttonIndex == 0) {
-						Intent intent = new Intent(AccountsActivity.this, CategoryListActivity.class);
-						startActivityForResult(intent, 0);
+						Intent intent = new Intent(AccountsActivity.this, MainActivity.class);
+						startActivity(intent);
+						finish();
 					}
 					if (buttonIndex == 1) {
-						Intent intent = new Intent(AccountsActivity.this, AccountsActivity.class);
-						startActivityForResult(intent, 0);
+						Intent intent = new Intent(AccountsActivity.this, CategoryListActivity.class);
+						startActivity(intent);
+						finish();
 					}
 				}
 			});

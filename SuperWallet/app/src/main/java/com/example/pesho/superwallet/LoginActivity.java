@@ -2,6 +2,8 @@ package com.example.pesho.superwallet;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +22,9 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import java.io.InputStream;
+import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -118,7 +123,9 @@ public class LoginActivity extends AppCompatActivity {
                 UsersManager.addUser(u);
             }
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.putExtra("ImageURL", acct.getPhotoUrl());
             UsersManager.setLoggedUser(acct.getDisplayName());
+            new LoadImageAsyncTask().execute(acct.getPhotoUrl().toString());
             startActivity(intent);
             finish();
 //            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
@@ -144,4 +151,24 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private class LoadImageAsyncTask extends AsyncTask<String, Void, Drawable> {
+        @Override
+        protected Drawable doInBackground(String... params) {
+            try {
+                InputStream is = (InputStream) new URL(params[0]).getContent();
+                Drawable d = Drawable.createFromStream(is, "src name");
+                return d;
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Drawable drawable) {
+            super.onPostExecute(drawable);
+            Log.e("Profile", "******");
+            UsersManager.loggedUser.setProfileImage(drawable);
+        }
+
+    }
 }

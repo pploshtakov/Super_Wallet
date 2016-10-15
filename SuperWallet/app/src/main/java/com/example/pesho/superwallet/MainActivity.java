@@ -2,6 +2,7 @@ package com.example.pesho.superwallet;
 
 import android.content.Intent;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.graphics.drawable.Drawable;
@@ -33,7 +34,8 @@ import com.nightonke.boommenu.Types.OrderType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
 
-
+import java.io.InputStream;
+import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean init = false;
     private BoomMenuButton boomMenuButtonInActionBar;
+    Drawable profileImage;
 
     View mCustomView;
 
@@ -80,16 +83,34 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.transactions_list, mCurrentFragment).commit();
 
         //create nav drawer
-        header = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withHeaderBackground(R.drawable.header_background)
-                .addProfiles(
-                        new ProfileDrawerItem().withName(UsersManager.loggedUser.getName())
-                                .withEmail(UsersManager.loggedUser.getEmail())
-                                //.withIcon(UsersManager.loggedUser.getPhoto)
-                )
-                .withSelectionListEnabledForSingleProfile(false)
-                .build();
+
+        profileImage = UsersManager.loggedUser.getProfileImage();
+        if (profileImage == null) {
+            Log.e("Profile", "//////");
+        }
+        if (profileImage != null) {
+            header = new AccountHeaderBuilder()
+                    .withActivity(this)
+                    .withHeaderBackground(R.drawable.header_background)
+                    .addProfiles(
+                            new ProfileDrawerItem().withName(UsersManager.loggedUser.getName())
+                                    .withEmail(UsersManager.loggedUser.getEmail())
+                                    .withIcon(profileImage)
+                    )
+                    .withSelectionListEnabledForSingleProfile(false)
+                    .build();
+        } else {
+            header = new AccountHeaderBuilder()
+                    .withActivity(this)
+                    .withHeaderBackground(R.drawable.header_background)
+                    .addProfiles(
+                            new ProfileDrawerItem().withName(UsersManager.loggedUser.getName())
+                                    .withEmail(UsersManager.loggedUser.getEmail())
+                    )
+                    .withSelectionListEnabledForSingleProfile(false)
+                    .build();
+        }
+
         Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.secondPrimary).withAccountHeader(header).build();
         //create drawer's items
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withTextColorRes(R.color.white).withName(R.string.drawer_item_day);
@@ -228,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
             Drawable[] subButtonDrawables = new Drawable[3];
             int[] drawablesResource = new int[]{
                     R.drawable.house,
-                    R.drawable.fridge,
+                    R.drawable.bill,
                     R.drawable.fork_spoon
             };
             for (int i = 0; i < 3; i++)
@@ -241,12 +262,13 @@ public class MainActivity extends AppCompatActivity {
                 subButtonColors[i][1] = ContextCompat.getColor(this, R.color.white);
                 subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
             }
+            
 
             // Now with Builder, you can init BMB more convenient
             new BoomMenuButton.Builder()
-                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.house), subButtonColors[0], "BoomMenuButton")
-                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.fridge), subButtonColors[0], "View source code")
-                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.fork_spoon), subButtonColors[0], "Follow me")
+                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.category), subButtonColors[0], "BoomMenuButton")
+                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.bill), subButtonColors[0], "View source code")
+                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.settings), subButtonColors[0], "Follow me")
                     .button(ButtonType.HAM)
                     .boom(BoomType.PARABOLA)
                     .place(PlaceType.HAM_3_1)
@@ -277,5 +299,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("SuperWallet ", "Boom Menu Button is NULL.");
         }
     }
+
+
 
 }
