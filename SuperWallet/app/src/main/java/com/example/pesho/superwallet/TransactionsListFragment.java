@@ -4,6 +4,7 @@ package com.example.pesho.superwallet;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +15,7 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
+import com.bignerdranch.expandablerecyclerview.model.Parent;
 import com.example.pesho.superwallet.model.Transaction;
 import com.example.pesho.superwallet.model.TransactionsListCategory;
 import com.example.pesho.superwallet.model.TransactionsListTransaction;
@@ -24,6 +25,7 @@ import com.example.pesho.superwallet.myViews.CategoryExpandableAdapter;
 
 
 import org.joda.time.DateTimeConstants;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
@@ -44,11 +46,13 @@ import pro.alexzaitsev.freepager.library.view.infinite.ViewFactory;
  */
 public class TransactionsListFragment extends Fragment implements ViewFactory {
 
-	private static final int TIMEPERIOD_DAY = 0;
-	private static final int TIMEPERIOD_WEEK = 1;
-	private static final int TIMEPERIOD_MONTH = 2;
-	private static final int TIMEPERIOD_YEAR = 3;
+	public static final int TIMEPERIOD_DAY = 0;
+	public static final int TIMEPERIOD_WEEK = 1;
+	public static final int TIMEPERIOD_MONTH = 2;
+	public static final int TIMEPERIOD_YEAR = 3;
 	private int CURRENT_TIMEPERIOD = TIMEPERIOD_DAY;
+
+	private int currentPage = 0;
 
 	private static final int REPORT_INDEX_TOTAL = 0;
 	private static final int REPORT_INDEX_INCOME = 1;
@@ -61,6 +65,11 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 
 	TransactionRecyclerAdapter adapter;
 	RecyclerView myRecyclerView;
+	ArrayList<TransactionsListCategory> categoriesList;
+	CategoryExpandableAdapter mCategoryExpandableAdapter;
+
+	ViewPager verticalPager;
+	InfiniteHorizontalPagerAdapter iAdapter;
 
 	TextView periodTV;
 	TextView incomeTV;
@@ -78,6 +87,11 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 	LocalDateTime endOfYear;
 
     public TransactionsListFragment() {
+		Bundle args = getArguments();
+		if (args != null) {
+			CURRENT_TIMEPERIOD = args.getInt("timePeriod", TIMEPERIOD_DAY);
+		}
+
         // Required empty public constructor
 		startDate = new LocalDateTime();
 		startDate = startDate.minusYears(10);
@@ -104,8 +118,6 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		endOfYear = startOfYear.plusYears(1).minusDays(1).withTime(23, 59, 59, 999);
     }
 
-
-
 	LayoutInflater inflater;
 	ViewGroup container;
 
@@ -116,9 +128,9 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		this.inflater = inflater;
 		this.container = container;
 
-		ViewPager verticalPager = (ViewPager) inflater.inflate(
+		verticalPager = (ViewPager) inflater.inflate(
 				R.layout.fragment_infinite_horizontal, container, false);
-		InfiniteHorizontalPagerAdapter iAdapter = new InfiniteHorizontalPagerAdapter(this, 0);
+		iAdapter = new InfiniteHorizontalPagerAdapter(this, 0);
 		verticalPager.setAdapter(iAdapter);
 		verticalPager.setCurrentItem(Constants.START_INDEX);
 		return verticalPager;
@@ -126,11 +138,43 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 
 	LocalDateTime currentPeriodStart;
 	LocalDateTime currentPeriodEnd;
+	StringBuilder dateBuilder = new StringBuilder();
+
+	public String buildDateText(LocalDateTime currentPeriodStart, LocalDateTime currentPeriodEnd) {
+		dateBuilder.setLength(0);
+		switch (CURRENT_TIMEPERIOD) {
+			case TIMEPERIOD_WEEK:
+				dateBuilder.append(currentPeriodStart.getDayOfMonth());
+				dateBuilder.append('-');
+				dateBuilder.append(currentPeriodEnd.getDayOfMonth());
+				dateBuilder.append(' ');
+				dateBuilder.append(currentPeriodStart.monthOfYear().getAsText(new Locale("bg")).toUpperCase());
+				dateBuilder.append(' ');
+				dateBuilder.append(currentPeriodStart.getYear());
+				break;
+			case TIMEPERIOD_MONTH:
+				dateBuilder.append(currentPeriodStart.monthOfYear().getAsText(new Locale("bg")).toUpperCase());
+				dateBuilder.append(' ');
+				dateBuilder.append(currentPeriodStart.getYear());
+				break;
+			case TIMEPERIOD_YEAR:
+				dateBuilder.append(currentPeriodStart.getYear());
+				break;
+			case TIMEPERIOD_DAY:
+			default:
+				dateBuilder.append(currentPeriodStart.getDayOfMonth());
+				dateBuilder.append(' ');
+				dateBuilder.append(currentPeriodStart.monthOfYear().getAsText(new Locale("bg")).toUpperCase());
+				dateBuilder.append(' ');
+				dateBuilder.append(currentPeriodStart.getYear());
+				break;
+		}
+		return dateBuilder.toString();
+	}
+
 	@Override
 	public View makeView(int vertical, int horizontal) {
-//		Button btn = new Button(getActivity());
-//		btn.setText("Horizontal " + horizontal);
-//		return btn;
+		currentPage = horizontal;
 
 		View root = LayoutInflater.from(getContext()).inflate(R.layout.fragment_transactions_list, container, false);
 
@@ -142,31 +186,51 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 
 		myRecyclerView = (RecyclerView) root.findViewById(R.id.transactions_recycler_view);
 		myRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+		categoriesList = generateTransactionsList(horizontal);
+		mCategoryExpandableAdapter = new CategoryExpandableAdapter(getActivity(), categoriesList);
+		myRecyclerView.setAdapter(mCategoryExpandableAdapter);
 
+		periodTV.setText(buildDateText(currentPeriodStart, currentPeriodEnd));
+
+		double[] reportData = calculateReports(transactions);
+
+		incomeTV.setText(String.valueOf(reportData[REPORT_INDEX_INCOME]));
+		expenseTV.setText(String.valueOf(reportData[REPORT_INDEX_EXPENSE]));
+		totalTV.setText(String.valueOf(reportData[REPORT_INDEX_TOTAL]));
+
+		if (reportData[REPORT_INDEX_TOTAL] < 0) {
+			totalTV.setTextColor(Color.RED);
+		} else {
+			totalTV.setTextColor(Color.BLUE);
+		}
+
+		return root;
+	}
+
+	public ArrayList<TransactionsListCategory> generateTransactionsList(int page) {
 		switch (CURRENT_TIMEPERIOD) {
 			case TIMEPERIOD_WEEK:
-				currentPeriodStart = startOfWeek.plusWeeks(horizontal);
-				currentPeriodEnd = endOfWeek.plusWeeks(horizontal);
+				currentPeriodStart = startOfWeek.plusWeeks(page);
+				currentPeriodEnd = endOfWeek.plusWeeks(page);
 				break;
 			case TIMEPERIOD_MONTH:
-				currentPeriodStart = startOfMonth.plusMonths(horizontal);
-				currentPeriodEnd = endOfMonth.plusMonths(horizontal);
+				currentPeriodStart = startOfMonth.plusMonths(page);
+				currentPeriodEnd = endOfMonth.plusMonths(page);
 				break;
 			case TIMEPERIOD_YEAR:
-				currentPeriodStart = startOfYear.plusYears(horizontal);
-				currentPeriodEnd = endOfYear.plusYears(horizontal);
+				currentPeriodStart = startOfYear.plusYears(page);
+				currentPeriodEnd = endOfYear.plusYears(page);
 				break;
 			case TIMEPERIOD_DAY:
 			default:
-				currentPeriodStart = currentDayStart.plusDays(horizontal);
-				currentPeriodEnd = currentDayEnd.plusDays(horizontal);
+				currentPeriodStart = currentDayStart.plusDays(page);
+				currentPeriodEnd = currentDayEnd.plusDays(page);
 
 				break;
 		}
 		transactions = UsersManager.loggedUser.getTransactions(currentPeriodStart, currentPeriodEnd);
-		periodTV.setText((new LocalDate(currentPeriodStart)).toString() + " - " + (new LocalDate(currentPeriodEnd)).toString());
 
-		ArrayList<ParentObject> categoryList = new ArrayList<>();
+		ArrayList<TransactionsListCategory> categoryList = new ArrayList<>();
 		HashMap<String, ArrayList<Transaction>> categoryMap = new HashMap<>();
 		for (Transaction tr: transactions) {
 			if (tr instanceof Transfer) {
@@ -185,47 +249,19 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		for (Map.Entry e: categoryMap.entrySet()) {
 			TransactionsListCategory pObj = new TransactionsListCategory(e.getKey().toString());
 
-			ArrayList<Object> childList = new ArrayList<>();
+			ArrayList<TransactionsListTransaction> childList = new ArrayList<>();
 
 			if (e.getValue() instanceof ArrayList) {
-				ArrayList<Transaction> transactions = (ArrayList) e.getValue();
+				ArrayList<Transaction> transactions = (ArrayList<Transaction>) e.getValue();
 				for (Transaction tr : transactions) {
 					childList.add(new TransactionsListTransaction(tr.getDate()));
-					Log.e("SuperWallet ", "Transaction id: " + tr.getTransactionId());
 				}
 			}
 
-			pObj.setChildObjectList(childList);
+			pObj.setChildItemList(childList);
 			categoryList.add(pObj);
 		}
-//		for (int i = 0; i < 5; i++) {
-//			TransactionsListCategory pObj = new TransactionsListCategory("Category " + i);
-//			ArrayList<Object> childList = new ArrayList<Object>();
-//			childList.add(new TransactionsListTransaction(new LocalDateTime()));
-//			pObj.setChildObjectList(childList);
-//			categoryList.add(pObj);
-//		}
-		CategoryExpandableAdapter mCategoryExpandableAdapter = new CategoryExpandableAdapter(getActivity(), categoryList);
-		mCategoryExpandableAdapter.setCustomParentAnimationViewId(R.id.parent_list_item_expand_arrow);
-		mCategoryExpandableAdapter.setParentClickableViewAnimationDefaultDuration();
-		mCategoryExpandableAdapter.setParentAndIconExpandOnClick(true);
-
-		//adapter = new TransactionRecyclerAdapter(transactions, myRecyclerView);
-		myRecyclerView.setAdapter(mCategoryExpandableAdapter);
-
-		double[] reportData = calculateReports(transactions);
-
-		incomeTV.setText(String.valueOf(reportData[REPORT_INDEX_INCOME]));
-		expenseTV.setText(String.valueOf(reportData[REPORT_INDEX_EXPENSE]));
-		totalTV.setText(String.valueOf(reportData[REPORT_INDEX_TOTAL]));
-
-		if (reportData[REPORT_INDEX_TOTAL] < 0) {
-			totalTV.setTextColor(Color.RED);
-		} else {
-			totalTV.setTextColor(Color.BLUE);
-		}
-
-		return root;
+		return categoryList;
 	}
 
 	private double[] calculateReports(ArrayList<? extends Transaction> transactions) {
@@ -249,21 +285,30 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		return reportData;
 	}
 
-	private void setPeriod(LocalDateTime startDate, LocalDateTime endDate) {
-		String myFormat = "dd.MM.yyyy"; //In which you need put here
-		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-		String start = sdf.format(startDate.toDate());
-		String end = sdf.format(endDate.toDate());
-		periodTV.setText(start + " - " + end);
-	}
+	public void changePeriod(int timePeriod) {
+		switch (timePeriod) {
+			case TIMEPERIOD_WEEK:
+				CURRENT_TIMEPERIOD = TIMEPERIOD_WEEK;
+				break;
+			case TIMEPERIOD_MONTH:
+				CURRENT_TIMEPERIOD = TIMEPERIOD_MONTH;
+				break;
+			case TIMEPERIOD_YEAR:
+				CURRENT_TIMEPERIOD = TIMEPERIOD_YEAR;
+				break;
+			case TIMEPERIOD_DAY:
+			default:
+				CURRENT_TIMEPERIOD = TIMEPERIOD_DAY;
+				break;
+		}
 
-	public void refreshList(LocalDateTime startDate, LocalDateTime endDate) {
-		transactions = UsersManager.loggedUser.getTransactions(startDate, endDate);
-		adapter = (TransactionRecyclerAdapter) myRecyclerView.getAdapter();
-		adapter.setNewList(transactions);
-		adapter.notifyDataSetChanged();
-		calculateReports(transactions);
-		setPeriod(startDate, endDate);
-	}
+		// Refreshing the list doesnt work, the freepager keeps a cache...
+//		categoriesList = generateTransactionsList(currentPage);
+//		mCategoryExpandableAdapter.setParentList(categoriesList, false);
+//		mCategoryExpandableAdapter.notifyParentDataSetChanged(false);
+//		myRecyclerView.invalidate();
 
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		ft.detach(this).attach(this).commit();
+	}
 }

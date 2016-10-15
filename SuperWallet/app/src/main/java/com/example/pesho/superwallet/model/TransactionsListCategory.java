@@ -1,28 +1,19 @@
 package com.example.pesho.superwallet.model;
 
-import com.bignerdranch.expandablerecyclerview.Model.ParentObject;
+import com.bignerdranch.expandablerecyclerview.model.Parent;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionsListCategory implements ParentObject {
+public class TransactionsListCategory implements Parent<TransactionsListTransaction> {
 
     private String title;
 
     /* Create an instance variable for your list of children */
-    private List<Object> mChildrenList;
+    private List<TransactionsListTransaction> mChildrenList;
 
     public TransactionsListCategory(String title) {
         this.title = title;
-    }
-
-    @Override
-    public List<Object> getChildObjectList() {
-        return mChildrenList;
-    }
-
-    @Override
-    public void setChildObjectList(List<Object> list) {
-        mChildrenList = list;
     }
 
     public void setTitle(String title) {
@@ -33,4 +24,17 @@ public class TransactionsListCategory implements ParentObject {
         return title;
     }
 
+    public void setChildItemList(List<TransactionsListTransaction> childrenList) {
+        this.mChildrenList = childrenList;
+    }
+
+    @Override
+    public List<TransactionsListTransaction> getChildList() {
+        return mChildrenList;
+    }
+
+    @Override
+    public boolean isInitiallyExpanded() {
+        return false;
+    }
 }

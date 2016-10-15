@@ -50,5 +50,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:24.2.1'
     compile 'pro.alexzaitsev:freepager:1.0.1'
     compile 'com.github.chenupt.android:multiplemodel:1.1.0@aar'
-    compile 'com.bignerdranch.android:expandablerecyclerview:1.0.3'
+    compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
 }

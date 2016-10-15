@@ -60,14 +60,14 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transactions);
-        fragments = new ArrayList<Fragment>();
+        fragments = new ArrayList<>();
         //get transaction's type
         Intent intent = getIntent();
         if (intent.hasExtra("Transaction")) {
             transactionsType = intent.getStringExtra("Transaction");
         }
         //load accounts
-        accounts = new ArrayList<Account>();
+        accounts = new ArrayList<>();
         accountFrom = UsersManager.loggedUser.getDefaultAccount();
         if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
             accountTo = accountFrom;
@@ -220,7 +220,6 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             tp = Transaction.TRANSACTIONS_TYPE.valueOf(transactionsType);
             Transaction transaction = new Transaction(transactionId, transactionDate, tp, amount , accountFrom);
             transaction.setCategory(category);
-            Log.e("Description", description);
             transaction.setDescription(description);
             accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
             DBManager.getInstance(this).addTransaction(transaction);
