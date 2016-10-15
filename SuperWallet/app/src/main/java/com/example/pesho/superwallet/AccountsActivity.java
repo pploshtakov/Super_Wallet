@@ -4,10 +4,16 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,14 +32,19 @@ import com.example.pesho.superwallet.model.DBManager;
 import com.example.pesho.superwallet.model.UsersManager;
 
 import java.util.ArrayList;
-
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.Types.BoomType;
+import com.nightonke.boommenu.Types.ButtonType;
+import com.nightonke.boommenu.Types.OrderType;
+import com.nightonke.boommenu.Types.PlaceType;
+import com.nightonke.boommenu.Util;
 public class AccountsActivity
 		extends AppCompatActivity
 		implements View.OnDragListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
 
 	private static final int ADD_ACCOUNT_REQUEST = 1;
 	private static final int MODIFY_ACCOUNT_REQUEST = 2;
-
+	private BoomMenuButton boomMenuButtonInActionBar;
 	ArrayList<Account> accounts;
 
 	boolean pickingAccount = false;
@@ -41,13 +52,30 @@ public class AccountsActivity
 	private BaseAdapter adapter;
 	private int draggedIndex = -1;
 	private ListView listView;
-
+	private boolean init = false;
 	private Button addAccountButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_accounts);
+
+		View mCustomView;
+		ActionBar mActionBar = getSupportActionBar();
+		mActionBar.setDisplayShowHomeEnabled(false);
+		mActionBar.setDisplayShowTitleEnabled(false);
+		LayoutInflater mInflater = LayoutInflater.from(this);
+		mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
+		TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
+		mTitleTextView.setText(R.string.accounts);
+		boomMenuButtonInActionBar = (BoomMenuButton) mCustomView.findViewById(R.id.boom);
+		mActionBar.setCustomView(mCustomView);
+		mActionBar.setDisplayShowCustomEnabled(true);
+
+		((Toolbar) mCustomView.getParent()).setContentInsetsAbsolute(0,0);
+
+
+
 
 		accounts = new ArrayList<Account>();
 		listView = (ListView) findViewById(R.id.accounts_list_view);
@@ -248,27 +276,27 @@ public class AccountsActivity
             case R.id.action_stats:
                 Toast.makeText(AccountsActivity.this, "stats", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.action_home:
-                Intent home = new Intent(this, MainActivity.class);
-                startActivity(home);
-                finish();
-                return true;
-            case R.id.action_category:
-                // User chose the "Settings" item, show the app settings UI...
-                Intent category = new Intent(this, CategoryListActivity.class);
-                startActivity(category);
-                return true;
-            case R.id.action_accounts:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                Intent accounts = new Intent(this, AccountsActivity.class);
-                startActivity(accounts);
-                return true;
-            case R.id.action_settings:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                Toast.makeText(AccountsActivity.this, "settings", Toast.LENGTH_SHORT).show();
-                return true;
+//            case R.id.action_home:
+//                Intent home = new Intent(this, MainActivity.class);
+//                startActivity(home);
+//                finish();
+//                return true;
+//            case R.id.action_category:
+//                // User chose the "Settings" item, show the app settings UI...
+//                Intent category = new Intent(this, CategoryListActivity.class);
+//                startActivity(category);
+//                return true;
+//            case R.id.action_accounts:
+//                // User chose the "Favorite" action, mark the current item
+//                // as a favorite...
+//                Intent accounts = new Intent(this, AccountsActivity.class);
+//                startActivity(accounts);
+//                return true;
+//            case R.id.action_settings:
+//                // User chose the "Favorite" action, mark the current item
+//                // as a favorite...
+//                Toast.makeText(AccountsActivity.this, "settings", Toast.LENGTH_SHORT).show();
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -277,8 +305,8 @@ public class AccountsActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_actions, menu);
-        MenuItem itemView = menu.findItem(R.id.action_accounts);
-        itemView.setVisible(false);
+//        MenuItem itemView = menu.findItem(R.id.action_accounts);
+//        itemView.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -320,4 +348,66 @@ public class AccountsActivity
 		}
 	}
 
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+
+		if (boomMenuButtonInActionBar != null) {
+			// Use a param to record whether the boom button has been initialized
+			// Because we don't need to init it again when onResume()
+			if (init) return;
+			init = true;
+
+			Drawable[] subButtonDrawables = new Drawable[3];
+			int[] drawablesResource = new int[]{
+					R.drawable.house,
+					R.drawable.fridge,
+					R.drawable.fork_spoon
+			};
+			for (int i = 0; i < 3; i++)
+				subButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
+
+			String[] subButtonTexts = new String[]{"BoomMenuButton", "View source code", "Follow me"};
+
+			int[][] subButtonColors = new int[3][2];
+			for (int i = 0; i < 3; i++) {
+				subButtonColors[i][1] = ContextCompat.getColor(this, R.color.white);
+				subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
+			}
+
+			// Now with Builder, you can init BMB more convenient
+			new BoomMenuButton.Builder()
+					.addSubButton(ContextCompat.getDrawable(this, R.drawable.house), subButtonColors[0], "BoomMenuButton")
+					.addSubButton(ContextCompat.getDrawable(this, R.drawable.fridge), subButtonColors[0], "View source code")
+					.addSubButton(ContextCompat.getDrawable(this, R.drawable.fork_spoon), subButtonColors[0], "Follow me")
+					.button(ButtonType.HAM)
+					.boom(BoomType.PARABOLA)
+					.place(PlaceType.HAM_3_1)
+					.subButtonTextColor(ContextCompat.getColor(this, R.color.black))
+					.subButtonsShadow(Util.getInstance().dp2px(2), Util.getInstance().dp2px(2))
+					.delay(50)
+					.duration(600)
+					.showOrder(OrderType.REVERSE)
+					.init(boomMenuButtonInActionBar).setOnSubButtonClickListener(new BoomMenuButton.OnSubButtonClickListener() {
+
+				@Override
+				public void onClick(int buttonIndex) {
+					Log.e("SuperWallet ", "Button index: " + buttonIndex);
+					if (buttonIndex == 0) {
+						Intent intent = new Intent(AccountsActivity.this, CategoryListActivity.class);
+						startActivityForResult(intent, 0);
+					}
+					if (buttonIndex == 1) {
+						Intent intent = new Intent(AccountsActivity.this, AccountsActivity.class);
+						startActivityForResult(intent, 0);
+					}
+				}
+			});
+
+			Log.e("SuperWallet ", "Boom Menu Button !!!NOT NULL!!!");
+		}
+		else {
+			Log.e("SuperWallet ", "Boom Menu Button is NULL.");
+		}
+	}
 }

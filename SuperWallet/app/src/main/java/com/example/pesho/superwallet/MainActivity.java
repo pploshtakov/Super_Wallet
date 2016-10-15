@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
         mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
         TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
-        mTitleTextView.setText(R.string.app_name);
+        mTitleTextView.setText(R.string.home);
 
         boomMenuButtonInActionBar = (BoomMenuButton) mCustomView.findViewById(R.id.boom);
 
@@ -188,23 +185,23 @@ public class MainActivity extends AppCompatActivity {
 				Intent statisticsIntent = new Intent(this, PieStatisticsActivity.class);
 				startActivity(statisticsIntent);
                 return true;
-            case R.id.action_category:
-                // User chose the "Settings" item, show the app settings UI...
-                Intent category = new Intent(this, CategoryListActivity.class);
-                startActivity(category);
-                return true;
-            case R.id.action_accounts:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                Intent accounts = new Intent(this, AccountsActivity.class);
-				accounts.putExtra("pickingAccount", false);
-                startActivity(accounts);
-                return true;
-            case R.id.action_settings:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_SHORT).show();
-                return true;
+//            case R.id.action_category:
+//                // User chose the "Settings" item, show the app settings UI...
+//                Intent category = new Intent(this, CategoryListActivity.class);
+//                startActivity(category);
+//                return true;
+//            case R.id.action_accounts:
+//                // User chose the "Favorite" action, mark the current item
+//                // as a favorite...
+//                Intent accounts = new Intent(this, AccountsActivity.class);
+//				accounts.putExtra("pickingAccount", false);
+//                startActivity(accounts);
+//                return true;
+//            case R.id.action_settings:
+//                // User chose the "Favorite" action, mark the current item
+//                // as a favorite...
+//                Toast.makeText(MainActivity.this, "settings", Toast.LENGTH_SHORT).show();
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -213,8 +210,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_actions, menu);
-        MenuItem itemView = menu.findItem(R.id.action_home);
-        itemView.setVisible(false);
+//        MenuItem itemView = menu.findItem(R.id.action_home);
+//        itemView.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 

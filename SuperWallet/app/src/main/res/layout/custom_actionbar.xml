@@ -9,6 +9,7 @@
         android:id="@+id/boom"
         android:layout_width="56dp"
         android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
@@ -16,7 +17,7 @@
         app:boom_inActionBar="true"
         app:boom_button_color="@color/colorPrimary"
         app:boom_button_pressed_color="@color/colorPrimary"
-        />
+        android:layout_alignParentRight="true" />
 
     <TextView
         android:id="@+id/title_text"
@@ -24,10 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:textAllCaps="true"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#fff"
-        android:layout_toRightOf="@+id/boom"
-        android:layout_toEndOf="@+id/boom"
+        android:layout_alignParentLeft="true"
         />
 
 </RelativeLayout>
