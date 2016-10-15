@@ -1,11 +1,19 @@
 package com.example.pesho.superwallet;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -46,7 +55,17 @@ public class SecondPageAddingFragment extends Fragment {
     Spinner accountToSpinner;
     ImageButton backButton;
     ImageButton saveButton;
+    ImageButton placeButton;
+    ImageView mapImage;
     EditText descriptionET;
+
+    //location
+    private static final int REFRESH_LOCATION = (1000 * 60) * 10; //refresh on 10 minutes
+    private static final int MIN_DISTANCE = 100; //min distance for refreshing location in meters
+    private static final int REQUEST_PERMISSIONS = 10;
+    private ImageButton locationIB;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     public SecondPageAddingFragment() {
         // Required empty public constructor
@@ -73,10 +92,47 @@ public class SecondPageAddingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //TODO do not working!!!
-                ((Activity)myActivity).getFragmentManager().popBackStack();
+                ((Activity) myActivity).getFragmentManager().popBackStack();
 
             }
         });
+
+        //location
+        placeButton = (ImageButton) root.findViewById(R.id.addt_place_button);
+        mapImage = (ImageView) root.findViewById(R.id.second_page_map_image);
+
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                myActivity.setLocation(location);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.INTERNET
+            }, REQUEST_PERMISSIONS);
+
+        } else {
+            configurePlaceButton();
+        }
 
 
         myActivity.registerFragment(this);
@@ -174,6 +230,26 @@ public class SecondPageAddingFragment extends Fragment {
 
         return root;
 
+    }
+
+
+    private void configurePlaceButton() {
+        placeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationManager.requestLocationUpdates("gps", REFRESH_LOCATION, MIN_DISTANCE, locationListener);
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    configurePlaceButton();
+                }
+        }
     }
 
     void notifyAmountChanged(double amount) {

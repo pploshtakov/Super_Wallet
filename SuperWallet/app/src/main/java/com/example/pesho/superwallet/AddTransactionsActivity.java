@@ -1,6 +1,7 @@
 package com.example.pesho.superwallet;
 
 import android.content.Intent;
+import android.location.Location;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -55,6 +56,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     private int selectedAccountFrom = -1;
     private int selectedAccountTo = -1;
     private LocalDateTime transactionDate;
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,5 +296,11 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 
     public int getSelectedAccountTo() {
         return selectedAccountTo;
+    }
+
+    @Override
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.pesho.superwallet.interfaces;
 
+import android.location.Location;
 import android.support.v4.app.Fragment;
 
 import com.example.pesho.superwallet.model.Account;
@@ -34,4 +35,6 @@ public interface AddTransactionsCommunicator {
     public void setSelectedAccountTo(int selectedAccountTo);
 
     public int getSelectedAccountTo();
+
+    public void setLocation(Location location);
 }

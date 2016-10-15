@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 subButtonColors[i][1] = ContextCompat.getColor(this, R.color.white);
                 subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
             }
-            
+
 
             // Now with Builder, you can init BMB more convenient
             new BoomMenuButton.Builder()
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                     .button(ButtonType.HAM)
                     .boom(BoomType.PARABOLA)
                     .place(PlaceType.HAM_3_1)
-                    .subButtonTextColor(ContextCompat.getColor(this, R.color.black))
+                    .subButtonTextColor(ContextCompat.getColor(this, R.color.md_blue_600))
                     .subButtonsShadow(Util.getInstance().dp2px(2), Util.getInstance().dp2px(2))
                     .delay(50)
                     .duration(600)
