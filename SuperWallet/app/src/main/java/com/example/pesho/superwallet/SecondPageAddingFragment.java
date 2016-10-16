@@ -102,8 +102,7 @@ public class SecondPageAddingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //TODO do not working!!!
-                ((Activity) myActivity).getFragmentManager().popBackStack();
-
+                ((AddTransactionsActivity)myActivity).backToFirstPage();
             }
         });
 

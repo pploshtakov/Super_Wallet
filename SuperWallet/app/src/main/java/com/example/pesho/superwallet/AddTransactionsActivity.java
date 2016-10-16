@@ -293,6 +293,10 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         }
     }
 
+    public void backToFirstPage() {
+        mPager.setCurrentItem(0);
+    }
+
     public int getSelectedAccountTo() {
         return selectedAccountTo;
     }

@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                     { ContextCompat.getColor(this,R.color.primary), ContextCompat.getColor(this, R.color.primary) }
             };
 
-          
+
 
 
 
