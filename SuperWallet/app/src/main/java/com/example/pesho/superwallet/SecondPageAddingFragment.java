@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -71,6 +72,7 @@ public class SecondPageAddingFragment extends Fragment {
     AVLoadingIndicatorView avi;
 
     //location
+    public Location location1;
     private static final int REFRESH_LOCATION = 5000; //refresh on 10 minutes
     private static final int MIN_DISTANCE = 0; //min distance for refreshing location in meters
     private static final int REQUEST_PERMISSIONS = 10;
@@ -115,10 +117,13 @@ public class SecondPageAddingFragment extends Fragment {
         mapImage = (ImageView) root.findViewById(R.id.second_page_map_image);
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                Log.e("Location", "onChanged");
                 myActivity.setLocation(location);
+                location1 = location;
                 String latitude = String.valueOf(location.getLatitude());
                 String longitude = String.valueOf(location.getLongitude());
                 String url = "http://maps.google.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=15&size=200x200&sensor=false";
@@ -128,11 +133,13 @@ public class SecondPageAddingFragment extends Fragment {
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
+                Log.e("Location", "onStatusChanged");
 
             }
 
             @Override
             public void onProviderEnabled(String provider) {
+                Log.e("Location", "enabled");
 
             }
 
@@ -145,7 +152,17 @@ public class SecondPageAddingFragment extends Fragment {
 
         configurePlaceButton();
 
-
+        mapImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("geo:" + location1.getLatitude() + "," + location1.getLongitude());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                }
+            }
+        });
 
         myActivity.registerFragment(this);
         titleTV = (TextView) root.findViewById(R.id.second_page_title);
@@ -252,9 +269,12 @@ public class SecondPageAddingFragment extends Fragment {
                 Log.e("Location", "onClick");
                 placeButton.setVisibility(View.GONE);
                 startAnim();
-
                 try {
-                    locationManager.requestLocationUpdates("gps", REFRESH_LOCATION, MIN_DISTANCE, locationListener);
+                    if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, REFRESH_LOCATION, MIN_DISTANCE, locationListener);
+                    } else {
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, REFRESH_LOCATION, MIN_DISTANCE, locationListener);
+                    }
                 } catch (SecurityException e) {
                     stopAnim();
                     placeButton.setVisibility(View.VISIBLE);
@@ -264,17 +284,17 @@ public class SecondPageAddingFragment extends Fragment {
         });
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        Log.e("Location", "requestpermission result");
-//        switch (requestCode) {
-//            case REQUEST_PERMISSIONS:
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Log.e("Location", " result");
-//                    configurePlaceButton();
-//                }
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.e("Location", "requestpermission result");
+        switch (requestCode) {
+            case REQUEST_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("Location", " result");
+                    configurePlaceButton();
+                }
+        }
+    }
 
     void notifyAmountChanged(double amount) {
         titleTV.setText(String.valueOf(amount));
