@@ -1,5 +1,6 @@
 package com.example.pesho.superwallet.model;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
@@ -30,7 +31,7 @@ public class User {
     private ArrayList<Account> myAccounts;
 	private Account defaultAccount;
     private ArrayList<Category> myCategories;
-    private Drawable profileImage;
+    private Bitmap profileImage;
 
 	public User(String name, String email) {
 		this.name = name;
@@ -184,11 +185,11 @@ public class User {
 		return transactions;
 	}
 
-    public void setProfileImage(Drawable profileImage) {
+    public void setProfileImage(Bitmap profileImage) {
         this.profileImage = profileImage;
     }
 
-    public Drawable getProfileImage() {
+    public Bitmap getProfileImage() {
         return profileImage;
     }
 }

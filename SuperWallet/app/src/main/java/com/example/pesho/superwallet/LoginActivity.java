@@ -2,6 +2,8 @@ package com.example.pesho.superwallet;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,7 +25,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
@@ -151,23 +155,28 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private class LoadImageAsyncTask extends AsyncTask<String, Void, Drawable> {
+    private class LoadImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
         @Override
-        protected Drawable doInBackground(String... params) {
+        protected Bitmap doInBackground(String... params) {
+            URL url = null;
             try {
-                InputStream is = (InputStream) new URL(params[0]).getContent();
-                Drawable d = Drawable.createFromStream(is, "src name");
-                return d;
-            } catch (Exception e) {
+                url = new URL(params[0]);
+            } catch (MalformedURLException e) {
                 return null;
             }
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch (IOException e) {
+                return null;
+            }
+            return bitmap;
         }
 
         @Override
-        protected void onPostExecute(Drawable drawable) {
-            super.onPostExecute(drawable);
-            Log.e("Profile", "******");
-            UsersManager.loggedUser.setProfileImage(drawable);
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            UsersManager.loggedUser.setProfileImage(bitmap);
         }
 
     }

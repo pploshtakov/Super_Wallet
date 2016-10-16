@@ -7,9 +7,13 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -17,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +40,10 @@ import com.example.pesho.superwallet.model.Transaction;
 
 import org.joda.time.LocalDateTime;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -66,6 +75,7 @@ public class SecondPageAddingFragment extends Fragment {
     private ImageButton locationIB;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    View placesTextViews;
 
     public SecondPageAddingFragment() {
         // Required empty public constructor
@@ -98,6 +108,7 @@ public class SecondPageAddingFragment extends Fragment {
         });
 
         //location
+        placesTextViews = root.findViewById(R.id.addt_place_text_views);
         placeButton = (ImageButton) root.findViewById(R.id.addt_place_button);
         mapImage = (ImageView) root.findViewById(R.id.second_page_map_image);
 
@@ -106,6 +117,11 @@ public class SecondPageAddingFragment extends Fragment {
             @Override
             public void onLocationChanged(Location location) {
                 myActivity.setLocation(location);
+                String latitude = String.valueOf(location.getLatitude());
+                String longitude = String.valueOf(location.getLongitude());
+                String url = "http://maps.google.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=15&size=200x200&sensor=false";
+                Log.e("Location", url);
+                new LoadMapImageAsyncTask().execute(url);
             }
 
             @Override
@@ -237,16 +253,20 @@ public class SecondPageAddingFragment extends Fragment {
         placeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("Location", "onClick");
                 locationManager.requestLocationUpdates("gps", REFRESH_LOCATION, MIN_DISTANCE, locationListener);
+
             }
         });
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.e("Location", "requestpermission result");
         switch (requestCode) {
             case REQUEST_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("Location", " result");
                     configurePlaceButton();
                 }
         }
@@ -292,5 +312,36 @@ public class SecondPageAddingFragment extends Fragment {
     public void refreshAccountTo(int selectedAccountTo) {
         if (selectedAccountTo != -1)
         accountToSpinner.setSelection(selectedAccountTo);
+    }
+
+    private class LoadMapImageAsyncTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            URL url = null;
+            try {
+                url = new URL(params[0]);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            Log.e("Location", "begin setting pic");
+            placesTextViews.setVisibility(View.GONE);
+            mapImage.setVisibility(View.VISIBLE);
+            mapImage.setImageBitmap(bitmap);
+            Log.e("Location", "after setting pic");
+
+        }
+
     }
 }
