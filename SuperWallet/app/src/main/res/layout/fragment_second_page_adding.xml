@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/fragment_second_page"
     tools:context="com.example.pesho.superwallet.SecondPageAddingFragment">
@@ -114,6 +115,7 @@
                 android:visibility="gone"
                 android:id="@+id/second_page_map_image"
                 />
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="5"
@@ -139,6 +141,16 @@
                     android:text="@string/place_text"
                     />
             </LinearLayout>
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/avi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AVLoadingIndicatorView"
+                android:visibility="gone"
+                android:layout_gravity="center_vertical"
+                app:indicatorName="BallScaleMultipleIndicator"
+                app:indicatorColor="@color/colorAccent"
+                />
             <ImageButton
                 android:layout_width="0dp"
                 android:layout_weight="1"

@@ -51,4 +51,5 @@ dependencies {
     compile 'pro.alexzaitsev:freepager:1.0.1'
     compile 'com.github.chenupt.android:multiplemodel:1.1.0@aar'
     compile 'com.bignerdranch.android:expandablerecyclerview:3.0.0-RC1'
+    compile 'com.wang.avi:library:2.1.3'
 }

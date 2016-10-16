@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Transaction;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.joda.time.LocalDateTime;
 
@@ -67,10 +68,11 @@ public class SecondPageAddingFragment extends Fragment {
     ImageButton placeButton;
     ImageView mapImage;
     EditText descriptionET;
+    AVLoadingIndicatorView avi;
 
     //location
-    private static final int REFRESH_LOCATION = (1000 * 60) * 10; //refresh on 10 minutes
-    private static final int MIN_DISTANCE = 100; //min distance for refreshing location in meters
+    private static final int REFRESH_LOCATION = 5000; //refresh on 10 minutes
+    private static final int MIN_DISTANCE = 0; //min distance for refreshing location in meters
     private static final int REQUEST_PERMISSIONS = 10;
     private ImageButton locationIB;
     private LocationManager locationManager;
@@ -87,6 +89,7 @@ public class SecondPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_second_page_adding, container, false);
+        avi = (AVLoadingIndicatorView) root.findViewById(R.id.avi);
         descriptionET = (EditText) root.findViewById(R.id.addt_description_et);
         //save transaction
         saveButton = (ImageButton) root.findViewById(R.id.second_page_save_button);
@@ -139,15 +142,9 @@ public class SecondPageAddingFragment extends Fragment {
                 startActivity(intent);
             }
         };
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] {
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.INTERNET
-            }, REQUEST_PERMISSIONS);
 
-        } else {
-            configurePlaceButton();
-        }
+        configurePlaceButton();
+
 
 
         myActivity.registerFragment(this);
@@ -253,23 +250,31 @@ public class SecondPageAddingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.e("Location", "onClick");
-                locationManager.requestLocationUpdates("gps", REFRESH_LOCATION, MIN_DISTANCE, locationListener);
+                placeButton.setVisibility(View.GONE);
+                startAnim();
 
+                try {
+                    locationManager.requestLocationUpdates("gps", REFRESH_LOCATION, MIN_DISTANCE, locationListener);
+                } catch (SecurityException e) {
+                    stopAnim();
+                    placeButton.setVisibility(View.VISIBLE);
+                    return;
+                }
             }
         });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.e("Location", "requestpermission result");
-        switch (requestCode) {
-            case REQUEST_PERMISSIONS:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("Location", " result");
-                    configurePlaceButton();
-                }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        Log.e("Location", "requestpermission result");
+//        switch (requestCode) {
+//            case REQUEST_PERMISSIONS:
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Log.e("Location", " result");
+//                    configurePlaceButton();
+//                }
+//        }
+//    }
 
     void notifyAmountChanged(double amount) {
         titleTV.setText(String.valueOf(amount));
@@ -337,10 +342,23 @@ public class SecondPageAddingFragment extends Fragment {
             Log.e("Location", "begin setting pic");
             placesTextViews.setVisibility(View.GONE);
             mapImage.setVisibility(View.VISIBLE);
+            stopAnim();
+            placeButton.setVisibility(View.VISIBLE);
             mapImage.setImageBitmap(bitmap);
             Log.e("Location", "after setting pic");
 
         }
 
+    }
+
+    //loading animation start
+    void startAnim(){
+        avi.show();
+        // or avi.smoothToShow();
+    }
+    //loading animation stop
+    void stopAnim(){
+        avi.hide();
+        // or avi.smoothToHide();
     }
 }
