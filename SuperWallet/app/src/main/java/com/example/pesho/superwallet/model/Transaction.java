@@ -1,6 +1,7 @@
 package com.example.pesho.superwallet.model;
 
 import android.app.Activity;
+import android.location.Location;
 
 import org.joda.time.LocalDateTime;
 
@@ -19,6 +20,7 @@ public class Transaction {
     private TRANSACTIONS_TYPE transactionType;
     private Category category;
     private double amount;
+    private Location location;
 
     public Transaction(int transactionId, LocalDateTime date, TRANSACTIONS_TYPE transactionType, double amount, Account accountFrom) {
 		this.transactionId = transactionId;
@@ -75,5 +77,13 @@ public class Transaction {
 
     public Account getAccountFrom() {
         return accountFrom;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
 import android.util.Log;
 
 import com.example.pesho.superwallet.R;
@@ -59,7 +60,10 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String KEY_TRANSACTION_CATEGORY_ID = "categoryId";
 	private static final String KEY_TRANSACTION_ACCOUNT_FROM_ID = "accountFromId";
 	private static final String KEY_TRANSACTION_ACCOUNT_TO_ID = "accountToId";
+    private static final String KEY_TRANSACTION_LATITUDE = "latitude";
+    private static final String KEY_TRANSACTION_LONGITUDE = "longitude";
     private static final String KEY_TRANSACTION_USER_ID = "userID";
+
     //table users create statement
     private static final String CREATE_TABLE_USERS = "CREATE TABLE "
             + TABLE_USERS + "(" + KEY_LOCAL_ID + " INTEGER PRIMARY KEY," + KEY_GOOGLE_ID + " TEXT," + KEY_FACEBOOK_ID
@@ -83,7 +87,7 @@ public class DBManager extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_TRANSACTIONS = "CREATE TABLE "
             + TABLE_TRANSACTIONS + "(" + KEY_TRANSACTION_ID + " INTEGER PRIMARY KEY," + KEY_TRANSACTION_DATE + " TIMESTAMP," + KEY_TRANSACTION_DESCRIPTION + " TEXT," + KEY_TRANSACTION_TYPE
             + " TEXT," + KEY_TRANSACTION_AMOUNT + " REAL," + KEY_TRANSACTION_CATEGORY_ID + " INTEGER," + KEY_TRANSACTION_ACCOUNT_FROM_ID + " INTEGER, " + KEY_TRANSACTION_ACCOUNT_TO_ID + " INTEGER, "
-            + KEY_TRANSACTION_USER_ID + " INTEGER," + " FOREIGN KEY"
+            + KEY_TRANSACTION_USER_ID + " INTEGER," + KEY_TRANSACTION_LATITUDE + " REAL," + KEY_TRANSACTION_LONGITUDE + " REAL," + " FOREIGN KEY"
             + "(" + KEY_TRANSACTION_USER_ID + ")" + " REFERENCES " + TABLE_USERS + "(" + KEY_LOCAL_ID + ")" + ")";
 
 
@@ -482,6 +486,13 @@ public class DBManager extends SQLiteOpenHelper {
 		values.put(KEY_TRANSACTION_ACCOUNT_FROM_ID, transfer.getAccountFrom().getAccountId());
 		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, transfer.getAccountTo().getAccountId());
 		values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
+        if (transfer.getLocation() != null) {
+            values.put(KEY_TRANSACTION_LATITUDE, transfer.getLocation().getLatitude());
+            values.put(KEY_TRANSACTION_LONGITUDE, transfer.getLocation().getLongitude());
+        } else {
+            values.put(KEY_TRANSACTION_LATITUDE, 0);
+            values.put(KEY_TRANSACTION_LONGITUDE, 0);
+        }
 		long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
 	}
 
@@ -503,6 +514,13 @@ public class DBManager extends SQLiteOpenHelper {
 		}
 		values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, "-1");
         values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
+        if (transaction.getLocation() != null) {
+            values.put(KEY_TRANSACTION_LATITUDE, transaction.getLocation().getLatitude());
+            values.put(KEY_TRANSACTION_LONGITUDE, transaction.getLocation().getLongitude());
+        } else {
+            values.put(KEY_TRANSACTION_LATITUDE, 0);
+            values.put(KEY_TRANSACTION_LONGITUDE, 0);
+        }
         long result = getWritableDatabase().insert(TABLE_TRANSACTIONS, null, values);
     }
 
@@ -519,6 +537,8 @@ public class DBManager extends SQLiteOpenHelper {
             String transactionType = cursor.getString(cursor.getColumnIndex(KEY_TRANSACTION_TYPE));
             int accountFromId = cursor.getInt(cursor.getColumnIndex(KEY_TRANSACTION_ACCOUNT_FROM_ID));
             double amount = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_AMOUNT));
+            double latitude = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_LATITUDE));
+            double longitude = cursor.getDouble(cursor.getColumnIndex(KEY_TRANSACTION_LONGITUDE));
 
 			if (transactionType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString()) || transactionType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
 				Transaction.TRANSACTIONS_TYPE type = Transaction.TRANSACTIONS_TYPE.valueOf(transactionType);
@@ -565,6 +585,12 @@ public class DBManager extends SQLiteOpenHelper {
                 }
 				transaction.setDescription(description);
 				transaction.setCategory(category);
+                if (latitude != 0 || longitude != 0) {
+                    Location location = new Location("");
+                    location.setLatitude(latitude);
+                    location.setLongitude(longitude);
+                    transaction.setLocation(location);
+                }
 				transactions.add(transaction);
             } else {
 				Account accountFrom = null;
@@ -607,6 +633,12 @@ public class DBManager extends SQLiteOpenHelper {
                     accountTo.setBalance(accountTo.getAccountBalance() + amount);
                 }
 				transfer.setDescription(description);
+                if (latitude != 0 || longitude != 0) {
+                    Location location = new Location("");
+                    location.setLatitude(latitude);
+                    location.setLongitude(longitude);
+                    transfer.setLocation(location);
+                }
 				transactions.add(transfer);
             }
         }
