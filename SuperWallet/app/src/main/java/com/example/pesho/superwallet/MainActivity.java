@@ -259,9 +259,9 @@ public class MainActivity extends AppCompatActivity {
             String[] subButtonTexts = new String[]{"Category List", "Accounts List", "Settings"};
 
             int[][] subButtonColors = new int[][] {
-                    { ContextCompat.getColor(this,R.color.primary), ContextCompat.getColor(this, R.color.primary) },
-                    { ContextCompat.getColor(this,R.color.primary), ContextCompat.getColor(this, R.color.primary) },
-                    { ContextCompat.getColor(this,R.color.primary), ContextCompat.getColor(this, R.color.primary) }
+                    { ContextCompat.getColor(this,R.color.accent), ContextCompat.getColor(this, R.color.accent) },
+                    { ContextCompat.getColor(this,R.color.md_blue_600), ContextCompat.getColor(this, R.color.md_blue_600) },
+                    { ContextCompat.getColor(this,R.color.md_red_600), ContextCompat.getColor(this, R.color.md_red_600) }
             };
 
 

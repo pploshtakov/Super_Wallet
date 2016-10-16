@@ -370,25 +370,26 @@ public class CategoryListActivity
 			Drawable[] subButtonDrawables = new Drawable[3];
 			int[] drawablesResource = new int[]{
 					R.drawable.house,
-					R.drawable.fridge,
-					R.drawable.fork_spoon
+					R.drawable.bill,
+					R.drawable.settings
 			};
 			for (int i = 0; i < 3; i++)
 				subButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
 
-			String[] subButtonTexts = new String[]{"BoomMenuButton", "View source code", "Follow me"};
+			String[] subButtonTexts = new String[]{"Home", "Accounts list", "Settings"};
 
-			int[][] subButtonColors = new int[3][2];
-			for (int i = 0; i < 3; i++) {
-				subButtonColors[i][1] = ContextCompat.getColor(this, R.color.white);
-				subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
-			}
+			int[][] subButtonColors = new int[][] {
+					{ ContextCompat.getColor(this,R.color.accent), ContextCompat.getColor(this, R.color.accent) },
+					{ ContextCompat.getColor(this,R.color.md_blue_600), ContextCompat.getColor(this, R.color.md_blue_600) },
+					{ ContextCompat.getColor(this,R.color.md_red_600), ContextCompat.getColor(this, R.color.md_red_600) }
+			};
 
 			// Now with Builder, you can init BMB more convenient
 			new BoomMenuButton.Builder()
-					.addSubButton(ContextCompat.getDrawable(this, R.drawable.house), subButtonColors[0], "BoomMenuButton")
-					.addSubButton(ContextCompat.getDrawable(this, R.drawable.bill), subButtonColors[0], "View source code")
-					.addSubButton(ContextCompat.getDrawable(this, R.drawable.settings), subButtonColors[0], "Follow me")
+					.subButtons(subButtonDrawables, subButtonColors, subButtonTexts)
+//					.addSubButton(ContextCompat.getDrawable(this, R.drawable.house), subButtonColors[0], "BoomMenuButton")
+//					.addSubButton(ContextCompat.getDrawable(this, R.drawable.bill), subButtonColors[0], "View source code")
+//					.addSubButton(ContextCompat.getDrawable(this, R.drawable.settings), subButtonColors[0], "Follow me")
 					.button(ButtonType.HAM)
 					.boom(BoomType.PARABOLA)
 					.place(PlaceType.HAM_3_1)
