@@ -10,6 +10,7 @@
         android:background="@color/secondPrimary"
         android:gravity="center"
         android:textColor="@color/white"
+        android:textSize="25sp"
         android:id="@+id/transaction_list_date"
         />
     <LinearLayout

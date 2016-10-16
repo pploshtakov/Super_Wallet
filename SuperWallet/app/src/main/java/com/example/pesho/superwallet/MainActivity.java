@@ -3,7 +3,10 @@ package com.example.pesho.superwallet;
 import android.content.Intent;
 
 import android.graphics.Bitmap;
+import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.graphics.drawable.Drawable;
@@ -29,6 +32,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
@@ -38,6 +42,7 @@ import com.nightonke.boommenu.Util;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap profileImage;
 
     View mCustomView;
+    TransactionsListFragment mCurrentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
         mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
         TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
         mTitleTextView.setText(R.string.home);
+        mTitleTextView.setPadding( 16, 0, 0, 0);
 
         boomMenuButtonInActionBar = (BoomMenuButton) mCustomView.findViewById(R.id.boom);
+        boomMenuButtonInActionBar.setTextViewColor(ContextCompat.getColor(this, R.color.black));
 
         mActionBar.setCustomView(mCustomView);
         mActionBar.setDisplayShowCustomEnabled(true);
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        TransactionsListFragment mCurrentFragment = new TransactionsListFragment();
+        mCurrentFragment = new TransactionsListFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.transactions_list, mCurrentFragment).commit();
 
@@ -128,40 +136,31 @@ public class MainActivity extends AppCompatActivity {
         drawer.addItem(item5);
 
         //drawer item selected listener
-        /*
         drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                TransactionsListFragment fragment = ((MainActivity.ScreenSlidePagerAdapter)mPagerAdapter).getCurrentFragment(mPager.getCurrentItem());
-                LocalDateTime startDate = new LocalDateTime();
-                LocalDateTime endDate = new LocalDateTime();
+
                 switch (position) {
                     case 1:
-                        startDate = startDate.withTime(0,0,0,0);
-                        endDate = endDate.plusDays(1).withTime(0,0,0,0);
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_DAY);
                         break;
                     case 2:
-                        startDate = startDate.minusDays(startDate.getDayOfWeek() - 1);
-                        endDate = endDate.plusDays(8 - endDate.getDayOfWeek());
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_WEEK);
                         break;
                     case 3:
-                        startDate = startDate.minusDays(startDate.getDayOfMonth() - 1);
-                        endDate = endDate.plusDays(32 - endDate.getDayOfMonth());
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_MONTH);
                         break;
                     case 4:
-                        startDate = startDate.minusDays(startDate.getDayOfYear() - 1);
-                        endDate = endDate.plusDays(366 - endDate.getDayOfYear());
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_YEAR);
                         break;
                     case 5:
                         Toast.makeText(MainActivity.this, "Date", Toast.LENGTH_SHORT).show();
                         return true;
                 }
-                fragment.refreshList(startDate, endDate);
-                mPagerAdapter.notifyDataSetChanged();
+
                 return true;
             }
         });
-        */
 
         //adding floating buttons
         addTransactionButton = (FloatingActionMenu) findViewById(R.id.main_fab);
@@ -250,27 +249,31 @@ public class MainActivity extends AppCompatActivity {
 
             Drawable[] subButtonDrawables = new Drawable[3];
             int[] drawablesResource = new int[]{
-                    R.drawable.house,
+                    R.drawable.category,
                     R.drawable.bill,
-                    R.drawable.fork_spoon
+                    R.drawable.settings
             };
             for (int i = 0; i < 3; i++)
                 subButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
 
-            String[] subButtonTexts = new String[]{"BoomMenuButton", "View source code", "Follow me"};
+            String[] subButtonTexts = new String[]{"Category List", "Accounts List", "Settings"};
 
-            int[][] subButtonColors = new int[3][2];
-            for (int i = 0; i < 3; i++) {
-                subButtonColors[i][1] = ContextCompat.getColor(this, R.color.white);
-                subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
-            }
+            int[][] subButtonColors = new int[][] {
+                    { ContextCompat.getColor(this,R.color.primary), ContextCompat.getColor(this, R.color.primary) },
+                    { ContextCompat.getColor(this,R.color.primary), ContextCompat.getColor(this, R.color.primary) },
+                    { ContextCompat.getColor(this,R.color.primary), ContextCompat.getColor(this, R.color.primary) }
+            };
+
+          
+
 
 
             // Now with Builder, you can init BMB more convenient
             new BoomMenuButton.Builder()
-                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.category), subButtonColors[0], "BoomMenuButton")
-                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.bill), subButtonColors[0], "View source code")
-                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.settings), subButtonColors[0], "Follow me")
+                    .subButtons(subButtonDrawables, subButtonColors, subButtonTexts)
+//                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.category), subButtonColors[0], "BoomMenuButton")
+//                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.bill), subButtonColors[0], "View source code")
+//                    .addSubButton(ContextCompat.getDrawable(this, R.drawable.settings), subButtonColors[0], "Follow me")
                     .button(ButtonType.HAM)
                     .boom(BoomType.PARABOLA)
                     .place(PlaceType.HAM_3_1)
@@ -283,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onClick(int buttonIndex) {
-                    Log.e("SuperWallet ", "Button index: " + buttonIndex);
                     if (buttonIndex == 0) {
                         Intent intent = new Intent(MainActivity.this, CategoryListActivity.class);
                         startActivityForResult(intent, 0);
@@ -295,13 +297,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            Log.e("SuperWallet ", "Boom Menu Button !!!NOT NULL!!!");
         }
         else {
             Log.e("SuperWallet ", "Boom Menu Button is NULL.");
         }
     }
-
-
 
 }

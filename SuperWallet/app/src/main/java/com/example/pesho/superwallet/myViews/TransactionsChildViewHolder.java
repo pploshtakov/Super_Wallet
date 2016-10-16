@@ -3,10 +3,11 @@ package com.example.pesho.superwallet.myViews;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bignerdranch.expandablerecyclerview.ViewHolder.ChildViewHolder;
+import com.bignerdranch.expandablerecyclerview.ChildViewHolder;
 import com.example.pesho.superwallet.R;
+import com.example.pesho.superwallet.model.TransactionsListTransaction;
 
-public class TransactionsChildViewHolder extends ChildViewHolder{
+public class TransactionsChildViewHolder extends ChildViewHolder<TransactionsListTransaction> {
 
     public TextView mTransactionDateText;
 
