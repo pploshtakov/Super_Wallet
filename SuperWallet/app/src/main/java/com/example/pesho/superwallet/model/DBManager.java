@@ -656,4 +656,8 @@ public class DBManager extends SQLiteOpenHelper {
         user.setMyCategories(categories);
         user.setMyTransactions(transactions);
     }
+
+    public void changeTransaction(int transactionId) {
+        //TODO change transaction in DB
+    }
 }

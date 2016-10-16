@@ -12,6 +12,14 @@ import java.util.Date;
  * Created by Pesho on 9/29/2016.
  */
 public class Transaction {
+    public void setAccountFrom(Account accountFrom) {
+        this.accountFrom = accountFrom;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     public enum TRANSACTIONS_TYPE {Income, Expense,Transfer}
 	private int transactionId;
     private LocalDateTime date;
@@ -86,4 +94,6 @@ public class Transaction {
     public Location getLocation() {
         return location;
     }
+
+
 }

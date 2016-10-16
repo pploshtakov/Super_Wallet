@@ -1,13 +1,15 @@
 package com.example.pesho.superwallet.myViews;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.bignerdranch.expandablerecyclerview.ExpandableRecyclerAdapter;
-import com.bignerdranch.expandablerecyclerview.model.Parent;
+import com.example.pesho.superwallet.AddTransactionsActivity;
 import com.example.pesho.superwallet.R;
 import com.example.pesho.superwallet.model.TransactionsListCategory;
 import com.example.pesho.superwallet.model.TransactionsListTransaction;
@@ -17,11 +19,11 @@ import java.util.List;
 public class CategoryExpandableAdapter extends ExpandableRecyclerAdapter<TransactionsListCategory, TransactionsListTransaction, TransactionsParentViewHolder, TransactionsChildViewHolder> {
 
     LayoutInflater mInflater;
-    Context contect;
+    Context context;
 
     public CategoryExpandableAdapter(Context context, List<TransactionsListCategory> parentItemList) {
         super(parentItemList);
-
+        this.context = context;
         mInflater = LayoutInflater.from(context);
     }
 
@@ -34,7 +36,7 @@ public class CategoryExpandableAdapter extends ExpandableRecyclerAdapter<Transac
 
     @NonNull
     @Override
-    public TransactionsChildViewHolder onCreateChildViewHolder(@NonNull ViewGroup childViewGroup, int viewType) {
+    public TransactionsChildViewHolder onCreateChildViewHolder(@NonNull final ViewGroup childViewGroup, int viewType) {
         View view = mInflater.inflate(R.layout.list_item_transaction_child, childViewGroup, false);
         return new TransactionsChildViewHolder(view);
     }
@@ -47,7 +49,15 @@ public class CategoryExpandableAdapter extends ExpandableRecyclerAdapter<Transac
 
     @Override
     public void onBindChildViewHolder(@NonNull TransactionsChildViewHolder childViewHolder, int parentPosition, int childPosition, @NonNull TransactionsListTransaction child) {
-        TransactionsListTransaction transaction = child;
+        final TransactionsListTransaction transaction = child;
         childViewHolder.mTransactionDateText.setText(transaction.getDate().toString());
+        childViewHolder.mTransactionDateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AddTransactionsActivity.class);
+                intent.putExtra("showInfoFor", transaction.getTransaction().getTransactionId());
+                context.startActivity(intent);
+            }
+        });
     }
 }

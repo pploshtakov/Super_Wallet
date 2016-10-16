@@ -34,10 +34,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Transaction;
+import com.example.pesho.superwallet.model.UsersManager;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.joda.time.LocalDateTime;
@@ -80,6 +82,7 @@ public class SecondPageAddingFragment extends Fragment {
     private LocationManager locationManager;
     private LocationListener locationListener;
     View placesTextViews;
+    private Transaction transaction;
 
     public SecondPageAddingFragment() {
         // Required empty public constructor
@@ -91,16 +94,31 @@ public class SecondPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_second_page_adding, container, false);
+        if (getActivity().getIntent().hasExtra("showInfoFor")) {
+            this.transaction = UsersManager.loggedUser.getTransactionById(getActivity().getIntent().getIntExtra("showInfoFor", -1));
+        }
         avi = (AVLoadingIndicatorView) root.findViewById(R.id.avi);
         descriptionET = (EditText) root.findViewById(R.id.addt_description_et);
+        if (transaction != null) {
+            descriptionET.setText(transaction.getDescription());
+        }
         //save transaction
         saveButton = (ImageButton) root.findViewById(R.id.second_page_save_button);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myActivity.saveTransaction();
-            }
-        });
+        if (transaction != null) {
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myActivity.changeTransaction();
+                }
+            });
+        } else {
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    myActivity.saveTransaction();
+                }
+            });
+        }
         //back button click listener
         backButton = (ImageButton) root.findViewById(R.id.second_page_back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +133,15 @@ public class SecondPageAddingFragment extends Fragment {
         placesTextViews = root.findViewById(R.id.addt_place_text_views);
         placeButton = (ImageButton) root.findViewById(R.id.addt_place_button);
         mapImage = (ImageView) root.findViewById(R.id.second_page_map_image);
+        if (transaction != null && transaction.getLocation() != null) {
+            placesTextViews.setVisibility(View.GONE);
+            mapImage.setVisibility(View.VISIBLE);
+            location1 = transaction.getLocation();
+            String latitude = String.valueOf(transaction.getLocation().getLatitude());
+            String longitude = String.valueOf(transaction.getLocation().getLatitude());
+            String url = "http://maps.google.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=15&size=200x200&sensor=false";
+            new LoadMapImageAsyncTask().execute(url);
+        }
 
         locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -172,6 +199,12 @@ public class SecondPageAddingFragment extends Fragment {
         accountToSpinner = (Spinner) root.findViewById(R.id.addt_account1_spinner);
         accountFromSpinner.setAdapter(adapter);
         accountToSpinner.setAdapter(adapter);
+        if (myActivity.getSelectedAccountFrom() != -1) {
+            accountFromSpinner.setSelection(myActivity.getSelectedAccountFrom());
+        }
+        if (myActivity.getSelectedAccountTo() != -1) {
+            accountToSpinner.setSelection(myActivity.getSelectedAccountTo());
+        }
 
 
         //set spinners listener

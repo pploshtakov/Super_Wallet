@@ -48,6 +48,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     private PagerAdapter mPagerAdapter;
     ArrayList<Fragment> fragments;
     ArrayList<Account> accounts;
+    Transaction transaction;
     private Category category;
     private Account accountFrom;
     private Account accountTo;
@@ -62,21 +63,8 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transactions);
-        fragments = new ArrayList<>();
-        //get transaction's type
-        Intent intent = getIntent();
-        if (intent.hasExtra("Transaction")) {
-            transactionsType = intent.getStringExtra("Transaction");
-        }
-        //load accounts
-        accounts = new ArrayList<>();
-        accountFrom = UsersManager.loggedUser.getDefaultAccount();
-        if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
-            accountTo = accountFrom;
-        }
-        accounts.add(accountFrom);
-        accounts.addAll(UsersManager.loggedUser.getAccounts());
 
+        fragments = new ArrayList<>();
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -84,6 +72,50 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         mPager.setAdapter(mPagerAdapter);
         springIndicator = (SpringIndicator) findViewById(R.id.indicator);
         springIndicator.setViewPager(mPager);
+        //get transaction's type
+        Intent intent = getIntent();
+        //load accounts
+        accounts = new ArrayList<>();
+        accountFrom = UsersManager.loggedUser.getDefaultAccount();
+        if (transactionsType != null && transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
+            accountTo = accountFrom;
+        }
+        accounts.add(accountFrom);
+        accounts.addAll(UsersManager.loggedUser.getAccounts());
+
+        if (intent.hasExtra("Transaction")) {
+            transactionsType = intent.getStringExtra("Transaction");
+        }
+        if (intent.hasExtra("showInfoFor")) {
+            transaction = UsersManager.loggedUser.getTransactionById(intent.getIntExtra("showInfoFor", -1));
+            this.transactionsType = transaction.getTransactionType().toString();
+            this.category = transaction.getCategory();
+            this.accountFrom = transaction.getAccountFrom();
+            for (int i = 0; i < accounts.size(); i++) {
+                if (accounts.get(i).getAccountId() == accountFrom.getAccountId()) {
+                    selectedAccountFrom = i;
+                    break;
+                }
+            }
+            if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
+                this.accountTo = ((Transfer)transaction).getAccountTo();
+                for (int i = 0; i < accounts.size(); i++) {
+                    if (accounts.get(i).getAccountId() == accountTo.getAccountId()) {
+                        selectedAccountTo = i;
+                        break;
+                    }
+                }
+            }
+            this.amount = transaction.getAmount();
+            this.description = transaction.getDescription();
+            this.transactionDate = transaction.getDate();
+            this.location = transaction.getLocation();
+        }
+
+
+
+
+
 
         mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -205,7 +237,6 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Transfer.toString())) {
 
 			Transfer transfer = new Transfer(transactionId, transactionDate, amount, accountFrom, accountTo);
-            Log.e("Description", description);
 			transfer.setDescription(description);
             accountFrom.setBalance(accountFrom.getAccountBalance() - amount);
             accountTo.setBalance(accountTo.getAccountBalance() + amount);
@@ -314,5 +345,18 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    @Override
+    public void changeTransaction() {
+        transaction.setLocation(location);
+        transaction.setDate(transactionDate);
+        transaction.setDescription(description);
+        transaction.setAccountFrom(accountFrom);
+        transaction.setCategory(category);
+        transaction.setAmount(amount);
+        DBManager.getInstance(this).changeTransaction(transaction.getTransactionId());
+        setResult(RESULT_OK);
+        finish();
     }
 }

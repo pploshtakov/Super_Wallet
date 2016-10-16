@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.model.Account;
@@ -78,6 +79,8 @@ public class FirstPageAddingFragment extends Fragment {
     Spinner accountsSpinner1;
     ImageButton saveButton;
     ImageButton cancelButton;
+    Transaction transaction;
+    ArrayAdapter adapter;
     public FirstPageAddingFragment() {
         // Required empty public constructor
     }
@@ -88,15 +91,25 @@ public class FirstPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_first_page_adding, container, false);
+
         myActivity.registerFragment(this);
         //save transaction
         saveButton = (ImageButton) root.findViewById(R.id.addt_first_page_save_button);
+
+        transaction = UsersManager.loggedUser.getTransactionById(getActivity().getIntent().getIntExtra("showInfoFor", -1));
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myActivity.saveTransaction();
+                if (getActivity().getIntent().hasExtra("showInfoFor")) {
+                    myActivity.changeTransaction();
+                } else {
+                    myActivity.saveTransaction();
+                }
             }
         });
+
+
+
         //cancel transaction
         cancelButton = (ImageButton) root.findViewById(R.id.addt_cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -107,11 +120,18 @@ public class FirstPageAddingFragment extends Fragment {
         });
         //set transaction type TV
         transactionTypeTV = (TextView) root.findViewById(R.id.addt_transaction_type_TV);
-        transactionTypeTV.setText(myActivity.getTransactionType());
+        if (getActivity().getIntent().hasExtra("showInfoFor")) {
+            transactionTypeTV.setText(transaction.getTransactionType().toString());
+        } else {
+            transactionTypeTV.setText(myActivity.getTransactionType());
+        }
         //accounts spinner
         accountsSpinner = (Spinner) root.findViewById(R.id.addt_account_spinner);
-        ArrayAdapter adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, myActivity.getAccounts());
+        adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, myActivity.getAccounts());
         accountsSpinner.setAdapter(adapter);
+        if (myActivity.getSelectedAccountFrom() != -1) {
+            accountsSpinner.setSelection(myActivity.getSelectedAccountFrom());
+        }
 
         //spinners listener
         accountsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -129,18 +149,21 @@ public class FirstPageAddingFragment extends Fragment {
         });
 
         //select category button
+
         selectCategoryButton = (Button) root.findViewById(R.id.addt_select_category_button);
 
-        if(myActivity.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Expense.toString()) ||
-                myActivity.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
 
-            //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
-            defaultCategories = UsersManager.getInstance(getContext()).getDefaultCategories();
-            category = defaultCategories.get(0);
-            myActivity.setCategory(category);
+        if (myActivity.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Expense.toString()) ||
+                myActivity.getTransactionType().equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
+            if (transaction != null) {
+                category = transaction.getCategory();
+            } else {
+                //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
+                defaultCategories = UsersManager.getInstance(getContext()).getDefaultCategories();
+                category = defaultCategories.get(0);
+                myActivity.setCategory(category);
+            }
             selectCategoryButton.setText(category.getCategoryName());
-            Drawable img = getContext().getResources().getDrawable( category.getCategoryIcon() );
-            selectCategoryButton.setCompoundDrawables(img,null,null,null);
             selectCategoryButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -154,6 +177,9 @@ public class FirstPageAddingFragment extends Fragment {
             selectCategoryButton.setVisibility(View.GONE);
             accountsSpinner1 = (Spinner) root.findViewById(R.id.addt_account1_spinner);
             accountsSpinner1.setVisibility(View.VISIBLE);
+            if (myActivity.getSelectedAccountTo() != -1) {
+                accountsSpinner1.setSelection(myActivity.getSelectedAccountTo());
+            }
             accountsSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -167,12 +193,18 @@ public class FirstPageAddingFragment extends Fragment {
 
                 }
             });
+
             //accounts spinner 1
             accountsSpinner1.setAdapter(adapter);
         }
 
+
+
         //add calculator buttons
         amountTV = (AutoResizeTextView) root.findViewById(R.id.addt_amount_tv);
+        if (transaction != null) {
+            amountTV.setText(String.valueOf(transaction.getAmount()));
+        }
         zero = (Button) root.findViewById(R.id.button_zero);
         one = (Button) root.findViewById(R.id.button_one);
         two = (Button) root.findViewById(R.id.button_two);
@@ -373,6 +405,7 @@ public class FirstPageAddingFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         myActivity = (AddTransactionsCommunicator) context;
+
     }
 
     @Override

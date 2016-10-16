@@ -37,4 +37,6 @@ public interface AddTransactionsCommunicator {
     public int getSelectedAccountTo();
 
     public void setLocation(Location location);
+
+    void changeTransaction();
 }

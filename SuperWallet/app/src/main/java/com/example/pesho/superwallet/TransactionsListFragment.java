@@ -254,7 +254,7 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 			if (e.getValue() instanceof ArrayList) {
 				ArrayList<Transaction> transactions = (ArrayList<Transaction>) e.getValue();
 				for (Transaction tr : transactions) {
-					childList.add(new TransactionsListTransaction(tr.getDate()));
+					childList.add(new TransactionsListTransaction(tr.getDate(), tr));
 				}
 			}
 

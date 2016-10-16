@@ -192,4 +192,13 @@ public class User {
     public Bitmap getProfileImage() {
         return profileImage;
     }
+
+    public Transaction getTransactionById(int showInfoFor) {
+        for (Transaction tr : myTransactions) {
+            if (tr.getTransactionId() == showInfoFor) {
+                return tr;
+            }
+        }
+        return null;
+    }
 }
