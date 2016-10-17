@@ -137,6 +137,24 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		return verticalPager;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		verticalPager = (ViewPager) inflater.inflate(R.layout.fragment_infinite_horizontal, container, false);
+		iAdapter = new InfiniteHorizontalPagerAdapter(this, 0);
+		verticalPager.setAdapter(iAdapter);
+		verticalPager.setCurrentItem(Constants.START_INDEX);
+		container.addView(verticalPager);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		container.removeAllViews();
+	}
+
 	LocalDateTime currentPeriodStart;
 	LocalDateTime currentPeriodEnd;
 	StringBuilder dateBuilder = new StringBuilder();

@@ -78,6 +78,7 @@ public class PieChartFragment extends Fragment implements StatisticsActivity.Sta
         View rootView = inflater.inflate(R.layout.fragment_pie_chart, container, false);
 
         pie = (PieChartView) rootView.findViewById(R.id.chart);
+		tv = null;
 
         currentPage = 0;
         updatePie(currentPage, null);
