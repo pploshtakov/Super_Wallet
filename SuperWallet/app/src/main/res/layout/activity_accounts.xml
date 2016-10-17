@@ -16,6 +16,8 @@
         android:id="@+id/accounts_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:dividerHeight="30dp"
+        android:divider="@color/black"
         />
 
     <ImageView
