@@ -98,7 +98,7 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		endDate = new LocalDateTime();
 		endDate = endDate.plusDays(1).withTime(0,0,0,0);
 		Log.e("SuperWallet ", "Fragment from " + startDate + " to " + endDate);
-		ArrayList<Transaction> transactions = UsersManager.loggedUser.getTransactions(startDate, endDate);
+		ArrayList<Transaction> transactions = UsersManager.loggedUser.getTransactions(startDate, endDate, null);
 		this.transactions = transactions;
 		for (Transaction t: transactions) {
 			Log.e("SuperWallet ", "Transaction id: " + t.getTransactionId() + " for DateTime: " + t.getDate());
@@ -228,7 +228,7 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 
 				break;
 		}
-		transactions = UsersManager.loggedUser.getTransactions(currentPeriodStart, currentPeriodEnd);
+		transactions = UsersManager.loggedUser.getTransactions(currentPeriodStart, currentPeriodEnd, null);
 
 		ArrayList<TransactionsListCategory> categoryList = new ArrayList<>();
 		HashMap<String, ArrayList<Transaction>> categoryMap = new HashMap<>();

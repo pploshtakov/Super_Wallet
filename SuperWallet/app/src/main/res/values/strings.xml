@@ -59,5 +59,7 @@
     <string name="accountAdd_radio_text_card">Card</string>
     <string name="expand_arrow_icon">Expand arrow icon</string>
     <string name="negative_amount_toast">Transaction cannot be negative or zero!</string>
+    <string name="left_arrow_statistics_date_change">Left arrow statistics date change</string>
+    <string name="right_arrow_statistics_date_change">Right arrow statistics date change</string>
 
 </resources>

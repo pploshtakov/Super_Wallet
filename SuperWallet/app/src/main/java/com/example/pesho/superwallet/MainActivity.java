@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_stats:
                 Toast.makeText(MainActivity.this, "stats", Toast.LENGTH_SHORT).show();
-				Intent statisticsIntent = new Intent(this, PieStatisticsActivity.class);
+				Intent statisticsIntent = new Intent(this, StatisticsActivity.class);
 				startActivity(statisticsIntent);
                 return true;
 //            case R.id.action_category:
@@ -263,9 +263,6 @@ public class MainActivity extends AppCompatActivity {
                     { ContextCompat.getColor(this,R.color.md_blue_600), ContextCompat.getColor(this, R.color.md_blue_600) },
                     { ContextCompat.getColor(this,R.color.md_red_600), ContextCompat.getColor(this, R.color.md_red_600) }
             };
-
-
-
 
 
             // Now with Builder, you can init BMB more convenient

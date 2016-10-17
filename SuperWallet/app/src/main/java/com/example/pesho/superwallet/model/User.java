@@ -15,9 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
-/**
- * Created by Pesho on 9/25/2016.
- */
 public class User {
     private String name;
     private String userName;
@@ -37,9 +34,9 @@ public class User {
 		this.name = name;
 		this.email = email;
 
-		myTransactions = new ArrayList<Transaction>();
-		myAccounts = new ArrayList<Account>();
-		myCategories = new ArrayList<Category>();
+		myTransactions = new ArrayList<>();
+		myAccounts = new ArrayList<>();
+		myCategories = new ArrayList<>();
 
 		defaultAccount = new Account(-2, "Cash", 0.0, Account.ACCOUNT_TYPE.CASH);
 	}
@@ -139,6 +136,18 @@ public class User {
 		return null;
 	}
 
+    public Account getAccount(String accountName) {
+        if (accountName.equals(getDefaultAccount().getAccountName())) {
+            return getDefaultAccount();
+        }
+        for (int i = 0; i < myAccounts.size(); i++) {
+            if (myAccounts.get(i).getAccountName().equals(accountName)) {
+                return myAccounts.get(i);
+            }
+        }
+        return null;
+    }
+
 	public Account getAccount(int accountId) {
 		for (int i = 0; i < myAccounts.size(); i++) {
 			if (myAccounts.get(i).getAccountId() == accountId) {
@@ -153,35 +162,47 @@ public class User {
 	}
 
 	public ArrayList<Category> getCategories() {
-		return new ArrayList<Category>(myCategories);
+		return new ArrayList<>(myCategories);
 	}
 
 	public Account getDefaultAccount() { return defaultAccount; }
 
 	public ArrayList<Account> getAccounts() {
-        return new ArrayList<Account>(myAccounts);
+        return new ArrayList<>(myAccounts);
     }
 
     public void addAccount (Account acct) {
         myAccounts.add(acct);
     }
 
-	public ArrayList<Transaction> getTransactions(LocalDateTime startDate, LocalDateTime endDate) {
+	public ArrayList<Transaction> getTransactions(LocalDateTime startDate, LocalDateTime endDate, Account account) {
 		if (startDate.isAfter(endDate)) {
 			return null;
 		}
 
-		Log.e("SuperWallet ", "Getting transactions for period " + startDate + " to " + endDate);
-		Log.e("SuperWallet ", "Transactions contains " + myTransactions.size() + " items");
+//		Log.e("SuperWallet ", "Getting transactions for period " + startDate + " to " + endDate);
+//		Log.e("SuperWallet ", "Transactions contains " + myTransactions.size() + " items");
 
-		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		ArrayList<Transaction> transactions = new ArrayList<>();
 		LocalDateTime tDate;
-		for (Transaction t: myTransactions) {
-			tDate = t.getDate();
-			if (tDate.isEqual(startDate) || tDate.isEqual(endDate) || (tDate.isAfter(startDate) && tDate.isBefore(endDate))) {
-				transactions.add(t);
-			}
-		}
+        if (account == null) {
+            for (Transaction t : myTransactions) {
+                tDate = t.getDate();
+                if (tDate.isEqual(startDate) || tDate.isEqual(endDate) || (tDate.isAfter(startDate) && tDate.isBefore(endDate))) {
+                    transactions.add(t);
+                }
+            }
+        }
+        else {
+            for (Transaction t: myTransactions) {
+                if (t.getAccountFrom() == account) {
+                    tDate = t.getDate();
+                    if (tDate.isEqual(startDate) || tDate.isEqual(endDate) || (tDate.isAfter(startDate) && tDate.isBefore(endDate))) {
+                        transactions.add(t);
+                    }
+                }
+            }
+        }
 		return transactions;
 	}
 
