@@ -102,7 +102,7 @@ public class FirstPageAddingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (getActivity().getIntent().hasExtra("showInfoFor")) {
-                    myActivity.changeTransaction();
+                    myActivity.updateTransaction(SecondPageAddingFragment.UpdateTransaction.Update);
                 } else {
                     myActivity.saveTransaction();
                 }

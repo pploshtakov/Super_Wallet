@@ -62,5 +62,6 @@
     <string name="left_arrow_statistics_date_change">Left arrow statistics date change</string>
     <string name="right_arrow_statistics_date_change">Right arrow statistics date change</string>
     <string name="menu">Menu</string>
+    <string name="delete_transaction">Delete transaction</string>
 
 </resources>

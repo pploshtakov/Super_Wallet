@@ -706,4 +706,8 @@ public class DBManager extends SQLiteOpenHelper {
         }
         getWritableDatabase().update(TABLE_TRANSACTIONS, values, KEY_TRANSACTION_ID + "=" + transactionId, null);
     }
+
+    public void deleteTransaction(Transaction transaction) {
+        getWritableDatabase().delete(TABLE_TRANSACTIONS, KEY_TRANSACTION_ID + "=?", new String[] { String.valueOf(transaction.getTransactionId()) });
+    }
 }

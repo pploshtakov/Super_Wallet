@@ -1,7 +1,6 @@
 package com.example.pesho.superwallet;
 
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,7 +31,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.pesho.superwallet.interfaces.AddTransactionsCommunicator;
 import com.example.pesho.superwallet.model.Account;
@@ -45,7 +41,6 @@ import com.wang.avi.AVLoadingIndicatorView;
 import org.joda.time.LocalDateTime;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -59,6 +54,7 @@ import java.util.Locale;
  * A simple {@link Fragment} subclass.
  */
 public class SecondPageAddingFragment extends Fragment {
+    public enum UpdateTransaction {Delete, Update};
     TextView titleTV;
     TextView dateTV;
     private AddTransactionsCommunicator myActivity;
@@ -71,6 +67,7 @@ public class SecondPageAddingFragment extends Fragment {
     ImageButton placeButton;
     ImageView mapImage;
     EditText descriptionET;
+    ImageButton deleteTransactionButton;
     AVLoadingIndicatorView avi;
 
     //location
@@ -94,8 +91,10 @@ public class SecondPageAddingFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_second_page_adding, container, false);
+        deleteTransactionButton = (ImageButton) root.findViewById(R.id.delete_transaction_button);
         if (getActivity().getIntent().hasExtra("showInfoFor")) {
             this.transaction = UsersManager.loggedUser.getTransactionById(getActivity().getIntent().getIntExtra("showInfoFor", -1));
+            deleteTransactionButton.setVisibility(View.VISIBLE);
         }
         avi = (AVLoadingIndicatorView) root.findViewById(R.id.avi);
         descriptionET = (EditText) root.findViewById(R.id.addt_description_et);
@@ -108,7 +107,7 @@ public class SecondPageAddingFragment extends Fragment {
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    myActivity.changeTransaction();
+                    myActivity.updateTransaction(UpdateTransaction.Update);
                 }
             });
         } else {
@@ -126,6 +125,14 @@ public class SecondPageAddingFragment extends Fragment {
             public void onClick(View v) {
                 //TODO do not working!!!
                 ((AddTransactionsActivity)myActivity).backToFirstPage();
+            }
+        });
+
+        //delete transaction
+        deleteTransactionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myActivity.updateTransaction(UpdateTransaction.Delete);
             }
         });
 

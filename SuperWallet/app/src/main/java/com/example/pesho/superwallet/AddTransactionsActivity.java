@@ -1,5 +1,6 @@
 package com.example.pesho.superwallet;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -364,5 +366,32 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         }
         setResult(RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void updateTransaction(final SecondPageAddingFragment.UpdateTransaction action) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if (action.equals(SecondPageAddingFragment.UpdateTransaction.Delete)) {
+                            DBManager.getInstance(AddTransactionsActivity.this).deleteTransaction(transaction);
+                            setResult(RESULT_OK);
+                            finish();
+                        } else {
+                            changeTransaction();
+                        }
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        return;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(AddTransactionsActivity.this);
+        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 }

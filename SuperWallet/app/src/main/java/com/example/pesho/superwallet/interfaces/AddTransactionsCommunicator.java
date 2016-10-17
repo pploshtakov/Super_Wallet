@@ -3,6 +3,7 @@ package com.example.pesho.superwallet.interfaces;
 import android.location.Location;
 import android.support.v4.app.Fragment;
 
+import com.example.pesho.superwallet.SecondPageAddingFragment;
 import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.Category;
 
@@ -39,4 +40,6 @@ public interface AddTransactionsCommunicator {
     public void setLocation(Location location);
 
     void changeTransaction();
+
+    void updateTransaction(SecondPageAddingFragment.UpdateTransaction action);
 }
