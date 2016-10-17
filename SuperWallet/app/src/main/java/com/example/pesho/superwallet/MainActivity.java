@@ -1,5 +1,7 @@
 package com.example.pesho.superwallet;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 
 import android.graphics.Bitmap;
@@ -19,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,9 +43,12 @@ import com.nightonke.boommenu.Types.OrderType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
 
+import org.joda.time.LocalDateTime;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -51,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     com.github.clans.fab.FloatingActionButton addIncomeFB;
     com.github.clans.fab.FloatingActionButton addExpenseFB;
     com.github.clans.fab.FloatingActionButton addTransferFB;
+    DatePickerDialog.OnDateSetListener date;
+    Calendar myCalendar;
 
     AccountHeader header;
 
@@ -121,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     .build();
         }
 
-        Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.secondPrimary).withAccountHeader(header).build();
+        final Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.secondPrimary).withAccountHeader(header).build();
         //create drawer's items
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withTextColorRes(R.color.white).withName(R.string.drawer_item_day);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withTextColorRes(R.color.white).withName(R.string.drawer_item_week);
@@ -142,25 +150,47 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (position) {
                     case 1:
-                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_DAY);
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_DAY, null);
+                        drawer.closeDrawer();
                         break;
                     case 2:
-                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_WEEK);
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_WEEK, null);
+                        drawer.closeDrawer();
                         break;
                     case 3:
-                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_MONTH);
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_MONTH, null);
+                        drawer.closeDrawer();
                         break;
                     case 4:
-                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_YEAR);
+                        mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_YEAR, null);
+                        drawer.closeDrawer();
                         break;
                     case 5:
-                        Toast.makeText(MainActivity.this, "Date", Toast.LENGTH_SHORT).show();
+                        myCalendar = Calendar.getInstance();
+                        new DatePickerDialog(MainActivity.this, date, myCalendar
+                                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                         return true;
                 }
 
                 return true;
             }
         });
+        date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                LocalDateTime chooseDay = new LocalDateTime(myCalendar);
+                Log.e("ChooseDay", chooseDay.toString());
+                mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_CHOOSE_DAY, chooseDay);
+                drawer.closeDrawer();
+                //dateTV.setText(DateFormat.getInstance().format(myCalendar.getTime()).substring(0, 8));
+            }
+        };
 
         //adding floating buttons
         addTransactionButton = (FloatingActionMenu) findViewById(R.id.main_fab);

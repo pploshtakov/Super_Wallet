@@ -50,6 +50,7 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 	public static final int TIMEPERIOD_WEEK = 1;
 	public static final int TIMEPERIOD_MONTH = 2;
 	public static final int TIMEPERIOD_YEAR = 3;
+	public static final int TIMEPERIOD_CHOOSE_DAY = 4;
 	private int CURRENT_TIMEPERIOD = TIMEPERIOD_DAY;
 
 	private int currentPage = 0;
@@ -221,6 +222,8 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 				currentPeriodStart = startOfYear.plusYears(page);
 				currentPeriodEnd = endOfYear.plusYears(page);
 				break;
+			case TIMEPERIOD_CHOOSE_DAY:
+				break;
 			case TIMEPERIOD_DAY:
 			default:
 				currentPeriodStart = currentDayStart.plusDays(page);
@@ -261,6 +264,9 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 			pObj.setChildItemList(childList);
 			categoryList.add(pObj);
 		}
+		if (CURRENT_TIMEPERIOD == TIMEPERIOD_CHOOSE_DAY) {
+			CURRENT_TIMEPERIOD = TIMEPERIOD_DAY;
+		}
 		return categoryList;
 	}
 
@@ -285,7 +291,7 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		return reportData;
 	}
 
-	public void changePeriod(int timePeriod) {
+	public void changePeriod(int timePeriod, LocalDateTime chooseDay) {
 		switch (timePeriod) {
 			case TIMEPERIOD_WEEK:
 				CURRENT_TIMEPERIOD = TIMEPERIOD_WEEK;
@@ -295,6 +301,13 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 				break;
 			case TIMEPERIOD_YEAR:
 				CURRENT_TIMEPERIOD = TIMEPERIOD_YEAR;
+				break;
+			case TIMEPERIOD_CHOOSE_DAY:
+				CURRENT_TIMEPERIOD = TIMEPERIOD_CHOOSE_DAY;
+				currentPeriodStart = chooseDay.withTime(0,0,0,0);
+				currentPeriodEnd = chooseDay.withTime(23,59,59,999);
+				currentDayStart = currentPeriodStart;
+				currentDayEnd = currentPeriodEnd;
 				break;
 			case TIMEPERIOD_DAY:
 			default:
