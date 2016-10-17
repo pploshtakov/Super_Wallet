@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     Calendar myCalendar;
 
     AccountHeader header;
+    Drawer drawer;
 
     private boolean init = false;
     private BoomMenuButton boomMenuButtonInActionBar;
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                     .build();
         }
 
-        final Drawer drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.secondPrimary).withAccountHeader(header).build();
+        drawer = new DrawerBuilder().withActivity(this).withCloseOnClick(true).withSliderBackgroundColorRes(R.color.secondPrimary).withAccountHeader(header).build();
         //create drawer's items
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withTextColorRes(R.color.white).withName(R.string.drawer_item_day);
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withTextColorRes(R.color.white).withName(R.string.drawer_item_week);
@@ -336,5 +337,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //		mCurrentFragment.updateList();
+        switch (requestCode) {
+            case AddTransactionsActivity.RESULT_UPDATE_TRANSACTIN_LIST:
+                mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_DAY, null);
+                drawer.closeDrawer();
+        }
     }
 }

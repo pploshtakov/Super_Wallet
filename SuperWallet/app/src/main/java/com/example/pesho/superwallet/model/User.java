@@ -222,4 +222,12 @@ public class User {
         }
         return null;
     }
+
+    public void addTransaction(Transaction transaction) {
+        this.myTransactions.add(transaction);
+    }
+
+    public void deleteTransaction(Transaction transaction) {
+        this.myTransactions.remove(transaction);
+    }
 }

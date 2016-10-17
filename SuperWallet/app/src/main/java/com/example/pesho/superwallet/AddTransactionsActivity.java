@@ -33,6 +33,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
      * The number of pages (wizard steps) to show in this demo.
      */
     private static final int NUM_PAGES = 2;
+    public static final int RESULT_UPDATE_TRANSACTIN_LIST = 11;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -247,6 +248,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             if (location != null) {
                 transfer.setLocation(location);
             }
+            UsersManager.loggedUser.addTransaction(transfer);
             DBManager.getInstance(this).addTransaction(transfer);
 
         } else if (transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
@@ -258,6 +260,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             if (location != null) {
                 transaction.setLocation(location);
             }
+            UsersManager.loggedUser.addTransaction(transaction);
             DBManager.getInstance(this).addTransaction(transaction);
         } else {
             tp = Transaction.TRANSACTIONS_TYPE.valueOf(transactionsType);
@@ -268,10 +271,11 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             if (location != null) {
                 transaction.setLocation(location);
             }
+            UsersManager.loggedUser.addTransaction(transaction);
             DBManager.getInstance(this).addTransaction(transaction);
         }
 
-        setResult(RESULT_OK);
+        setResult(RESULT_UPDATE_TRANSACTIN_LIST);
         finish();
     }
 
@@ -364,7 +368,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         } else {
             DBManager.getInstance(this).updateTransaction(transaction.getTransactionId());
         }
-        setResult(RESULT_OK);
+        setResult(RESULT_UPDATE_TRANSACTIN_LIST);
         finish();
     }
 
@@ -377,7 +381,8 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
                     case DialogInterface.BUTTON_POSITIVE:
                         if (action.equals(SecondPageAddingFragment.UpdateTransaction.Delete)) {
                             DBManager.getInstance(AddTransactionsActivity.this).deleteTransaction(transaction);
-                            setResult(RESULT_OK);
+                            UsersManager.loggedUser.deleteTransaction(transaction);
+                            setResult(RESULT_UPDATE_TRANSACTIN_LIST);
                             finish();
                         } else {
                             changeTransaction();
