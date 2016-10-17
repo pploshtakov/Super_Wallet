@@ -13,6 +13,7 @@ public class TransactionsParentViewHolder extends ParentViewHolder<TransactionsL
 
     public TextView mCategoryTitleTextView;
 
+
     public TransactionsParentViewHolder(View itemView) {
         super(itemView);
 

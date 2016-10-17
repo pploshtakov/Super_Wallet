@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -98,6 +99,7 @@ public class AccountsActivity
 				}
 				view.setText(accounts.get(position).toString());
 				view.setTag(accounts.get(position).toString());
+				view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
 				view.setTextColor(ContextCompat.getColor(AccountsActivity.this, R.color.md_white_1000));
 				return view;
 			}
