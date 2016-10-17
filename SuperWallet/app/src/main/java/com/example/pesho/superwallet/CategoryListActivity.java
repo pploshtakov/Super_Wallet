@@ -72,7 +72,7 @@ public class CategoryListActivity
 		LayoutInflater mInflater = LayoutInflater.from(this);
 		mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
 		TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
-		mTitleTextView.setText(R.string.category);
+		//mTitleTextView.setText(R.string.category);
 		boomMenuButtonInActionBar = (BoomMenuButton) mCustomView.findViewById(R.id.boom);
 		mActionBar.setCustomView(mCustomView);
 		mActionBar.setDisplayShowCustomEnabled(true);

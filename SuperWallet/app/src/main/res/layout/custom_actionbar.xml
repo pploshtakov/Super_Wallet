@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:textAllCaps="true"
+        android:text="@string/menu"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#fff"
         android:layout_alignParentLeft="true"

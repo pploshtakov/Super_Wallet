@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/main_background1"
     tools:context="com.example.pesho.superwallet.MainActivity">
 
     <FrameLayout

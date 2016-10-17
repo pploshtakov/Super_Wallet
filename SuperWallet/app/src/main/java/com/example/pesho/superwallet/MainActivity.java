@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
         TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
-        mTitleTextView.setText(R.string.home);
+        //mTitleTextView.setText(R.string.home);
         mTitleTextView.setPadding( 16, 0, 0, 0);
 
         boomMenuButtonInActionBar = (BoomMenuButton) mCustomView.findViewById(R.id.boom);

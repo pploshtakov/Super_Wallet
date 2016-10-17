@@ -61,5 +61,6 @@
     <string name="negative_amount_toast">Transaction cannot be negative or zero!</string>
     <string name="left_arrow_statistics_date_change">Left arrow statistics date change</string>
     <string name="right_arrow_statistics_date_change">Right arrow statistics date change</string>
+    <string name="menu">Menu</string>
 
 </resources>

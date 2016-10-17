@@ -67,8 +67,8 @@ public class AccountsActivity
 		mActionBar.setDisplayShowTitleEnabled(false);
 		LayoutInflater mInflater = LayoutInflater.from(this);
 		mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
-		TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
-		mTitleTextView.setText(R.string.accounts);
+//		TextView mTitleTextView = (TextView) mCustomView.findViewById(R.id.title_text);
+//		mTitleTextView.setText(R.string.accounts);
 		boomMenuButtonInActionBar = (BoomMenuButton) mCustomView.findViewById(R.id.boom);
 		mActionBar.setCustomView(mCustomView);
 		mActionBar.setDisplayShowCustomEnabled(true);
@@ -96,8 +96,9 @@ public class AccountsActivity
 				if (view == null) {
 					view = new TextView(AccountsActivity.this);
 				}
-				view.setText(accounts.get(position).getAccountName());
-				view.setTag(accounts.get(position).getAccountId());
+				view.setText(accounts.get(position).toString());
+				view.setTag(accounts.get(position).toString());
+				view.setTextColor(ContextCompat.getColor(AccountsActivity.this, R.color.md_white_1000));
 				return view;
 			}
 

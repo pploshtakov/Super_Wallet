@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/main_background"
     tools:context="com.example.pesho.superwallet.RegisterActivity">
 
     <EditText
@@ -13,8 +13,9 @@
         android:inputType="textPersonName"
         android:layout_height="wrap_content"
         android:hint="@string/name"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000"
         android:id="@+id/rp_name_ET"
-        android:gravity="end|bottom"
         android:layout_alignParentTop="true"
         />
 
@@ -23,10 +24,11 @@
         android:layout_height="wrap_content"
         android:lines="1"
         android:maxLength="@integer/max_symbols"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000"
         android:inputType="textPersonName"
         android:id="@+id/rp_username_ET"
         android:hint="@string/username"
-        android:gravity="end|bottom"
         android:layout_below="@+id/rp_name_ET"
         />
 
@@ -36,9 +38,10 @@
         android:lines="1"
         android:maxLength="@integer/max_symbols"
         android:inputType="textPassword"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000"
         android:hint="@string/password"
         android:id="@+id/rp_pass1_ET"
-        android:gravity="end|bottom"
         android:layout_below="@+id/rp_username_ET"
         />
 
@@ -47,10 +50,11 @@
         android:layout_height="wrap_content"
         android:lines="1"
         android:inputType="textPassword"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000"
         android:maxLength="@integer/max_symbols"
         android:hint="@string/repeat_password"
         android:id="@+id/rp_pass2_ET"
-        android:gravity="end|bottom"
         android:layout_below="@+id/rp_pass1_ET"
         />
 
@@ -59,9 +63,10 @@
         android:layout_height="wrap_content"
         android:lines="1"
         android:inputType="textPersonName"
+        android:textColor="@color/md_white_1000"
+        android:textColorHint="@color/md_white_1000"
         android:hint="@string/email"
         android:id="@+id/rp_email_ET"
-        android:gravity="end|bottom"
         android:layout_below="@+id/rp_pass2_ET"
         />
 
@@ -76,6 +81,9 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="@string/register"
+            android:textColor="@color/md_white_1000"
+            android:background="@color/black"
+            android:layout_margin="5dp"
             android:id="@+id/rp_register_button"
             />
         <Button
@@ -83,6 +91,9 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="@string/cancel"
+            android:textColor="@color/md_white_1000"
+            android:background="@color/black"
+            android:layout_margin="5dp"
             android:id="@+id/rp_cancel_button"
             />
     </LinearLayout>

@@ -8,6 +8,7 @@
       android:paddingLeft="@dimen/activity_horizontal_margin"
       android:paddingRight="@dimen/activity_horizontal_margin"
       android:paddingTop="@dimen/activity_vertical_margin"
+      android:background="@drawable/main_background1"
       tools:context="com.example.pesho.superwallet.CategoryListActivity"
     >
 
@@ -32,6 +33,8 @@
         android:id="@+id/add_account_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:textColor="@color/md_white_1000"
         android:text="@string/add_new_account"
         android:layout_alignParentBottom="true"
         />

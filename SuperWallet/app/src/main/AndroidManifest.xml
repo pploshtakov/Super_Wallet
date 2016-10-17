@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".LoginActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -24,7 +24,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/home"/>
-        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".RegisterActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".AccountsActivity"
             android:label="@string/accounts"/>
