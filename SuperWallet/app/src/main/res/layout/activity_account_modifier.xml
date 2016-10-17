@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/main_background1"
     tools:context="com.example.pesho.superwallet.AccountModifierActivity"
     android:orientation="vertical">
 
@@ -21,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:textColor="@color/md_white_1000"
             android:text="@string/name_text"
             />
 
@@ -29,6 +31,8 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
+            android:textColor="@color/md_white_1000"
+            android:textColorHint="@color/md_white_1000"
             android:hint="@string/enter_account_name_hint"/>
 
     </LinearLayout>
@@ -42,6 +46,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:textColor="@color/md_white_1000"
+            android:textColorHint="@color/md_white_1000"
             android:text="@string/description_text"
             />
 
@@ -50,6 +56,8 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:layout_height="wrap_content"
+            android:textColor="@color/md_white_1000"
+            android:textColorHint="@color/md_white_1000"
             android:scrollbars="vertical"
             android:hint="@string/enter_account_description_hint"
             />
@@ -66,6 +74,7 @@
             android:id="@+id/accountAdd_radio_cash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/md_white_1000"
             android:text="@string/accountAdd_radio_text_cash"
             android:onClick="onRadioButtonClicked"
             />
@@ -74,6 +83,7 @@
             android:id="@+id/accountAdd_radio_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/md_white_1000"
             android:text="@string/accountAdd_radio_text_account"
             android:onClick="onRadioButtonClicked"
             />
@@ -83,6 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/accountAdd_radio_text_card"
+            android:textColor="@color/md_white_1000"
             android:onClick="onRadioButtonClicked"
             />
 
@@ -101,8 +112,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/accountAdd_cancel_button_text"
-            android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
+            android:background="@color/black"
+            android:textColor="@color/md_white_1000"
             android:layout_margin="5dp"
             style="?android:attr/buttonBarButtonStyle"
             />
@@ -113,8 +124,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="@string/accountAdd_add_button_text"
-            android:background="@color/colorPrimary"
-            android:textColor="@android:color/white"
+            android:background="@color/black"
+            android:textColor="@color/md_white_1000"
             android:layout_margin="5dp"
             style="?android:attr/buttonBarButtonStyle"
             />
