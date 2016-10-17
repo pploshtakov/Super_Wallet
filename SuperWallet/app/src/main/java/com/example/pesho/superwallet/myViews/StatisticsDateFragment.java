@@ -1,22 +1,16 @@
 package com.example.pesho.superwallet.myViews;
 
-
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.pesho.superwallet.R;
-import com.example.pesho.superwallet.StatisticsActivity;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDateTime;
@@ -94,30 +88,7 @@ public class StatisticsDateFragment  extends Fragment implements ViewFactory {
     public View makeView(int vertical, int horizontal) {
 
         View root = getActivity().getLayoutInflater().inflate(R.layout.fragment_date_item, null);
-//
-//        RelativeLayout rl = new RelativeLayout(getContext());
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        rl.setLayoutParams(params);
-//
-//        TextView tv = new TextView(getActivity());
-//        tv.setText("<");
-//        params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-////        tv.setLayoutParams(params); //causes layout update
-//
-//        rl.addView(tv, params);
-//
-//        tv = new TextView(getActivity());
-//        tv.setText(">");
-////        params = (RelativeLayout.LayoutParams)tv.getLayoutParams();
-////        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-////        tv.setLayoutParams(params); //causes layout update
-//        params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-//        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//
-//        rl.addView(tv, params);
-//
-//        TextView textView = new TextView(getActivity());
+
         TextView textView = (TextView) root.findViewById(R.id.date_field);
 
         switch (currentTimePeriod) {
@@ -141,10 +112,6 @@ public class StatisticsDateFragment  extends Fragment implements ViewFactory {
                 break;
         }
         textView.setText(buildDateText(currentPeriodStart, currentPeriodEnd));
-//        textView.setGravity(Gravity.CENTER_HORIZONTAL);
-//        params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-//        rl.addView(textView, params);
 
         return root;
     }

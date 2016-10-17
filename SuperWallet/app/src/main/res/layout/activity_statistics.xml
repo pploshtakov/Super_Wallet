@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/main_background1"
     tools:context="com.example.pesho.superwallet.StatisticsActivity"
     android:orientation="vertical"
     >
@@ -23,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:id="@+id/statistics_tab_layout"
+            android:background="@color/white_transparent"
             >
 
         </android.support.design.widget.TabLayout>
@@ -31,13 +33,17 @@
             android:id="@+id/statistics_accounts_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
+            android:layout_gravity="center"
+            android:background="@color/white_transparent"
+            android:layout_margin="10dp">
         </Spinner>
 
         <FrameLayout
             android:id="@+id/statistics_date_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@color/white_transparent"
+            />
 
     </LinearLayout>
 
