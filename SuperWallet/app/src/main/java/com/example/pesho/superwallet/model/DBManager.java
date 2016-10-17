@@ -657,7 +657,53 @@ public class DBManager extends SQLiteOpenHelper {
         user.setMyTransactions(transactions);
     }
 
-    public void changeTransaction(int transactionId) {
-        //TODO change transaction in DB
+    public void updateTransaction(int transactionId) {
+        Transaction transaction = UsersManager.loggedUser.getTransactionById(transactionId);
+        ContentValues values = new ContentValues();
+        values.put(KEY_TRANSACTION_DATE, transaction.getDateAsSQLTimestamp().toString());
+        values.put(KEY_TRANSACTION_DESCRIPTION, transaction.getDescription());
+        values.put(KEY_TRANSACTION_ACCOUNT_FROM_ID, transaction.getAccountFrom().getAccountId());
+        values.put(KEY_TRANSACTION_AMOUNT, transaction.getAmount());
+        if (transaction.getCategory() == null) {
+            values.put(KEY_TRANSACTION_CATEGORY_ID, "");
+        }
+        else {
+            values.put(KEY_TRANSACTION_CATEGORY_ID, transaction.getCategory().getCategoryId() );
+        }
+        values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, "-1");
+        values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
+        if (transaction.getLocation() != null) {
+            values.put(KEY_TRANSACTION_LATITUDE, transaction.getLocation().getLatitude());
+            values.put(KEY_TRANSACTION_LONGITUDE, transaction.getLocation().getLongitude());
+        } else {
+            values.put(KEY_TRANSACTION_LATITUDE, 0);
+            values.put(KEY_TRANSACTION_LONGITUDE, 0);
+        }
+        getWritableDatabase().update(TABLE_TRANSACTIONS, values, KEY_TRANSACTION_ID + "=" + transactionId, null);
+    }
+
+    public void updateTransfer(int transactionId) {
+        Transfer transaction = (Transfer) UsersManager.loggedUser.getTransactionById(transactionId);
+        ContentValues values = new ContentValues();
+        values.put(KEY_TRANSACTION_DATE, transaction.getDateAsSQLTimestamp().toString());
+        values.put(KEY_TRANSACTION_DESCRIPTION, transaction.getDescription());
+        values.put(KEY_TRANSACTION_ACCOUNT_FROM_ID, transaction.getAccountFrom().getAccountId());
+        values.put(KEY_TRANSACTION_AMOUNT, transaction.getAmount());
+        if (transaction.getCategory() == null) {
+            values.put(KEY_TRANSACTION_CATEGORY_ID, "");
+        }
+        else {
+            values.put(KEY_TRANSACTION_CATEGORY_ID, transaction.getCategory().getCategoryId() );
+        }
+        values.put(KEY_TRANSACTION_ACCOUNT_TO_ID, transaction.getAccountTo().getAccountId());
+        values.put(KEY_TRANSACTION_USER_ID, UsersManager.loggedUser.getLocalID());
+        if (transaction.getLocation() != null) {
+            values.put(KEY_TRANSACTION_LATITUDE, transaction.getLocation().getLatitude());
+            values.put(KEY_TRANSACTION_LONGITUDE, transaction.getLocation().getLongitude());
+        } else {
+            values.put(KEY_TRANSACTION_LATITUDE, 0);
+            values.put(KEY_TRANSACTION_LONGITUDE, 0);
+        }
+        getWritableDatabase().update(TABLE_TRANSACTIONS, values, KEY_TRANSACTION_ID + "=" + transactionId, null);
     }
 }

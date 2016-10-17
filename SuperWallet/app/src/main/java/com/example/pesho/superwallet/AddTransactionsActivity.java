@@ -22,9 +22,7 @@ import com.example.pesho.superwallet.model.UsersManager;
 
 import org.joda.time.LocalDateTime;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 
 import github.chenupt.springindicator.SpringIndicator;
 
@@ -200,7 +198,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
 
     @Override
     public void setAmount(String amount) {
-        if (!amount.isEmpty() && !amount.contains(".") && !amount.equals("-")) {
+        if (!amount.isEmpty() && !amount.equals(".") && !amount.equals("-")) {
             this.amount = Double.valueOf(amount);
         } else {
             this.amount = 0;
@@ -355,7 +353,11 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         transaction.setAccountFrom(accountFrom);
         transaction.setCategory(category);
         transaction.setAmount(amount);
-        DBManager.getInstance(this).changeTransaction(transaction.getTransactionId());
+        if (transaction instanceof Transfer) {
+            DBManager.getInstance(this).updateTransfer(transaction.getTransactionId());
+        } else {
+            DBManager.getInstance(this).updateTransaction(transaction.getTransactionId());
+        }
         setResult(RESULT_OK);
         finish();
     }
