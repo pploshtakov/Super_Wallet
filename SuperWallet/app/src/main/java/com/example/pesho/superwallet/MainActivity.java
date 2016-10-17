@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 final Intent intent = new Intent(MainActivity.this, AddTransactionsActivity.class);
                 intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Income.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
+                addTransactionButton.close(false);
             }
         });
         //add expense
@@ -215,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
                 final Intent intent = new Intent(MainActivity.this, AddTransactionsActivity.class);
                 intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Expense.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
+                addTransactionButton.close(false);
             }
         });//add transfer
         addTransferFB.setOnClickListener(new View.OnClickListener() {
@@ -223,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 final Intent intent = new Intent(MainActivity.this, AddTransactionsActivity.class);
                 intent.putExtra("Transaction", Transaction.TRANSACTIONS_TYPE.Transfer.toString());
                 startActivityForResult(intent, ADD_TRANSACTION);
+                addTransactionButton.close(false);
             }
         });
 
