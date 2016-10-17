@@ -1,17 +1,13 @@
 package com.example.pesho.superwallet.myViews;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,9 +24,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
-import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.PieChartData;
 import lecho.lib.hellocharts.model.SliceValue;
 import lecho.lib.hellocharts.util.ChartUtils;
@@ -84,9 +78,6 @@ public class PieChartFragment extends Fragment implements StatisticsActivity.Sta
         View rootView = inflater.inflate(R.layout.fragment_pie_chart, container, false);
 
         pie = (PieChartView) rootView.findViewById(R.id.chart);
-//        float scale = getResources().getDisplayMetrics().density;
-//        int dpAsPixels = (int) (80*scale + 0.5f);
-//        pie.setPadding(dpAsPixels, 0, dpAsPixels, 0);
 
         currentPage = 0;
         updatePie(currentPage, null);
@@ -116,11 +107,8 @@ public class PieChartFragment extends Fragment implements StatisticsActivity.Sta
                 break;
         }
 
-        Log.e("SuperWallet ", "Pie Chart Getting Transactions for period: " + currentPeriodStart + " - " + currentPeriodEnd);
-
         List<SliceValue> list = new ArrayList<>();
         ArrayList<Transaction> transactions = UsersManager.loggedUser.getTransactions(currentPeriodStart, currentPeriodEnd, account);
-        Log.e("SuperWallet ", "Pie Transactions Count: " + transactions.size());
         double totalAmount = 0.0;
         HashMap<String, ArrayList<Transaction>> categories = new HashMap<>();
         HashMap<String, Double> categoryAmount = new HashMap<>();
@@ -192,6 +180,7 @@ public class PieChartFragment extends Fragment implements StatisticsActivity.Sta
                     tv = new TextView(getContext());
                     tv.setText("No data to display\nfor this period.");
                     tv.setGravity(Gravity.CENTER);
+                    tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
                     tv.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 
                     ViewGroup vg = (ViewGroup) pie.getRootView();
@@ -213,7 +202,11 @@ public class PieChartFragment extends Fragment implements StatisticsActivity.Sta
     public void notifyAccountChanged(Account account) {
         this.account = account;
         updatePie(currentPage, account);
-        Log.e("SuperWallet ", "Statistics account changed to " + account);
+    }
+
+    @Override
+    public void notifyPeriodTypeChanged(int periodType) {
+        this.currentPeriod = periodType;
     }
 
 }

@@ -7,4 +7,5 @@
     <color name="myGreen">#61F051</color>
     <color name="secondPrimary">#9CE9A4</color>
     <color name="nav_drawer_color">#6a88ea</color>
+    <color name="white_transparent">#90FFFFFF</color>
 </resources>

@@ -1,22 +1,15 @@
 package com.example.pesho.superwallet;
 
-import android.content.Context;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.example.pesho.superwallet.model.Account;
@@ -31,12 +24,8 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.nightonke.boommenu.BoomMenuButton;
-
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class StatisticsActivity extends AppCompatActivity implements StatisticsDateFragment.StatisticsNotifier {
 
@@ -46,7 +35,7 @@ public class StatisticsActivity extends AppCompatActivity implements StatisticsD
 	private boolean shouldShowPie = true;
 
 	StatisticsInterface currentFragment;
-	StatisticsDateFragment statisticsFragment;
+	StatisticsDateFragment statisticsDateFragment;
 
 	AccountHeader header;
 	Bitmap profileImage;
@@ -141,16 +130,20 @@ public class StatisticsActivity extends AppCompatActivity implements StatisticsD
 
 				switch (position) {
 					case 1:
-						statisticsFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_DAY);
+						statisticsDateFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_DAY);
+						currentFragment.notifyPeriodTypeChanged(StatisticsInterface.TIMEPERIOD_DAY);
 						break;
 					case 2:
-						statisticsFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_WEEK);
+						statisticsDateFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_WEEK);
+						currentFragment.notifyPeriodTypeChanged(StatisticsInterface.TIMEPERIOD_WEEK);
 						break;
 					case 3:
-						statisticsFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_MONTH);
+						statisticsDateFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_MONTH);
+						currentFragment.notifyPeriodTypeChanged(StatisticsInterface.TIMEPERIOD_MONTH);
 						break;
 					case 4:
-						statisticsFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_YEAR);
+						statisticsDateFragment.notifyTimePeriodChanged(StatisticsInterface.TIMEPERIOD_YEAR);
+						currentFragment.notifyPeriodTypeChanged(StatisticsInterface.TIMEPERIOD_YEAR);
 						break;
 					case 5:
 						Toast.makeText(StatisticsActivity.this, "Date", Toast.LENGTH_SHORT).show();
@@ -167,7 +160,7 @@ public class StatisticsActivity extends AppCompatActivity implements StatisticsD
 		getSupportFragmentManager().beginTransaction()
 				.replace(R.id.statistics_date_container, mCurrentFragment).commitNow();
 		getSupportFragmentManager().executePendingTransactions();
-		statisticsFragment = mCurrentFragment;
+		statisticsDateFragment = mCurrentFragment;
 		mCurrentFragment.setActivity(this);
 
 		accountNames = new ArrayList<>();
@@ -239,7 +232,6 @@ public class StatisticsActivity extends AppCompatActivity implements StatisticsD
 	@Override
 	public void notifyPageChanged(int page) {
 		currentFragment.notifyPageChanged(page);
-		Log.e("SuperWallet ", "Activity received page: " + page);
 	}
 
 	public interface StatisticsInterface {
@@ -250,5 +242,6 @@ public class StatisticsActivity extends AppCompatActivity implements StatisticsD
 
 		void notifyPageChanged(int page);
 		void notifyAccountChanged(Account account);
+		void notifyPeriodTypeChanged(int periodType);
 	}
 }
