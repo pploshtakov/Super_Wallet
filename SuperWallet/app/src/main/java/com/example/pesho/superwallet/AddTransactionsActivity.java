@@ -25,8 +25,12 @@ import com.example.pesho.superwallet.model.UsersManager;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import github.chenupt.multiplemodel.viewpager.ModelPagerAdapter;
+import github.chenupt.multiplemodel.viewpager.PagerModelManager;
 import github.chenupt.springindicator.SpringIndicator;
+import github.chenupt.springindicator.viewpager.ScrollerViewPager;
 
 public class AddTransactionsActivity extends FragmentActivity implements AddTransactionsCommunicator {
     /**
@@ -39,7 +43,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
      */
-    private ViewPager mPager;
+    private ScrollerViewPager mPager;
     SpringIndicator springIndicator;
     String transactionsType;
 
@@ -68,10 +72,16 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         fragments = new ArrayList<>();
 
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+        mPager = (ScrollerViewPager) findViewById(R.id.pager);
         springIndicator = (SpringIndicator) findViewById(R.id.indicator);
+
+        PagerModelManager manager = new PagerModelManager();
+        fragments.add(new FirstPageAddingFragment());
+        fragments.add(new SecondPageAddingFragment());
+        manager.addCommonFragment(fragments, getTitles());
+        ModelPagerAdapter adapter = new ModelPagerAdapter(getSupportFragmentManager(), manager);
+        mPager.setAdapter(adapter);
+        mPager.fixScrollSpeed();
         springIndicator.setViewPager(mPager);
         //get transaction's type
         Intent intent = getIntent();
@@ -398,5 +408,13 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
         AlertDialog.Builder builder = new AlertDialog.Builder(AddTransactionsActivity.this);
         builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    //springindicator titles
+    private ArrayList<String> getTitles(){
+        ArrayList<String> titles = new ArrayList<>();
+        titles.add("1");
+        titles.add("2");
+        return titles;
     }
 }
