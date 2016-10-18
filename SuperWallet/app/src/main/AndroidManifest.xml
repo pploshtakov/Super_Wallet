@@ -23,21 +23,29 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:label="@string/home"/>
         <activity android:name=".RegisterActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".AccountsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/accounts"/>
         <activity
             android:name=".CategoryListActivity"
+            android:screenOrientation="portrait"
             android:label="@string/category"/>
-        <activity android:name=".CategoryModifierActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-        <activity android:name=".AddTransactionsActivity"/>
-        <activity android:name=".CategoryIconChooserActivity">
+        <activity android:name=".CategoryModifierActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddTransactionsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".CategoryIconChooserActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".AccountModifierActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".AccountModifierActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".StatisticsActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity android:name=".StatisticsActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

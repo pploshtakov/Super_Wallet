@@ -121,7 +121,12 @@ public class CategoryListActivity
 				}
 			});
 
-
+			if (CategoryListActivity.this == null) {
+				Log.e("Category", "activity is null");
+			}
+			if (gridView == null) {
+				Log.e("Category", "grid is null");
+			}
 			gridView.setOnItemLongClickListener(CategoryListActivity.this);
 
 			addCategoryButton.setVisibility(View.VISIBLE);
