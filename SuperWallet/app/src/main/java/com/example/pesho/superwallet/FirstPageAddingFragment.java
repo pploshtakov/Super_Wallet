@@ -160,7 +160,7 @@ public class FirstPageAddingFragment extends Fragment {
                 category = transaction.getCategory();
             } else {
                 //!!!!!!!!!!!!!!!! get first default category from list not from DB!!!!!
-                defaultCategories = UsersManager.getInstance(getContext()).getDefaultCategories();
+                defaultCategories = UsersManager.getInstance(getContext()).getDefaultCategories(Transaction.TRANSACTIONS_TYPE.valueOf(myActivity.getTransactionType()));
                 category = defaultCategories.get(0);
                 myActivity.setCategory(category);
             }

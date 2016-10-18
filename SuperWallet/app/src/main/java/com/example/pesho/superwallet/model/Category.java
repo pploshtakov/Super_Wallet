@@ -33,4 +33,8 @@ public class Category {
 	public void setCategoryName(String name) { categoryName = name; }
 	public void setCategoryIcon(int icon) { categoryIcon = icon; }
 	public void setCategoryType(Transaction.TRANSACTIONS_TYPE type) { transactionType = type;	}
+
+	public Transaction.TRANSACTIONS_TYPE getCategoryType() {
+		return transactionType;
+	}
 }

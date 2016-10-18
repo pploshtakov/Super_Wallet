@@ -115,13 +115,12 @@ public class StatisticsActivity extends AppCompatActivity implements StatisticsD
 		PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withTextColorRes(R.color.white).withName(R.string.drawer_item_week);
 		PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(3).withTextColorRes(R.color.white).withName(R.string.drawer_item_month);
 		PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(4).withTextColorRes(R.color.white).withName(R.string.drawer_item_year);
-		PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(5).withTextColorRes(R.color.white).withName(R.string.drawer_item_choose_date);
+
 		//add drawer items
 		drawer.addItem(item1);
 		drawer.addItem(item2);
 		drawer.addItem(item3);
 		drawer.addItem(item4);
-		drawer.addItem(item5);
 
 		//drawer item selected listener
 		drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {

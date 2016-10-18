@@ -79,6 +79,8 @@ public class CategoryListActivity
 
 		((Toolbar) mCustomView.getParent()).setContentInsetsAbsolute(0,0);
 
+		gridView = (GridView) findViewById(R.id.category_grid_view);
+
 		addCategoryButton = (Button) findViewById(R.id.add_category_button);
 
 		// Check the intent if we're just picking a category
@@ -91,7 +93,6 @@ public class CategoryListActivity
 
 		// Create the categories array and get the gridView
 		categories = new ArrayList<>();
-		gridView = (GridView) findViewById(R.id.category_grid_view);
 
 		// If we are, add the default categories to the list
 		// TODO hide other buttons and trash can, disable dragging
@@ -140,8 +141,6 @@ public class CategoryListActivity
 			categories.addAll(userCategories);
 		}
 
-
-
 		adapter = new BaseAdapter() {
 
 			@Override
@@ -149,15 +148,28 @@ public class CategoryListActivity
 			// the data set.
 			public View getView(int position, View convertView,
 								ViewGroup gridView) {
-				// try to reuse the views.
-				ImageView view = (ImageView) convertView;
-				// if convert view is null then create a new instance else reuse
-				// it
+
+				View view = convertView;
 				if (view == null) {
-					view = new ImageView(CategoryListActivity.this);
+					view = View.inflate(CategoryListActivity.this, R.layout.category_list_item, null);
 				}
-				view.setImageResource(categories.get(position).getCategoryIcon());
+				ImageView categoryIcon = (ImageView) view.findViewById(R.id.category_icon);
+				categoryIcon.setImageResource(categories.get(position).getCategoryIcon());
+
+				TextView categoryName = (TextView) view.findViewById(R.id.category_name);
+				categoryName.setText(categories.get(position).getCategoryName() + "\n" + "(" + categories.get(position).getCategoryType().toString() + ")");
+
 				view.setTag(String.valueOf(position));
+
+				// try to reuse the views.
+//				ImageView view = (ImageView) convertView;
+//				// if convert view is null then create a new instance else reuse
+//				// it
+//				if (view == null) {
+//					view = new ImageView(CategoryListActivity.this);
+//				}
+//				view.setImageResource(categories.get(position).getCategoryIcon());
+//				view.setTag(String.valueOf(position));
 				return view;
 			}
 

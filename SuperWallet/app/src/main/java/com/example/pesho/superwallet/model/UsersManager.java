@@ -30,12 +30,18 @@ public class UsersManager {
 
 		defaultCategories = DBManager.getInstance(context).loadDefaultCategories();
 
-        users = new HashMap<String, User>();
+        users = new HashMap<>();
         users = DBManager.getInstance(context).loadUsers();
     }
 
-	public ArrayList<Category> getDefaultCategories() {
-		return defaultCategories;
+	public ArrayList<Category> getDefaultCategories(Transaction.TRANSACTIONS_TYPE transactionType) {
+        ArrayList<Category> categories = new ArrayList<>();
+        for (Category cat: defaultCategories) {
+            if (cat.getTransactionType() == transactionType) {
+                categories.add(cat);
+            }
+        }
+		return categories;
 	}
 
     public static boolean isUserExistByName(String username) {

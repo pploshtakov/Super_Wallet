@@ -17,7 +17,9 @@
         android:id="@+id/category_grid_view"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-
+        android:horizontalSpacing="10dp"
+        android:verticalSpacing="10dp"
+        android:numColumns="4"
         />
 
     <ImageView

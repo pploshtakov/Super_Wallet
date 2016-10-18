@@ -63,5 +63,6 @@
     <string name="right_arrow_statistics_date_change">Right arrow statistics date change</string>
     <string name="menu">Menu</string>
     <string name="delete_transaction">Delete transaction</string>
+    <string name="cat_icon">Category icon</string>
 
 </resources>
