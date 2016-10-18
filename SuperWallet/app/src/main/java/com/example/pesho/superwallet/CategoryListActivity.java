@@ -79,12 +79,43 @@ public class CategoryListActivity
 
 		((Toolbar) mCustomView.getParent()).setContentInsetsAbsolute(0,0);
 
+		addCategoryButton = (Button) findViewById(R.id.add_category_button);
 
+		// Check the intent if we're just picking a category
+		Intent intent = getIntent();
+		if (intent != null) {
+			pickingCategory = intent.getBooleanExtra("pickingCategory", false);
+		}
 
 		// Create the categories array and get the gridView
-		categories = new ArrayList<Category>();
+		categories = new ArrayList<>();
+
+		// If we are, add the default categories to the list
+		// TODO hide other buttons and trash can, disable dragging
+		if (pickingCategory) {
+			ArrayList<Category> defaultCategories = DBManager.getInstance(this).loadDefaultCategories();
+			categories.addAll(defaultCategories);
+
+			addCategoryButton.setVisibility(View.GONE);
+		}
+		// If we're not picking a category, add dragging and trash can and dont add the default categories
+		// to the list.
+		else {
+			addCategoryButton.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
+					startActivityForResult(intent, ADD_CATEGORY_REQUEST);
+				}
+			});
+
+			gridView.setOnItemLongClickListener(CategoryListActivity.this);
+
+			addCategoryButton.setVisibility(View.VISIBLE);
+		}
+		categories.addAll(UsersManager.loggedUser.getCategories());
+
 		gridView = (GridView) findViewById(R.id.category_grid_view);
-		addCategoryButton = (Button) findViewById(R.id.add_category_button);
 
 		adapter = new BaseAdapter() {
 
@@ -129,38 +160,6 @@ public class CategoryListActivity
 		gridView.setAdapter(adapter);
 		// Set on Item Click (boolean pickingCategory determines the behavior)
 		gridView.setOnItemClickListener(CategoryListActivity.this);
-
-		// Check the intent if we're just picking a category
-		Intent intent = getIntent();
-		if (intent != null) {
-			pickingCategory = intent.getBooleanExtra("pickingCategory", false);
-		}
-
-		// If we are, add the default categories to the list
-		// TODO hide other buttons and trash can, disable dragging
-		if (pickingCategory) {
-			ArrayList<Category> defaultCategories = DBManager.getInstance(this).loadDefaultCategories();
-			categories.addAll(defaultCategories);
-
-			addCategoryButton.setVisibility(View.GONE);
-		}
-		// If we're not picking a category, add dragging and trash can and dont add the default categories
-		// to the list.
-		else {
-			addCategoryButton.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);
-					startActivityForResult(intent, ADD_CATEGORY_REQUEST);
-				}
-			});
-
-			gridView.setOnItemLongClickListener(CategoryListActivity.this);
-
-			addCategoryButton.setVisibility(View.VISIBLE);
-		}
-		categories.addAll(UsersManager.loggedUser.getCategories());
-
 	}
 
 	@Override
@@ -241,6 +240,8 @@ public class CategoryListActivity
 		ClipData clipData = new ClipData((CharSequence) view.getTag(),
 				new String[] { ClipDescription.MIMETYPE_TEXT_PLAIN }, item);
 		view.startDrag(clipData, new View.DragShadowBuilder(view), null, 0);
+		// Call requires higher api level
+		//view.startDragAndDrop(clipData, new View.DragShadowBuilder(view), null, 0);
 		View trashCan = findViewById(R.id.trash_can);
 		trashCan.setVisibility(View.VISIBLE);
 		trashCan.setOnDragListener(CategoryListActivity.this);

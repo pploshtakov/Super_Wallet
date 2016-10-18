@@ -108,6 +108,9 @@ public class DBManager extends SQLiteOpenHelper {
 
     private DBManager(Context context) {
         super(context,DB_NAME, null, DB_VERSION);
+
+		// Rebuild default categories, in case our icon resources changed id's.
+		rebuildDefaultCategories();
     }
 
     @Override
@@ -124,7 +127,8 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_CATEGORIES_NAME, "Home");
         values.put(KEY_CATEGORIES_ICON, R.drawable.house);
         values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
-        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+        long result = db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+		Log.e("SuperWallet ", "Default category insert result: " + result);
 
         values.put(KEY_CATEGORIES_ID, -2);
         values.put(KEY_CATEGORIES_NAME, "Sports");
@@ -203,6 +207,79 @@ public class DBManager extends SQLiteOpenHelper {
 
 		this.onCreate(db);
     }
+
+	public void rebuildDefaultCategories() {
+		SQLiteDatabase db = getWritableDatabase();
+
+		ArrayList<Category> categories = new ArrayList<>();
+		Cursor cursor = db.rawQuery("SELECT "
+				+ KEY_CATEGORIES_ID + ", " + KEY_CATEGORIES_NAME + ", " + KEY_CATEGORIES_TYPE + "," + KEY_CATEGORIES_ICON + " FROM " + TABLE_DEFAULT_CATEGORIES, null);
+		while (cursor.moveToNext()) {
+			int categoryId = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ID));
+			String categoryName = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_NAME));
+			String categoryType = cursor.getString(cursor.getColumnIndex(KEY_CATEGORIES_TYPE));
+			int categoryIcon = cursor.getInt(cursor.getColumnIndex(KEY_CATEGORIES_ICON));
+			Transaction.TRANSACTIONS_TYPE type;
+			if (categoryType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString())) {
+				type = Transaction.TRANSACTIONS_TYPE.Income;
+			} else if (categoryType.equals(Transaction.TRANSACTIONS_TYPE.Expense.toString())) {
+				type = Transaction.TRANSACTIONS_TYPE.Expense;
+			} else {
+				type = Transaction.TRANSACTIONS_TYPE.Transfer;
+			}
+			categories.add(new Category(categoryId, type, categoryName, categoryIcon));
+		}
+		cursor.close();
+
+		ContentValues values = new ContentValues();
+
+		for (Category category: categories) {
+			values.put(KEY_CATEGORIES_NAME, category.getCategoryName());
+			values.put(KEY_CATEGORIES_TYPE, category.getTransactionType().toString());
+			switch (category.getCategoryId()) {
+				case -1:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.house);
+					break;
+				case -2:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.ball);
+					break;
+				case -3:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.bill);
+					break;
+				case -4:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.bus);
+					break;
+				case -5:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.car);
+					break;
+				case -6:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.fork_spoon);
+					break;
+				case -7:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.coffee);
+					break;
+				case -8:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.fitness);
+					break;
+				case -9:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.fridge);
+					break;
+				case -10:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.health);
+					break;
+				case -11:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.phone);
+					break;
+				case -12:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.taxi);
+					break;
+				default:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.empty_icon);
+					break;
+			}
+			getWritableDatabase().update(TABLE_DEFAULT_CATEGORIES, values, KEY_CATEGORIES_ID + "=" + category.getCategoryId(), null);
+		}
+	}
 
 	public int getNextUserLocalId() {
 

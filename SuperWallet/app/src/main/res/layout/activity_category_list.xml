@@ -17,9 +17,8 @@
         android:id="@+id/category_grid_view"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:horizontalSpacing="10dip"
-        android:numColumns="4"
-        android:verticalSpacing="10dip" />
+
+        />
 
     <ImageView
         android:id="@+id/trash_can"
