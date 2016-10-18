@@ -245,7 +245,7 @@ public class AddTransactionsActivity extends FragmentActivity implements AddTran
             Toast.makeText(this, R.string.negative_amount_toast, Toast.LENGTH_SHORT).show();
             return;
         }
-        if (amount > accountFrom.getAccountBalance() && !transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income)) {
+        if (!transactionsType.equals(Transaction.TRANSACTIONS_TYPE.Income.toString()) && amount > accountFrom.getAccountBalance()) {
             Toast.makeText(this, "Not enough money in account!", Toast.LENGTH_SHORT).show();
             return;
         }
