@@ -128,7 +128,7 @@ public class FirstPageAddingFragment extends Fragment {
         }
         //accounts spinner
         accountsSpinner = (Spinner) root.findViewById(R.id.addt_account_spinner);
-        adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, myActivity.getAccounts());
+        adapter = new ArrayAdapter((Context) myActivity, R.layout.spinner_layout, myActivity.getAccounts());
         accountsSpinner.setAdapter(adapter);
         if (myActivity.getSelectedAccountFrom() != -1) {
             accountsSpinner.setSelection(myActivity.getSelectedAccountFrom());

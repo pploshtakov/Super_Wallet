@@ -201,7 +201,7 @@ public class SecondPageAddingFragment extends Fragment {
         myActivity.registerFragment(this);
         titleTV = (TextView) root.findViewById(R.id.second_page_title);
         //get spinners and set adapter
-        ArrayAdapter adapter = new ArrayAdapter((Context) myActivity, android.R.layout.simple_spinner_dropdown_item, myActivity.getAccounts());
+        ArrayAdapter adapter = new ArrayAdapter((Context) myActivity, R.layout.spinner_layout, myActivity.getAccounts());
         accountFromSpinner = (Spinner) root.findViewById(R.id.addt_account_spinner);
         accountToSpinner = (Spinner) root.findViewById(R.id.addt_account1_spinner);
         accountFromSpinner.setAdapter(adapter);

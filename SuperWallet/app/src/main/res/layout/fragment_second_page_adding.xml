@@ -73,12 +73,16 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:background="@color/white_transparent"
                 android:id="@+id/addt_account_spinner"
                 />
             <Spinner
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:background="@color/white_transparent"
                 android:visibility="gone"
                 android:id="@+id/addt_account1_spinner"
                 />

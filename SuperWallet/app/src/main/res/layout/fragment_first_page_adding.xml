@@ -92,25 +92,28 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
+                android:layout_margin="5dp"
                 android:id="@+id/addt_account_spinner"
-                android:background="@color/transparent"
+                android:background="@color/white_transparent"
                 ></Spinner>
             <Spinner
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:visibility="gone"
+                android:layout_margin="5dp"
                 android:id="@+id/addt_account1_spinner"
-                android:background="@color/transparent"
+                android:background="@color/white_transparent"
                 ></Spinner>
             <Button
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textColor="@color/white"
+                android:layout_margin="5dp"
+                android:textColor="@color/md_black_1000"
                 android:id="@+id/addt_select_category_button"
-                android:background="@color/transparent"
+                android:background="@color/white_transparent"
                 />
         </LinearLayout>
     </LinearLayout>
