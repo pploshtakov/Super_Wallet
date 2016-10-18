@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.example.pesho.superwallet.model.Account;
 import com.example.pesho.superwallet.model.DBManager;
+import com.example.pesho.superwallet.model.UsersManager;
 
 public class AccountModifierActivity extends AppCompatActivity {
 
@@ -115,7 +117,16 @@ public class AccountModifierActivity extends AppCompatActivity {
 				accountName = accountNameET.getText().toString();
 
 				accountDescription = accountDescriptionET.getText().toString();
-
+				if (accountName == null || accountName.isEmpty()) {
+					accountNameET.setError("Please set a name!");
+					accountNameET.requestFocus();
+					return;
+				}
+				if (UsersManager.loggedUser.accountNameExist(accountName)) {
+					accountNameET.setError("You has account with same name! Please set description!");
+					accountDescriptionET.requestFocus();
+					return;
+				}
 				Intent resultIntent = new Intent();
 				resultIntent.putExtra("accountId",accountId);
 				resultIntent.putExtra("accountDescription",accountDescription);

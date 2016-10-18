@@ -109,6 +109,7 @@ public class CategoryListActivity
 				}
 			});
 
+
 			gridView.setOnItemLongClickListener(CategoryListActivity.this);
 
 			addCategoryButton.setVisibility(View.VISIBLE);
@@ -277,7 +278,8 @@ public class CategoryListActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.action_stats:
-				Toast.makeText(this, "stats", Toast.LENGTH_SHORT).show();
+				Intent statisticsIntent = new Intent(this, StatisticsActivity.class);
+				startActivity(statisticsIntent);
 				return true;
 //			case R.id.action_home:
 //				Intent home = new Intent(this, MainActivity.class);

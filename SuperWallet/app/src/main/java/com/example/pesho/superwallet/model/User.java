@@ -230,4 +230,13 @@ public class User {
     public void deleteTransaction(Transaction transaction) {
         this.myTransactions.remove(transaction);
     }
+
+    public boolean accountNameExist(String accountName) {
+        for (Account acc : myAccounts) {
+            if (acc.getAccountName().equals(accountName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

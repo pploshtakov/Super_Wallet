@@ -132,6 +132,11 @@ public class CategoryModifierActivity extends AppCompatActivity {
 
 				categoryDescription = categoryDescriptionET.getText().toString();
 
+				if (categoryName == null || categoryName.isEmpty()) {
+					categoryNameET.setError("Please set a name!");
+					categoryDescriptionET.requestFocus();
+					return;
+				}
 				if (categoryIconIV.getTag() != null) {
 					categoryIcon = (Integer) categoryIconIV.getTag();
 				} else {

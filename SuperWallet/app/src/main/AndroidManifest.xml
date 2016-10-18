@@ -31,13 +31,13 @@
         <activity
             android:name=".CategoryListActivity"
             android:label="@string/category"/>
-        <activity android:name=".CategoryModifierActivity"/>
+        <activity android:name=".CategoryModifierActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".AddTransactionsActivity"/>
         <activity android:name=".CategoryIconChooserActivity">
         </activity>
-        <activity android:name=".AccountModifierActivity">
+        <activity android:name=".AccountModifierActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
-        <activity android:name=".StatisticsActivity">
+        <activity android:name=".StatisticsActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
     </application>
 

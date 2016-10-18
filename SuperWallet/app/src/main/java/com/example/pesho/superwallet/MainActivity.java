@@ -237,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_stats:
-                Toast.makeText(MainActivity.this, "stats", Toast.LENGTH_SHORT).show();
 				Intent statisticsIntent = new Intent(this, StatisticsActivity.class);
 				startActivity(statisticsIntent);
                 return true;

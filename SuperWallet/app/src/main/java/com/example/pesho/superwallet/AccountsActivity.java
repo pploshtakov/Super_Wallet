@@ -278,8 +278,9 @@ public class AccountsActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_stats:
-                Toast.makeText(AccountsActivity.this, "stats", Toast.LENGTH_SHORT).show();
-                return true;
+				Intent statisticsIntent = new Intent(this, StatisticsActivity.class);
+				startActivity(statisticsIntent);
+				return true;
 //            case R.id.action_home:
 //                Intent home = new Intent(this, MainActivity.class);
 //                startActivity(home);
@@ -344,7 +345,6 @@ public class AccountsActivity
 						account.setAccountDescription(data.getStringExtra("accountDescription"));
 						account.setAccountType(Account.ACCOUNT_TYPE.valueOf(data.getStringExtra("accountType")));
 						adapter.notifyDataSetChanged();
-
 						DBManager.getInstance(this).updateAccount(account);
 					}
 				}
