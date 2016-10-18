@@ -78,7 +78,9 @@ public class PieChartFragment extends Fragment implements StatisticsActivity.Sta
         View rootView = inflater.inflate(R.layout.fragment_pie_chart, container, false);
 
         pie = (PieChartView) rootView.findViewById(R.id.chart);
-		tv = null;
+		tv = (TextView) rootView.findViewById(R.id.statistics_tv);
+		tv.setText("No data to display\nfor this period.");
+		tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white_transparent));
 
         currentPage = 0;
         updatePie(currentPage, null);
@@ -177,19 +179,19 @@ public class PieChartFragment extends Fragment implements StatisticsActivity.Sta
             pie.setVisibility(View.GONE);
 
             if (pie.getRootView() instanceof ViewGroup) {
-                if (tv == null) {
-                    tv = new TextView(getContext());
-                    tv.setText("No data to display\nfor this period.");
-                    tv.setGravity(Gravity.CENTER);
-                    tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
-                    tv.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-
-                    ViewGroup vg = (ViewGroup) pie.getRootView();
-                    vg.addView(tv);
-                }
-                else {
+//                if (tv == null) {
+//                    tv = new TextView(getContext());
+//                    tv.setText("No data to display\nfor this period.");
+//                    tv.setGravity(Gravity.BOTTOM);
+//                    tv.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
+//                    tv.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+//
+//                    ViewGroup vg = (ViewGroup) pie.getRootView();
+//                    vg.addView(tv);
+//                }
+//                else {
                     tv.setVisibility(View.VISIBLE);
-                }
+//                }
             }
         }
     }

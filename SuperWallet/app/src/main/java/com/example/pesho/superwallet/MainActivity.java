@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener date;
     Calendar myCalendar;
 
+	boolean fragmentShouldBeRefreshed = false;
+
     AccountHeader header;
     Drawer drawer;
 
@@ -336,10 +338,21 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //		mCurrentFragment.updateList();
+		fragmentShouldBeRefreshed = true;
         switch (requestCode) {
             case AddTransactionsActivity.RESULT_UPDATE_TRANSACTIN_LIST:
                 mCurrentFragment.changePeriod(TransactionsListFragment.TIMEPERIOD_DAY, null);
                 drawer.closeDrawer();
         }
     }
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		if (fragmentShouldBeRefreshed) {
+			fragmentShouldBeRefreshed = false;
+			mCurrentFragment.updateList();
+		}
+	}
 }

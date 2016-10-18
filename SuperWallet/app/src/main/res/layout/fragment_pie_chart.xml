@@ -17,4 +17,12 @@
         >
     </lecho.lib.hellocharts.view.PieChartView>
 
+    <TextView
+        android:id="@+id/statistics_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+
 </RelativeLayout>

@@ -325,4 +325,20 @@ public class TransactionsListFragment extends Fragment implements ViewFactory {
 		FragmentTransaction ft = getFragmentManager().beginTransaction();
 		ft.detach(this).attach(this).commit();
 	}
+
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		if (isVisibleToUser) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.detach(this).attach(this).commit();
+		}
+		else {
+		}
+	}
+
+	public void updateList() {
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		ft.detach(this).attach(this).commit();
+	}
 }
