@@ -91,6 +91,7 @@ public class CategoryListActivity
 
 		// Create the categories array and get the gridView
 		categories = new ArrayList<>();
+		gridView = (GridView) findViewById(R.id.category_grid_view);
 
 		// If we are, add the default categories to the list
 		// TODO hide other buttons and trash can, disable dragging
@@ -121,12 +122,7 @@ public class CategoryListActivity
 				}
 			});
 
-			if (CategoryListActivity.this == null) {
-				Log.e("Category", "activity is null");
-			}
-			if (gridView == null) {
-				Log.e("Category", "grid is null");
-			}
+
 			gridView.setOnItemLongClickListener(CategoryListActivity.this);
 
 			addCategoryButton.setVisibility(View.VISIBLE);
@@ -144,7 +140,7 @@ public class CategoryListActivity
 			categories.addAll(userCategories);
 		}
 
-		gridView = (GridView) findViewById(R.id.category_grid_view);
+
 
 		adapter = new BaseAdapter() {
 
