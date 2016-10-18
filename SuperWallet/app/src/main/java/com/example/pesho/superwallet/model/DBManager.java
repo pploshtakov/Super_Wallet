@@ -127,8 +127,7 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_CATEGORIES_NAME, "Home");
         values.put(KEY_CATEGORIES_ICON, R.drawable.house);
         values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
-        long result = db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
-		Log.e("SuperWallet ", "Default category insert result: " + result);
+        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
 
         values.put(KEY_CATEGORIES_ID, -2);
         values.put(KEY_CATEGORIES_NAME, "Sports");
@@ -190,12 +189,18 @@ public class DBManager extends SQLiteOpenHelper {
         values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
         db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
 
-        values.put(KEY_CATEGORIES_ID, -12);
-        values.put(KEY_CATEGORIES_NAME, "Taxi");
-        values.put(KEY_CATEGORIES_ICON, R.drawable.taxi);
-        values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
-        db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
-    }
+		values.put(KEY_CATEGORIES_ID, -12);
+		values.put(KEY_CATEGORIES_NAME, "Taxi");
+		values.put(KEY_CATEGORIES_ICON, R.drawable.taxi);
+		values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Expense.toString());
+		db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+
+		values.put(KEY_CATEGORIES_ID, -13);
+		values.put(KEY_CATEGORIES_NAME, "Salary");
+		values.put(KEY_CATEGORIES_ICON, R.drawable.salary);
+		values.put(KEY_CATEGORIES_TYPE, Transaction.TRANSACTIONS_TYPE.Income.toString());
+		db.insert(TABLE_DEFAULT_CATEGORIES, null, values);
+	}
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -273,6 +278,8 @@ public class DBManager extends SQLiteOpenHelper {
 				case -12:
 					values.put(KEY_CATEGORIES_ICON, R.drawable.taxi);
 					break;
+				case -13:
+					values.put(KEY_CATEGORIES_ICON, R.drawable.salary);
 				default:
 					values.put(KEY_CATEGORIES_ICON, R.drawable.empty_icon);
 					break;

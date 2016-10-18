@@ -83,8 +83,10 @@ public class CategoryListActivity
 
 		// Check the intent if we're just picking a category
 		Intent intent = getIntent();
+		String categoryType = null;
 		if (intent != null) {
 			pickingCategory = intent.getBooleanExtra("pickingCategory", false);
+			categoryType = intent.getStringExtra("categoryType");
 		}
 
 		// Create the categories array and get the gridView
@@ -94,7 +96,17 @@ public class CategoryListActivity
 		// TODO hide other buttons and trash can, disable dragging
 		if (pickingCategory) {
 			ArrayList<Category> defaultCategories = DBManager.getInstance(this).loadDefaultCategories();
-			categories.addAll(defaultCategories);
+			if (categoryType != null) {
+				for (Category cat: defaultCategories) {
+					if (cat.getTransactionType().toString().equals(categoryType)) {
+						categories.add(cat);
+						Log.e("SuperWallet ", "CATEGORY cat: " + cat.getCategoryName() );
+					}
+				}
+			}
+			else {
+				categories.addAll(defaultCategories);
+			}
 
 			addCategoryButton.setVisibility(View.GONE);
 		}
@@ -114,7 +126,18 @@ public class CategoryListActivity
 
 			addCategoryButton.setVisibility(View.VISIBLE);
 		}
-		categories.addAll(UsersManager.loggedUser.getCategories());
+
+		ArrayList<Category> userCategories = UsersManager.loggedUser.getCategories();
+		if (categoryType != null) {
+			for (Category cat: userCategories) {
+				if (cat.getTransactionType().toString().equals(categoryType)){
+					categories.add(cat);
+				}
+			}
+		}
+		else {
+			categories.addAll(userCategories);
+		}
 
 		gridView = (GridView) findViewById(R.id.category_grid_view);
 
@@ -255,6 +278,8 @@ public class CategoryListActivity
 	@Override
 	public void onItemClick(AdapterView parent, View view, int position, long id) {
 		Intent intent;
+
+		Log.e("SuperWallet", "CatID: " + categories.get(position).getCategoryId() );
 
 		if (!pickingCategory) {
 			intent = new Intent(CategoryListActivity.this, CategoryModifierActivity.class);

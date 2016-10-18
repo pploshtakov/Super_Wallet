@@ -170,6 +170,7 @@ public class FirstPageAddingFragment extends Fragment {
                 public void onClick(View v) {
                     Intent category2 = new Intent((Context) myActivity, CategoryListActivity.class);
                     category2.putExtra("pickingCategory", true);
+                    category2.putExtra("categoryType", myActivity.getTransactionType());
                     startActivityForResult(category2, PICK_CATEGORY);
                 }
             });
